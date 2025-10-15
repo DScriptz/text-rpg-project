@@ -1,0 +1,147 @@
+{
+    "Goblin": {
+        "name": "Goblin",
+        "health": 50,
+        "attack": 11,
+        "defend_chance": 0.27,
+        "gold_loot": [14, 17],
+        "grunt_sounds": [
+            "sounds/monster1.ogg",
+            "sounds/monster2.ogg"
+        ]
+    },
+    "Spider": {
+        "name": "Spider",
+        "health": 60,
+        "attack": 11,
+        "defend_chance": 0.30,
+        "gold_loot": [13, 19],
+        "grunt_sounds": [
+            "sounds/spider damaged.ogg",
+            "sounds/spider damaged 2.ogg",
+            "sounds/spider damaged 3.ogg"
+
+        ]
+    },
+    "Poisonous_Spider": {
+        "name": "Poisonous Spider",
+        "health": 65,
+        "attack": 11,
+        "poison": 2,
+        "poison_duration": 0,
+        "defend_chance": 0.35,
+        "gold_loot": [14, 19],
+        "grunt_sounds": [
+            "sounds/spider damaged.ogg",
+            "sounds/spider damaged 2.ogg",
+            "sounds/spider damaged 3.ogg"
+        ]
+    },
+    "Eternal_Warrior": {
+        "name": "Eternal Warrior",
+        "health": 70,
+        "attack": 13,
+        "defend_chance": 0.40,
+        "gold_loot": [45, 70],
+        "grunt_sounds": []
+    },
+    "Ashfang_Stalker": {
+        "name": "Ashfang Stalker",
+        "health": 60,
+        "attack": 11,
+        "poison": 3,
+        "poison_duration": 0,
+        "defend_chance": 0.35,
+        "gold_loot": [10, 20],
+        "grunt_sounds": []
+    },
+    "Mirefang_Myconid": {
+        "name": "Mirefang Myconid",
+        "health": 65,
+        "attack": 10,
+        "defend_chance": 0.41,
+        "gold_loot": [11, 21],
+        "grunt_sounds": []
+
+    },
+    "Crystalis_Warden": {
+      "name": "Crystalis Warden",
+      "health": 80,
+      "attack": 14,
+      "defend_chance": 0.23,
+      "gold_loot": [20, 35],
+      "grunt_sounds": []
+    },
+    "Ashveil_Harbringer": {
+      "name": "Ashveil Harbringer",
+      "health": 75,
+      "attack": 16,
+      "defend_chance": 0.25,
+      "bleed": 3,
+      "bleed_duration": 0,
+      "gold_loot": [25, 40],
+      "grunt_sounds": []
+    },
+    "Frostborn_Revenant": {
+      "name": "Frostborn Revenant",
+      "health": 90,
+      "attack": 14,
+      "defend_chance": 0.30,
+      "freeze": 2,
+      "freeze_duration": 0,
+      "gold_loot": [35, 50],
+      "grunt_sounds": []
+    },
+    "Glacier_Wraith": {
+      "name": "Glacier Wraith",
+      "health": 95,
+      "attack": 16,
+      "defend_chance": 0.20,
+      "gold_loot": [40, 55],
+      "grunt_sounds": []
+    },
+    "Hollowshade_Sentinel": {
+      "name": "Hollowshade Sentinel",
+      "health": 120,
+      "attack": 18,
+      "defend_chance": 0.30,
+      "bleed": 4,
+      "bleed_duration": 0,
+      "gold_loot": [60, 70],
+      "grunt_sounds": []
+    },
+    "Ebonmarrow_Fiend": {
+      "name": "Ebonmarrow Fiend",
+      "health": 130,
+      "attack": 17,
+      "defend_chance": 0.20,
+      "venom": 5,
+      "venom_duration": 0,
+      "gold_loot": [75, 85],
+      "grunt_sounds": []
+    },
+    "Emberveil_Serpent": {
+      "name": "Emberveil Serpent",
+      "health": 150,
+      "attack": 20,
+      "defend_chance": 0.30,
+      "poison": 2,
+      "poison_duration": 0,
+      "bleed": 3,
+      "bleed_duration": 0,
+      "gold_loot": [90, 100],
+      "grunt_sounds": []
+    },
+    "Vermillion_Tyrant": {
+      "name": "Vermillion Tyrant",
+      "health": 180,
+      "attack": 22,
+      "defend_chance": 0.25,
+      "gold_loot": [110, 120],
+      "rage": false,
+      "grunt_sounds": []
+    }
+
+    
+
+}

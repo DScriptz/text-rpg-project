@@ -1,0 +1,15 @@
+
+{
+    "1": {"name": "Warrior", "health": 75, "attack": 8},
+    "2": {"name": "Rogue", "health": 50, "attack": 9},
+    "3": {"name": "Mage", "health": 60  , "attack": 12},
+    "4": {"name": "Necromancer", "health": 55, "attack": 9},
+    "5": {"name": "Marksman", "health": 56, "attack": 10},
+    "6": {"name": "Paladin", "health": 65, "attack": 8},
+    "7": {"name": "Druid", "health": 60, "attack": 11},
+    "8": {"name": "Illusionist", "health": 57, "attack": 10},
+    "9": {"name": "Alchemist", "health": 58, "attack": 13},
+    "10": {"name": "Sentinel", "health": 80, "attack": 7},
+    "dev": {"name": "Dev test", "health": 999, "attack": 1000}
+
+}
