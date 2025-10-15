@@ -3154,7 +3154,7 @@ def chapt5_eternal_village():
                         eternal_arena_lvl4()
                         pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
-                        pygame.mixer.load(r"sounds/level 4.ogg")
+                        pygame.mixer.music.load(r"sounds/level 4.ogg")
                         pygame.mixer.music.play(-1)
                         battle(random.choice(["Hollowshade_Sentinel", "Ebonmarrow_Fiend"]))
                         pygame.mixer.music.fadeout(2000)
