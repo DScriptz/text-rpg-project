@@ -3188,6 +3188,7 @@ def chapt5_eternal_village():
                         break
                     else:
                         print("Invalid choice.")
+
             elif walk_choice_north == "s":
                 pass
             else:
