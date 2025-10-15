@@ -3012,11 +3012,13 @@ def chapt5_eternal_village():
             elif walk_choice_north == "2":
                 pass
             elif walk_choice_north == "3":
-                print(
-                    "You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
+                print("You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
                 time.sleep(2)
                 echo_binder_greetings_lines()
+                pygame.mixer.music.fadout(2000)
                 time.sleep(2)
+                pygame.mixer.music.load(r"sounds/echoing vials.ogg")
+                pygame.mixer.music.play(-1)
                 while True:
                     print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                     print("What do you want to do?")
@@ -3050,6 +3052,7 @@ def chapt5_eternal_village():
                         open_inventory()
                     elif player_choice_1 == "x":
                         print("You walk out of the Echoing Vials, the bubbling of the potions are heard fainting behind you...")
+                        pygame.mixer.music.fadeout(2000)
                         break
             elif walk_choice_north == "4":
                 pass
@@ -3104,11 +3107,18 @@ def chapt5_eternal_village():
                 print("You walk towards the Rift of Echoing Souls — the ground beneath you trembles with memories of countless duels.")
                 time.sleep(1.7)
                 pygame.mixer.music.fadeout(2000)
+                time.sleep(2)
+                pygame.mixer.music.load(r"sounds/rift of echoing souls.ogg")
+                pygame.mixer.music.set_volume(0.5)
+                pygame.mixer.music.play(-1)
                 print("As you approach the arena, a roaring crowd noise greets you...")
                 time.sleep(1.3)
                 print("Echokeeper: 'Choose thy challenge, and the Rift shall answer.'")
                 time.sleep(1.3)
                 while True:
+                    pygame.mixer.music.load(r"sounds/rift of echoing souls.ogg")
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.play(-1)
                     print(f"\n                       --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                     print("==================================================================================================================================================================================")
                     print("                                                                                ---[ Rift of Echoing Souls ]---                                                                  ")
@@ -3123,30 +3133,54 @@ def chapt5_eternal_village():
                     arena_choice = input("--> ").lower().strip()
                     if arena_choice == "1":
                         eternal_arena_lvl1()
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
+                        pygame.mixer.music.load(r"sounds/level 1.mp3")
+                        pygame.mixer.music.play(-1)
                         battle(random.choice(["Ashfang_Stalker", "Mirefang_Myconid"]))
+                        pygame.mixer.music.fadeout(2000)
                     elif arena_choice == "2":
                         eternal_arena_lvl2()
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
+                        pygame.mixer.music.load(r"sounds/level 2.ogg")
+                        pygame.mixer.music.play(-1)
                         battle(random.choice(["Crystalis_Warden", "Ashveil_Harbringer"]))
+                        pygame.mixer.music.fadeout(2000)
                     elif arena_choice == "3":
                         eternal_arena_lvl3()
+                        pygame.mixer.music.fadeout(2000)
+                        time.sleep(1.3)
+                        pygame.mixer.music.load(r"sounds/level 3.ogg")
+                        pygame.mixer.music.play(-1)
                         battle(random.choice(["Frostborn_Revenant", "Glacier_Wraith"]))
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
                     elif arena_choice == "4":
                         eternal_arena_lvl4()
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
+                        pygame.mixer.load(r"sounds/level 4.ogg")
+                        pygame.mixer.music.play(-1)
                         battle(random.choice(["Hollowshade_Sentinel", "Ebonmarrow_Fiend"]))
+                        pygame.mixer.music.fadeout(2000)
                     elif arena_choice == "5":
                         eternal_arena_lvl5()
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.3)
+                        pygame.mixer.music.load(r"sounds/level 5a.ogg")
+                        pygame.mixer.music.play(-1)
                         battle("Emberveil_Serpent")
+                        pygame.mixer.music.fadeout(2000)
                         print("Echokeeper: Congratulations, traveller... you defeated the Emberveil Serpent...")
                         time.sleep(1.7)
                         print(f"Echokeeper: Now for the real challenge, I present the {Fore.RED + Style.BRIGHT}VERMILLION TYRANT{Style.RESET_ALL}!!")
                         time.sleep(2.5)
+                        pygame.mixer.music.load(r"sounds/level 5.ogg")
+                        pygame.mixer.music.play(-1)
                         battle("Vermillion_Tyrant")
                         print("Echokeeper: Well done, traveller. You are now the Conqueror of the Rifts!")
+                        pygame.mixer.music.fadeout(2000)
                         time.sleep(1.7)
                     elif arena_choice == "i":
                         while True:
