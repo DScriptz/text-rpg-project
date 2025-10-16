@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.13.1 Alpha (UI overhaul Update 2) updated Oct 14, 2025.
+# Version: 10.13.1 Alpha (UI overhaul Update 2) updated Oct 15, 2025.
 import random
 import sys
 import time
@@ -2437,7 +2437,16 @@ def battle(enemy_key):
 
             elif action == "4":  # Run
                 print("You fled the battle. The poisonous spider escapes...")
-                exit()
+                print(f"You want to continue the game without fighting this enemy (Yes/No)? (-20 {Fore.LIGHTYELLOW_EX}gold{Style.RESET_ALL})")
+                run_choice = input("\n> ").lower()
+                if run_choice == "yes":
+                    print("You fled the battle but ignored the enemy... dropping your gold...")
+                    gold -= 20
+                    print(f"Gold -20, Gold is now {gold}.")
+                    break
+                else:
+                    print("Thanks for playing! Try again!")
+                    exit()
             # Player drinks greater healing potion
 
             # Necromancer summoning undead minion
@@ -2653,7 +2662,10 @@ def battle(enemy_key):
                             time.sleep(1.3)
                 # Enemy damaging the player
                 player_health -= enemy_damage
-                print(f"The {enemy_name} lunges at you for {enemy_damage} damage!")
+                player_hit = pygame.mixer.Sound(r"sounds/player hit.ogg")
+                player_hit.play()
+                print(f"The {enemy_name} hits you for {enemy_damage} damage!")
+                time.sleep(1.3)
                 # Player's chances of getting poisoned  and it's duration
                 if poison_damage > 0 and poison_duration == 0 and random.randint(1, 4) == 1:
                     poison_duration = 2
@@ -2668,6 +2680,11 @@ def battle(enemy_key):
                 if freeze_damage > 0 and freeze_duration == 0 and random.randint(1, 4) == 1:
                     freeze_duration = 2
                     print("You are freezing...")
+                    time.sleep(1.3)
+                # Player's chance of getting venomed
+                if venom_damage > 0 and venom_duration > 0 and random.randint(1, 5) == 1:
+                    venom_duration = 3
+                    print(f"The {enemy_name} inflicted you with venom!")
                     time.sleep(1.3)
             # Turn Ends
             if player_class == "Sentinel":
@@ -3015,7 +3032,7 @@ def chapt5_eternal_village():
                 print("You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
                 time.sleep(2)
                 echo_binder_greetings_lines()
-                pygame.mixer.music.fadout(2000)
+                pygame.mixer.music.fadeout(2000)
                 time.sleep(2)
                 pygame.mixer.music.load(r"sounds/echoing vials.ogg")
                 pygame.mixer.music.play(-1)
@@ -3080,6 +3097,7 @@ def chapt5_eternal_village():
                         print(f"{player_name}: 'A room for the night, if it please thee.'")
                         time.sleep(1.3)
                         if gold >= 50:
+                            gold -= 50
                             soulwarden_greetings_lines()
                             time.sleep(1.5)
                             print("The Soulwarden: Now would thy sign your name on this paper.")
