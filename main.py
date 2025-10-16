@@ -329,6 +329,7 @@ staff_emberlight_stock = 2
 axe_stonebreaker_stock = 2
 lance_eternal_guard_stock = 2
 warblade_brave_stock = 1
+eternal_roast_stock = 1
 # Trader 1 stocks
 # Goblin grunts
 pygame.mixer.init()
@@ -1588,6 +1589,17 @@ echokeeper_farewell = [
 ]
 def echokeeper_farewell_lines():
     print(random.choice(echokeeper_farewell))
+# Eternal sacntuary restaurant
+serah_lines = [
+    "Serah of Sustenance: Ah, traveler… hunger still finds you. Come, see what I’ve prepared.",
+    "Serah of Sustenance: Welcome. The hearth’s warmth waits for you.",
+    "Serah of Sustenance: Sit, dear one. A good meal heals more than wounds.",
+    "Serah of Sustenance: You look starved! Let’s see what comforts I can offer.",
+    "Serah of Sustenance: Even heroes need supper. Come, take a look.",
+    "Serah of Sustenance: The Sanctuary hums tonight… perhaps it knows you’re hungry."
+]
+def serah_line():
+    print(random.choice(serah_lines))
 # Rift of Echoing Souls level 1 dialogue
 eternal_arena_lvl_1 = [
     "You step into the first layer of the Rift — the air hums with forgotten echoes."
@@ -1634,6 +1646,7 @@ eternal_arena_lvl_5 = [
 ]
 def eternal_arena_lvl5():
     print(random.choice(eternal_arena_lvl_5))
+
 # Game title & music--------------------------------------------------------------------------------------------------------------------------------------#
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
@@ -3113,7 +3126,22 @@ def chapt5_eternal_village():
                         else:
                             print("The Soulwarden: Thy hast no more Gold, adventurer. Come back again when thy have enough.")
                     elif player_choice_3 == "2":
-                        pass
+                        print("You walked towards the tasty and soothing smell of the food...")
+                        time.sleep(1.3)
+                        serah_line()
+                        time.sleep(1.3)
+                        while True:
+                            print("What do you want from the menu?")
+                            print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
+                                  f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
+                                  f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
+                                  f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP, +1 ATK) - Warm bread baked with eternal embers."
+                                  f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
+                                  f"\n[X]. Exit Menu")
+                            sanctuary_resto_choice = input("\n--> ").lower().strip()
+                            if sanctuary_resto_choice == "1":
+                                print("You bought Celestial Broth and ate it, granting you +10 HP!")
+
                     elif player_choice_3 == "3":
                         pass
                     elif player_choice_3 == "4":
