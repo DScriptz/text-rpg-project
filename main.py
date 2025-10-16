@@ -3134,7 +3134,7 @@ def chapt5_eternal_village():
                         while True:
                             print("What do you want from the menu?")
                             print("=" * 60)
-                            print("--|- SANCTUARY FOOD MENU -|--".center())
+                            print("                                                                        --|- SANCTUARY FOOD MENU -|--")
                             print("=" * 60)
                             print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
                                   f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
@@ -3172,6 +3172,11 @@ def chapt5_eternal_village():
                                         attack_max += 2
                                     else:
                                         print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 20
+                                        max_health += 5
+                                        attack_max += 2
                                 else:
                                     print("Invalid choice, try again")
 
@@ -3194,6 +3199,8 @@ def chapt5_eternal_village():
                 print("Echokeeper: 'Choose thy challenge, and the Rift shall answer.'")
                 time.sleep(1.3)
                 while True:
+                    pygame.mixer.music.load("sounds/rift of echoing souls.ogg")
+                    pygame.mixer.music.play(-1)
                     print(f"\n                       --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                     print("==================================================================================================================================================================================")
                     print("                                                                                ---[ Rift of Echoing Souls ]---                                                                  ")
@@ -3293,6 +3300,7 @@ def chapt5_eternal_village():
                         print("So you head out of the Rift of the Echoing Souls...")
                         time.sleep(1)
                         print("The voices of the loud, maddening crowd faints behind you..")
+                        pygame.mixer.fadeout(2000)
                         time.sleep(1.2)
                         break
                     else:
