@@ -137,17 +137,18 @@ def shop_choice():
     shop_stock = echoing_vials_stocks()
     while True:
         print("\n                               =========================================================================================================================================")
-        print("                                                                                        |-ECHOING VIALS MENU-|                                                             ")
+        print("                                                                                        --|-ECHOING VIALS MENU-|--                                                             ")
+        print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
         print(
-            "\n                                       [1]. Whisperoot Tonic (48 Gold, reduces damage taken by 50% for 2 turns) - A pale-green draught that hardens the body against harm."
-            "\n                                       [2]. Eternal Petal Elixir (50 Gold, regenerates +10 HP for 2 turns) - A radiant violet vial that pulses with healing energy."
-            "\n                                       [3]. Starleaf Draught (55 Gold, +15% Attack Power for 3 turns) - A glittering blue potion that hums with celestial might."
-            "\n                                       [4]. Moonfern Tea (45 Gold, +10% dodge chance for 2 turns) - A faintly glowing brew that sharpens reflexes under moonlight."
-            "\n                                       [5]. Dreamdew Vial (60 Gold, cures all negative effects) - A soothing red elixir said to calm both body and spirit."
-            "\n                                       [6]. Lunaris Elixir (95 Gold, grants invulnerability for 1 turn, restores 60 HP) - A silver-white essence that shields the drinker in lunar light."
-            "\n                                       [7]. Healing Potion (20 Gold) - A bright red draught that soothes minor wounds and restores a spark of vitality."
-            "\n                                       [8]. Greater Healing Potion (25 gold) - A deep crimson elixir that radiates warmth, swiftly mending your wounds and invigorating your spirit."
-            "\n                                       [X]. Exit Menu.")
+        "\n                                       [1]. Whisperoot Tonic (48 Gold, reduces damage taken by 50% for 2 turns) - A pale-green draught that hardens the body against harm."
+        "\n                                       [2]. Eternal Petal Elixir (50 Gold, regenerates +10 HP for 2 turns) - A radiant violet vial that pulses with healing energy."
+        "\n                                       [3]. Starleaf Draught (55 Gold, +15% Attack Power for 3 turns) - A glittering blue potion that hums with celestial might."
+        "\n                                       [4]. Moonfern Tea (45 Gold, +10% dodge chance for 2 turns) - A faintly glowing brew that sharpens reflexes under moonlight."
+        "\n                                       [5]. Dreamdew Vial (60 Gold, cures all negative effects) - A soothing red elixir said to calm both body and spirit."
+        "\n                                       [6]. Lunaris Elixir (95 Gold, grants invulnerability for 1 turn, restores 60 HP) - A silver-white essence that shields the drinker in lunar light."
+        "\n                                       [7]. Healing Potion (20 Gold) - A bright red draught that soothes minor wounds and restores a spark of vitality."
+        "\n                                       [8]. Greater Healing Potion (25 gold) - A deep crimson elixir that radiates warmth, swiftly mending your wounds and invigorating your spirit."
+        "\n                                       [X]. Exit Menu.")
         print("                              ============================================================================================================================================")
         time.sleep(0.3)
         menu_choice = input("                         Choice: >> ")
@@ -3132,15 +3133,49 @@ def chapt5_eternal_village():
                         time.sleep(1.3)
                         while True:
                             print("What do you want from the menu?")
+                            print("=" * 60)
+                            print("--|- SANCTUARY FOOD MENU -|--".center())
+                            print("=" * 60)
                             print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
                                   f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
                                   f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
                                   f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP, +1 ATK) - Warm bread baked with eternal embers."
                                   f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
                                   f"\n[X]. Exit Menu")
+                            print("=" * 60)
                             sanctuary_resto_choice = input("\n--> ").lower().strip()
-                            if sanctuary_resto_choice == "1":
-                                print("You bought Celestial Broth and ate it, granting you +10 HP!")
+                            while True:
+                                if sanctuary_resto_choice == "1" and gold >= 15:
+                                    if race_name == "Sylvari":
+                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        time.sleep(1.3)
+                                        print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 12
+                                        max_health += 10
+                                    else:
+                                        gold -= 15
+                                        max_health += 10
+                                        print(f"You bought Celestial Broth! -15 Gold, gold is now {gold} Gold. Max HP is now {max_health}")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                elif sanctuary_resto_choice == "2" and gold >= 20:
+                                    if race_name == "Sylvari":
+                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        time.sleep(1.3)
+                                        print(f"You bought Embergrin Stew with a discounted price of 3 gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 17
+                                        max_health += 5
+                                        attack_max += 2
+                                    else:
+                                        print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                else:
+                                    print("Invalid choice, try again")
+
+
 
                     elif player_choice_3 == "3":
                         pass
