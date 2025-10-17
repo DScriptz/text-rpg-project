@@ -2189,6 +2189,7 @@ def battle(enemy_key):
     ##
     while True:
         # Battle Loop
+        run = False
         # reset all potion / turn-based buffs
         regen_turns = 0
         regen_effect = 0
@@ -2454,9 +2455,10 @@ def battle(enemy_key):
                 print(f"You want to continue the game without fighting this enemy (Yes/No)? (-20 {Fore.LIGHTYELLOW_EX}gold{Style.RESET_ALL})")
                 run_choice = input("\n> ").lower()
                 if run_choice == "yes":
+                    run = True
                     print("You fled the battle but ignored the enemy... dropping your gold...")
                     gold -= 20
-                    print(f"Gold -20, Gold is now {gold}.")
+                    print(f"Gold -20.")
                     break
                 else:
                     print("Thanks for playing! Try again!")
@@ -2491,7 +2493,7 @@ def battle(enemy_key):
                 if player_class == "Warrior":
                     power_strike_sound = pygame.mixer.Sound(r"sounds/warrior power strike.ogg")
                     power_strike_sound.play()
-                    damage = attack_max + 5
+                    damage = random.randint(10, 12)
                     enemy_health -= damage
                     print(f"You used POWER STRIKE, dealing {damage} damage!")
                     time.sleep(1.3)
@@ -2614,7 +2616,7 @@ def battle(enemy_key):
                 if enemy_confused:
                     print(f"{enemy_name} looks disoriented and hits themselves in confusion!")
                     time.sleep(1.3)
-                    confuse_damage = random.randint(3,6)
+                    confuse_damage = random.randint(1,3)
                     enemy_health -= confuse_damage
                     enemy_confused_turns -= 1
                     if enemy_confused_turns <= 0:
@@ -2724,6 +2726,9 @@ def battle(enemy_key):
             else:
                 print("Please type a valid option.")
         else:
+            if run:
+                print("You ran away, you didn't get any gold...")
+                break
             min_gold, max_gold = sorted(current_enemy["gold_loot"])
             gold_earned = random.randint(min_gold, max_gold)
             gold += gold_earned
@@ -2770,7 +2775,7 @@ def chapt5_eternal_village():
         " waiting for the eyes of the curious."
         "\nDragon Trainers and Eternal Mages left and right are seen."
     )
-    print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+    print(f"\n                           --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
     skip_dialogue1 = input("\nWould you like to skip the dialogue? (Yes/No)\n> ").lower() == "yes"
     if not skip_dialogue1:
         time.sleep(2)
@@ -2796,7 +2801,7 @@ def chapt5_eternal_village():
         pygame.mixer.music.load(r"sounds/Eternal Village bg.ogg")
         pygame.mixer.music.play(-1)
         print()
-        print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+        print(f"\n                        --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
         move = input("Where do you want to go?"
                      "\n[1]. East. - The Hollow Earth Tavern"
                      "\n[2]. West - Stoneheart Armory"
@@ -2821,7 +2826,7 @@ def chapt5_eternal_village():
             pygame.mixer.music.load(r"sounds/Tavern.ogg")
             pygame.mixer.music.play(-1)
             while True:
-                print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                print(f"\n                         --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                 walk_choice = input(
                     "\nWhat do you want to do?\n"
                     "[1]. Talk to the bartender\n"
@@ -3265,35 +3270,63 @@ def chapt5_eternal_village():
                         pygame.mixer.music.fadeout(2000)
                         time.sleep(1.7)
                     elif arena_choice == "i":
-                        while True:
-                            print("Which level would you want to check the info of?: ")
-                            print(f"<- {Fore.LIGHTGREEN_EX}Tip{Style.RESET_ALL}: {Fore.LIGHTGREEN_EX}Each level, you have a random chance of facing one of the enemies{Style.RESET_ALL}.")
-                            print("[1]. Level 1   [2]. Level 2")
-                            print("[3]. Level 3   [4]. Level 4")
-                            print("        [5]. Level 5      ")
-                            print("        [X]. Exit menu")
-                            arena_info_choice = input("--> ").strip().lower()
-                            if arena_info_choice == "1":
-                                print("---{ Level 1 enemies }--")
-                                print("--[ Ashfang Stalker - A predator born of soot and ember, swift and merciless ~ its serrated claws leave wounds that poisons its foes over time. ]--")
-                                print("--( HP: 60, Max Attack: 11, Special Ability: Poison )--")
-                                print("=" * 40)
-                                print("--[ Mirefang Myconid - A lumbering fungus beast from the swamp caverns. Its spores damages foes with great pain. ]--")
-                                print("--( HP: 65, Max Attack: 10, Special Ability: None )--")
-                                input("\nPress Enter to go back to menu -->  ")
-                                break
-                            elif arena_info_choice == "2":
-                                print("---{ Level 2 enemies }---")
-                                print("--[ Crystalis Warden - A guardian of molten crystal. When its armor cracks, fury consumes it in burning rage. ]--")
-                                print("--( HP: 80, Max Attack: 14, Special Abiltiy: None )--")
-                            elif arena_info_choice == "3":
-                                pass
-                            elif arena_info_choice == "4":
-                                pass
-                            elif arena_info_choice == "5":
-                                pass
-                            elif arena_info_choice == "X":
-                                break
+
+                        print("Which level would you want to check the info of?: ")
+                        print(f"<- {Fore.LIGHTGREEN_EX}Tip{Style.RESET_ALL}: {Fore.LIGHTGREEN_EX}Each level, you have a random chance of facing one of the enemies{Style.RESET_ALL}.")
+                        print("[1]. Level 1   [2]. Level 2")
+                        print("[3]. Level 3   [4]. Level 4")
+                        print("        [5]. Level 5      ")
+                        print("        [X]. Exit menu")
+                        arena_info_choice = input("--> ").strip().lower()
+                        if arena_info_choice == "1":
+                            print("                                                             ---{ Level 1 Enemies }--")
+                            print("--[ Ashfang Stalker - A predator born of soot and ember, swift and merciless ~ its serrated claws leave wounds that poisons its foes over time. ]--")
+                            print("--( HP: 60, Max Attack: 11, Special Ability: Poison )--")
+                            print("=" * 65)
+                            print("--[ Mirefang Myconid - A lumbering fungus beast from the swamp caverns. Its spores damages foes with great pain. ]--")
+                            print("--( HP: 65, Max Attack: 10, Special Ability: None )--")
+                            input("\nPress Enter to go back to menu -->  ")
+                            break
+                        elif arena_info_choice == "2":
+                            print("                                             ---{ Level 2 Enemies }---")
+                            print("--[ Crystalis Warden - A guardian of molten crystal. When its armor cracks, fury consumes it in burning rage. ]--")
+                            print("--( HP: 80, Max Attack: 14, Special Ability: None )--")
+                            print("=" * 65)
+                            print("--[ Ashveil Harbringer - A shrouded herald born from dying embers - every strike leaves trails of burning ash and blood. ]--")
+                            print("--( HP: 75, Max Attack 16, Special Ability: Bleed )--")
+                            input("\nPress Enter to go back to menu -->  ")
+                            break
+                        elif arena_info_choice == "3":
+                            print("                                                    --{ Level 3 Enemies }--")
+                            print("--[ Frostborn Revenant - Once a knight lost to the tundra's curse, now he wanders - frost and vengeance bound to his soul. ]--")
+                            print("--( HP: 90, Max Attack 14, Special Ability: Freeze )--")
+                            print("=" * 65)
+                            print("--[ Glacier Wraith - A spirit formed of ice and sorrow. It glides without sound, and the air grows still where it passes. ]--")
+                            print("--( HP: 95, Max Attack 16, Special Ability: Freeze )--")
+                            input("\nPress Enter to go back to menu -->  ")
+                            break
+                        elif arena_info_choice == "4":
+                            print("                                                     --{ Level 4 Enemies }--")
+                            print("--[ Hollowshade Sentinel - Once a guardian of forgotten halls, now a cursed shell - defending shadows that no longer remain. ]--")
+                            print("--( HP: 120, Max Attack 18, Special Ability: Bleed )--")
+                            print("=" * 65)
+                            print("--[ Ebonmarrow Fiend - Born from the bones of the forsaken, its breath drips with venom and decay - a plague given form. ]--")
+                            print("--( HP: 130, Max Attack 17, Special ability: Venom )--")
+                            input("\nPress Enter to go back to menu -->  ")
+                            break
+                        elif arena_info_choice == "5":
+                            print("                                                       --{ Level 5 Enemies }--")
+                            print("--[ Emberveil Serpent - Forged in molten caverns, this serpent slithers between flame and shadow — its bite burns and bleeds alike. ]--")
+                            print("--( HP: 150, Max Attack 20, Special Ability: Bleed )--")
+                            print("=" * 65)
+                            print("--[ Vermillion Tyrant - Crowned in fire and fury, this ancient beast rules the Rift — each roar ignites the air itself. ]--")
+                            print("--( HP: 180, Max attack 22, Special Ability: Rage, the lower its HP, the higher its damgge. )--")
+                            input("\nPress Enter to go back to menu -->  ")
+                            break
+                        elif arena_info_choice == "x":
+                            print("You close the book of info.")
+                            time.sleep(0.5)
+                            break
                     elif arena_choice == "x":
                         echokeeper_farewell_lines()
                         time.sleep(1.6)

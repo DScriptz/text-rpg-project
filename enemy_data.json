@@ -26,7 +26,7 @@
     "Poisonous_Spider": {
         "name": "Poisonous Spider",
         "health": 65,
-        "attack": 11,
+        "attack": 12,
         "poison": 2,
         "poison_duration": 0,
         "defend_chance": 0.35,
@@ -96,6 +96,8 @@
       "name": "Glacier Wraith",
       "health": 95,
       "attack": 16,
+      "freeze": 3,
+      "freeze_duration": 0,
       "defend_chance": 0.20,
       "gold_loot": [40, 55],
       "grunt_sounds": []
