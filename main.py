@@ -2795,8 +2795,12 @@ def chapt5_eternal_village():
     else:
         print("You skipped the Dialogue!")
         pygame.mixer.music.fadeout(2000)
+        south_eternal_village()
 
-    # Tavern/Armory choice loop
+    # Start of the Chapter 5 Eternal village adventure
+def south_eternal_village():
+    global player_name, player_class, race_name, player_health, max_health, attack_max, gold
+    global hearthfire_stock, mead_stock, spirits_stock, hp_change
     while True:
         pygame.mixer.music.load(r"sounds/Eternal Village bg.ogg")
         pygame.mixer.music.play(-1)
@@ -2959,13 +2963,14 @@ def chapt5_eternal_village():
             time.sleep(2)
             # Shop 2 (Stoneheart Armory) choice
             stoneheart_armory_shop()
+            south_eternal_village()
         # Player chooses to go North (3. North)
         elif move == "3":
             print(
                 "You head North, where the towering Hall of the Everlight glows like a beacon, the Spindle of Tales hums with forgotten stories,"
                 " and the Echoing Vilas Apothecary breathes a scent of strange potions through the cool cavern air.")
             time.sleep(2)
-            print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+            print(f"\n                            --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
             time.sleep(1)
             print("Where do you want to go?"
                   "\n[1]. Walk to the Spindle of Tales."
@@ -2995,7 +3000,7 @@ def chapt5_eternal_village():
                 loreweaver_greet_lines()
                 time.sleep(2)
                 while True:
-                    print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                    print(f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                     print("What do you want to do?"
                           "\n[1]. Speak to the Loreweaver about the Enchanted Scroll."
                           "\n[2]. Browse shelves of Books & Scrolls."
@@ -3046,7 +3051,10 @@ def chapt5_eternal_village():
                         time.sleep(2)
                         break
             elif walk_choice_north == "2":
-                pass
+                print("Coming soon... Chapter 6: Truth unveiled")
+                time.sleep(1.3)
+                print("Thanks for giving my game a chance, You can still try the other features.")
+                break
             elif walk_choice_north == "3":
                 print("You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
                 time.sleep(2)
@@ -3160,12 +3168,14 @@ def chapt5_eternal_village():
                                         time.sleep(1.3)
                                         gold -= 12
                                         max_health += 10
+                                        break
                                     else:
                                         gold -= 15
                                         max_health += 10
                                         print(f"You bought Celestial Broth! -15 Gold, gold is now {gold} Gold. Max HP is now {max_health}")
                                         player_payment()
                                         time.sleep(1.3)
+                                        break
                                 elif sanctuary_resto_choice == "2" and gold >= 20:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
@@ -3176,6 +3186,7 @@ def chapt5_eternal_village():
                                         gold -= 17
                                         max_health += 5
                                         attack_max += 2
+                                        break
                                     else:
                                         print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3183,6 +3194,7 @@ def chapt5_eternal_village():
                                         gold -= 20
                                         max_health += 5
                                         attack_max += 2
+                                        break
                                 elif sanctuary_resto_choice == "3" and gold >= 30:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
@@ -3192,12 +3204,14 @@ def chapt5_eternal_village():
                                         time.sleep(1.3)
                                         gold -= 25
                                         max_health += 15
+                                        break
                                     else:
                                         print(f"You bought Moonpetal Salad! -30 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 30
                                         max_health += 15
+                                        break
                                 elif sanctuary_resto_choice == "4" and gold >= 25:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
@@ -3208,6 +3222,7 @@ def chapt5_eternal_village():
                                         gold -= 21
                                         max_health += 8
                                         attack_max += 3
+                                        break
                                     else:
                                         print(f"You bought Sunforged Bread! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3215,6 +3230,7 @@ def chapt5_eternal_village():
                                         gold -= 25
                                         max_health += 8
                                         attack_max += 3
+                                        break
                                 elif sanctuary_resto_choice == "5" and gold >= 40:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
@@ -3225,6 +3241,7 @@ def chapt5_eternal_village():
                                         gold -= 35
                                         max_health += 20
                                         attack_max += 5
+                                        break
                                     else:
                                         print(f"You bought Eternal Roast! -40 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3232,10 +3249,9 @@ def chapt5_eternal_village():
                                         gold -= 40
                                         max_health += 20
                                         attack_max += 5
+                                        break
                                 else:
                                     print("Invalid choice, try again")
-
-
 
                     elif player_choice_3 == "3":
                         pass
@@ -3391,7 +3407,7 @@ def chapt5_eternal_village():
                         print("Invalid choice.")
 
             elif walk_choice_north == "s":
-                pass
+                south_eternal_village()
             else:
                 pass
         elif move == "4":
