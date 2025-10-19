@@ -1,20 +1,16 @@
                                                                 --| Text-Based RPG Game |--
 
 Hello, this is my first learning project in python! This is the Quest of the Eternal Caverns.
-I'm a beginner in python and I use this project as a way for me to apply my learnings in programming logic, critical thinking and as well as sharpening my creativity.
-
-NOTE: The game is still in development, expect bugs, unpolished/messy code, and surprises along the game.
+(Game is still in development, expect bugs and messy code) I'm a beginner in python and I use this project as a way for me to apply my learnings.
 
 
                                                                     --]| FEATURES |[-- 
 
 - Immersive storytelling and fun choice mechanic in general gameplay
-- High replayability with over 100 combinations of custom race + classes
+- Great replayability with over 100 combinations of custom race + classes
 - Great strategic gameplay especially in combat and gold economy.
 - Dungeons & Dragons-like battle mechanic (random damage points, random defend chance for enemy)
 - Shops to buy items that can help you in battle
-- Battle with unique and diverse enemies, some with special abilities
-- Classes have perks and some have discounts in some shops
                  
 
                                                                     --]| Gameplay |[--
@@ -41,15 +37,4 @@ NOTE: The game is still in development, expect bugs, unpolished/messy code, and 
   - Infernal
   - Drakonid
   - Lunari
-
-
-                                                                        --]| NOTES |[--
-
-- Built using Python 3.13 and Pygame for sounds
-- Currently playable via terminal/console (No graphics yet just text)
-- Planned features include:
-  - Volume settings
-  - More dungeon/level types
-  - Chapter 6
-  - Save/load system
-  - Expanded and more immersive world/shop interactions
+- Unique shop discounts for some of the classes
