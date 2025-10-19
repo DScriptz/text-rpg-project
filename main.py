@@ -3106,7 +3106,7 @@ def chapt5_eternal_village():
                 time.sleep(0.3)
                 while True:
                     print("]================================[ ETERNAL SANCTUARY ]====================================[")
-                    print(f"                               -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+                    print(f"                                 -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
                     print(f"[1]. Rent a room to rest (restore full health) (Price: 50 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL})  [2]. Order Food/Drink")
                     print(f"[3]. Play 'Fortune's Toss'.  [4]. Talk to the Eternal Inkeeper.")
                     print(f"[X]. Leave Eternal Sanctuary.")
@@ -3141,17 +3141,18 @@ def chapt5_eternal_village():
                             print("=" * 60)
                             print("                                                                        --|- SANCTUARY FOOD MENU -|--")
                             print("=" * 60)
+                            print(f"                                 -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
                             print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
                                   f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
                                   f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
-                                  f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP, +1 ATK) - Warm bread baked with eternal embers."
+                                  f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+8 HP, +3 ATK) - Warm bread baked with eternal embers."
                                   f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
                                   f"\n[X]. Exit Menu")
                             print("=" * 60)
                             sanctuary_resto_choice = input("\n--> ").lower().strip()
                             while True:
                                 if sanctuary_resto_choice == "1" and gold >= 15:
-                                    if race_name == "Sylvari":
+                                    if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
@@ -3166,7 +3167,7 @@ def chapt5_eternal_village():
                                         player_payment()
                                         time.sleep(1.3)
                                 elif sanctuary_resto_choice == "2" and gold >= 20:
-                                    if race_name == "Sylvari":
+                                    if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Embergrin Stew with a discounted price of 3 gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
@@ -3182,6 +3183,55 @@ def chapt5_eternal_village():
                                         gold -= 20
                                         max_health += 5
                                         attack_max += 2
+                                elif sanctuary_resto_choice == "3" and gold >= 30:
+                                    if race_name == "Kithling":
+                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        time.sleep(1.3)
+                                        print(f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 25
+                                        max_health += 15
+                                    else:
+                                        print(f"You bought Moonpetal Salad! -30 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 30
+                                        max_health += 15
+                                elif sanctuary_resto_choice == "4" and gold >= 25:
+                                    if race_name == "Kithling":
+                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        time.sleep(1.3)
+                                        print(f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 21
+                                        max_health += 8
+                                        attack_max += 3
+                                    else:
+                                        print(f"You bought Sunforged Bread! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 25
+                                        max_health += 8
+                                        attack_max += 3
+                                elif sanctuary_resto_choice == "5" and gold >= 40:
+                                    if race_name == "Kithling":
+                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        time.sleep(1.3)
+                                        print(f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 35
+                                        max_health += 20
+                                        attack_max += 5
+                                    else:
+                                        print(f"You bought Eternal Roast! -40 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        player_payment()
+                                        time.sleep(1.3)
+                                        gold -= 40
+                                        max_health += 20
+                                        attack_max += 5
                                 else:
                                     print("Invalid choice, try again")
 
@@ -3190,9 +3240,10 @@ def chapt5_eternal_village():
                     elif player_choice_3 == "3":
                         pass
                     elif player_choice_3 == "4":
-                        pass
+                        print("You walked towards the Eternal Inkeeper...")
                     elif player_choice_3 == "x":
                         soulwarden_farwell()
+                        time.sleep(1.3)
                         break
             elif walk_choice_north == "7":
                 print("You walk towards the Rift of Echoing Souls — the ground beneath you trembles with memories of countless duels.")
