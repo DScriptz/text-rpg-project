@@ -3405,7 +3405,6 @@ def south_eternal_village():
                         break
                     else:
                         print("Invalid choice.")
-
             elif walk_choice_north == "s":
                 south_eternal_village()
             else:
