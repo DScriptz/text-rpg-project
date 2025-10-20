@@ -2844,6 +2844,7 @@ def chapt5_eternal_village():
             "All about thee, narrow alleys twist like the roots of a great tree, lanterns swaying in the gentle wind, and the air hums with secrets of centuries past. "
             "Every shadow and stone seems to hold a story, waiting for those bold enough to seek it.")
         time.sleep(4)
+        south_eternal_village()
     else:
         print("You skipped the Dialogue!")
         pygame.mixer.music.fadeout(2000)
@@ -3139,7 +3140,14 @@ def south_eternal_village():
                         echo_vials_donation()
                     # Player trades with the NPC
                     elif player_choice_1 == "3":
-                       print("You") ####################
+                        print("You walked towards the trading station...")
+                        print("Eternal Trader: 'Greetings traveller, what might have ye for me?'")
+                        print("=" * 65)
+                        print("                                    --{ ITEMS TO TRADE }--        ")
+                        print(
+                            f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                        print(
+                            "[1] Ashfang Carpace for 5 Gold.  [2] Gleaming Fang for 6 Gold  [3] Thread of Valor for 8 Gold")
                     # Player opens the inventory
                     elif player_choice_1 == "4":
                         print("You open your Inventory...")

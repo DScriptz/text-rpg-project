@@ -53,6 +53,7 @@
         "poison_duration": 0,
         "defend_chance": 0.35,
         "gold_loot": [10, 20],
+        "item_loot": ["Ashfang Carpace", "Gleaming Fang", "Thread of Valor"],
         "grunt_sounds": []
     },
     "Mirefang_Myconid": {
@@ -61,6 +62,7 @@
         "attack": 10,
         "defend_chance": 0.41,
         "gold_loot": [11, 21],
+        "item_loot": ["Spore Cluster", "Myconid Cap", "Luminescent Root"],
         "grunt_sounds": []
 
     },
@@ -70,6 +72,7 @@
       "attack": 14,
       "defend_chance": 0.23,
       "gold_loot": [20, 35],
+      "item_loot": ["Shard of the Warden", "Fractured Prism", "Frostvein Dust"],
       "grunt_sounds": []
     },
     "Ashveil_Harbringer": {
@@ -80,6 +83,7 @@
       "bleed": 3,
       "bleed_duration": 0,
       "gold_loot": [25, 40],
+      "item_loot": ["Veilstone Fragment", "Harbringer's Ash", "Crimson Dust"],
       "grunt_sounds": []
     },
     "Frostborn_Revenant": {
@@ -90,6 +94,7 @@
       "freeze": 2,
       "freeze_duration": 0,
       "gold_loot": [35, 50],
+      "item_loot": ["Echoing Ice Core", "Soulfrost Fragment"],
       "grunt_sounds": []
     },
     "Glacier_Wraith": {
@@ -100,6 +105,7 @@
       "freeze_duration": 0,
       "defend_chance": 0.20,
       "gold_loot": [40, 55],
+      "item_loot": ["Frozen Essence", "Spectral Shard", "Chillbound Cloth"],
       "grunt_sounds": []
     },
     "Hollowshade_Sentinel": {
@@ -110,6 +116,7 @@
       "bleed": 4,
       "bleed_duration": 0,
       "gold_loot": [60, 70],
+      "item_loot": ["Shattered Sigil", "Hollowsteel Fragment", "Eternal Guard Plate"],
       "grunt_sounds": []
     },
     "Ebonmarrow_Fiend": {
@@ -120,6 +127,7 @@
       "venom": 5,
       "venom_duration": 0,
       "gold_loot": [75, 85],
+      "item_loot": ["Ebon Bone", "Marrow Resin", "Blackened Core"],
       "grunt_sounds": []
     },
     "Emberveil_Serpent": {
@@ -132,6 +140,7 @@
       "bleed": 3,
       "bleed_duration": 0,
       "gold_loot": [90, 100],
+      "item_loot": ["Ember Scale", "Veilfire Heart", "Cindered Fang"],
       "grunt_sounds": []
     },
     "Vermillion_Tyrant": {
@@ -140,6 +149,7 @@
       "attack": 22,
       "defend_chance": 0.25,
       "gold_loot": [110, 120],
+      "item_loot": ["Vermillion Core", "Tyrant's Horn", "Ancient Blood Gem"],
       "rage": false,
       "grunt_sounds": []
     }
