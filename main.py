@@ -2396,11 +2396,12 @@ def battle(enemy_key):
                 continue
              # Player attacks
             elif action == "1": # Attack codes
+                damage = random.randint(1, attack_max)
                 # enemy defense logic
                 if random.random() < enemy_defence:
                     defended_by_spider = True
-                    print(f"The {enemy_name} dodges with surprising agility! You hit for 0 damage")
-                damage = random.randint(1, attack_max)
+                    damage //= 2
+                    print(f"The {enemy_name} defends against your attack!")
                 grunt_sounds = current_enemy.get("grunt_sounds", []) # new learnings lol if i do [] it will make sure i dont get none incase no sounds
                 if grunt_sounds:
                     grunt_file = random.choice(grunt_sounds)
@@ -2865,7 +2866,6 @@ def south_eternal_village():
                      "\n[3]. North - Hall of the Everlight,The Spindle of Tales, and more..."
                      "\n[4]. Talk to the Eternal Warrior."
                      "\n> ").strip()
-
         # Player goes to the Tavern
         if move == "1":
             print("You walk to the East and saw a Tavern and you see its name, 'The Hollow Earth Tavern'.")
@@ -2883,7 +2883,7 @@ def south_eternal_village():
             pygame.mixer.music.load(r"sounds/Tavern.ogg")
             pygame.mixer.music.play(-1)
             while True:
-                print(f"\n                         --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                print(f"\n                                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                 walk_choice = input(
                     "\nWhat do you want to do?\n"
                     "[1]. Talk to the bartender\n"
@@ -3057,7 +3057,7 @@ def south_eternal_village():
                     print("What do you want to do?"
                           "\n[1]. Speak to the Loreweaver about the Enchanted Scroll."
                           "\n[2]. Browse shelves of Books & Scrolls."
-                          "\n[3] Spin the Threads of Fate."
+                          "\n[3]. Spin the Threads of Fate."
                           "\n[4]. Leave the Spindle of Tales.")
                     player_choice_2 = input("> ")
                     # Player chooses 1st option, to talk with the Loreweaver
@@ -3215,13 +3215,13 @@ def south_eternal_village():
                                   f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
                                   f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+8 HP, +3 ATK) - Warm bread baked with eternal embers."
                                   f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
-                                  f"\n[X]. Exit Menu")
+                                  f"\n[X]. {Style.BRIGHT}Exit Menu{Style.RESET_ALL}")
                             print("=" * 60)
                             sanctuary_resto_choice = input("\n--> ").lower().strip()
                             while True:
                                 if sanctuary_resto_choice == "1" and gold >= 15:
-                                    if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                    if race_name == "Kithling" and gold >= 12:
+                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
                                         player_payment()
@@ -3237,10 +3237,10 @@ def south_eternal_village():
                                         time.sleep(1.3)
                                         break
                                 elif sanctuary_resto_choice == "2" and gold >= 20:
-                                    if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                    if race_name == "Kithling" and gold >= 17:
+                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Embergrin Stew with a discounted price of 3 gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(f"You bought Embergrin Stew with a discounted price of 3 gold! -17 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 17
@@ -3256,8 +3256,8 @@ def south_eternal_village():
                                         attack_max += 2
                                         break
                                 elif sanctuary_resto_choice == "3" and gold >= 30:
-                                    if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                    if race_name == "Kithling" and gold > 25:
+                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3274,7 +3274,7 @@ def south_eternal_village():
                                         break
                                 elif sanctuary_resto_choice == "4" and gold >= 25:
                                     if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3293,7 +3293,7 @@ def south_eternal_village():
                                         break
                                 elif sanctuary_resto_choice == "5" and gold >= 40:
                                     if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Sylvari! I favor thee!")
+                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
                                         print(f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
@@ -3312,7 +3312,7 @@ def south_eternal_village():
                                         break
                                 else:
                                     print("Invalid choice, try again")
-                                    continue
+                                    break
                     #
                     elif player_choice_3 == "3":
                         int("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
@@ -3507,7 +3507,10 @@ def south_eternal_village():
                         break
                     else:
                         print("Invalid choice.")
+                        break
             elif walk_choice_north == "s":
+                print("You walked back south, the smoke and lights of the Stoneheart Armory and Hollow Earth Inn glooms over you...")
+                time.sleep(1.5)
                 south_eternal_village()
             else:
                 pass
