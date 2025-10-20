@@ -93,6 +93,7 @@ potion_data = {
 
 }
 # Potion list
+
 potion_list = {
 
 }
@@ -1647,7 +1648,60 @@ eternal_arena_lvl_5 = [
 ]
 def eternal_arena_lvl5():
     print(random.choice(eternal_arena_lvl_5))
+# Eternal Inkeeper says the history of Eternal Sanctuary
+eternal_inkeeper_history_line = [
+    "\nEternal Innkeeper: 'Aye… once, this place was naught but a humble village beneath the stone — warm fires, simple folk, laughter by candlelight… before the crystal was unbound.'",
+    "\nEternal Innkeeper: 'We were as you are once — of flesh and blood. But when the Old One shattered the Riftstone, light poured forth… and it changed us.'",
+    "\nEternal Innkeeper: 'They say he sought only to heal the land… yet the crystal’s breath swept through our souls, and we awoke… different. Eternal, some would call it.'",
+    "\nEternal Innkeeper: 'The glow you see in our eyes is not life’s warmth, traveler — it is the echo of that day when the caverns wept light.'",
+    "\nEternal Innkeeper: 'Many forgot their faces… their names. The Old Man vanished into the depths, and the Eternal Caverns were born from his folly.'",
+    "\nEternal Innkeeper: 'Some still whisper he lingers below — the one who broke the crystal. A savior to some… a curse to the rest of us.'"
+]
 
+def eternal_sanctuary_history():
+    print(random.choice(eternal_inkeeper_history_line))
+# Eternal Inkeeper says how the Eternal Being came to be
+eternal_inkeeper_beings_history_line = [
+    "\nEternal Innkeeper: 'How we came to look thus? Hah… the crystal’s light seeped into our veins, slow as dawn but certain as death.'",
+    "\nEternal Innkeeper: 'When the Riftstone shattered, it sang — and its song rewrote our flesh. Skin turned to shimmer, eyes to glow. We became the echoes of what we were.'",
+    "\nEternal Innkeeper: 'We did not die that day, nor did we live on. The light bound our souls to this cavern… eternal, aye, but hollowed inside.'",
+    "\nEternal Innkeeper: 'The glow you see, traveler, is not a blessing. It is the remnant of that crystal’s curse — forever reminding us of what we lost.'",
+    "\nEternal Innkeeper: 'Our children ceased to age, our hearts ceased to beat. Yet still, we walk… and the caverns hum softly with our borrowed life.'",
+    "\nEternal Innkeeper: 'The Old One called it salvation — but I’ve lived long enough to know mercy and madness oft wear the same face.'"
+]
+def eternal_beings_history():
+    print(random.choice(eternal_inkeeper_beings_history_line))
+# Eternal Inkeeper says how they get their stocks of food and items
+eternal_village_survival_info = [
+    "\nEternal Innkeeper: 'Ah, a fair question, traveler. The surface folk think us starved, yet the caverns provide more than ye’d reckon.'",
+    "\nEternal Innkeeper: 'Glowcap mushrooms feed us, their roots drinking from the crystal’s light. Some say they taste of moonlight itself.'",
+    "\nEternal Innkeeper: 'Our hunters tread the deeper tunnels, where beasts of the old world still roam. Their hides warm us, their meat sustains us.'",
+    "\nEternal Innkeeper: 'The crystal veins hum with strange energies — we trade their shards with wanderers bold enough to brave the descent.'",
+    "\nEternal Innkeeper: 'As for ale and spice, well, the spirits brew their own magic here. Even a cup of mead hums faintly with the Rift’s whisper.'",
+    "\nEternal Innkeeper: 'We’ve long since learned to live beneath the stone. The Eternal Village endures — half by craft, half by miracle.'"
+]
+def eternal_villagers_survival():
+    print(random.choice(eternal_village_survival_info))
+# Eternal Inkeeper says some gossips
+eternal_village_gossips = [
+    "\nEternal Innkeeper: 'They say the Old Man once walked these halls as a scholar… before he sought to master the crystal’s heart.'",
+    "\nEternal Innkeeper: 'Aye, Lance the Grandmaster? A noble soul, that one. But even his blade could not cut through what the Old Man became.'",
+    "\nEternal Innkeeper: 'Some nights, I hear whispers from the lower caverns — voices begging for light that never comes.'",
+    "\nEternal Innkeeper: 'A traveler once claimed he saw the Old Man’s reflection in the crystal veins… though the veins run deep below.'",
+    "\nEternal Innkeeper: 'Before the crystal cracked, the Eternal Village had sky and wind… now we have only glow and shadow.'",
+    "\nEternal Innkeeper: 'The Grandmaster was once his closest ally, or so the tales say. Two minds chasing truth — one found madness.'",
+    "\nEternal Innkeeper: 'Our children are born with eyes of light now. Some call it a blessing… others a curse of the crystal’s breath.'",
+    "\nEternal Innkeeper: 'The beasts outside the sanctum used to be men, they say. Twisted by the same light that grants us life.'",
+    "\nEternal Innkeeper: 'A strange calm lingers before each quake in the caverns — as if the crystal itself draws breath.'",
+    "\nEternal Innkeeper: 'They say Lance forged his blade not in fire, but in regret — tempered by what he failed to protect.'",
+    "\nEternal Innkeeper: 'When the Old Man shattered the rift, he promised salvation. He gave us eternity… but stripped away our dawns.'",
+    "\nEternal Innkeeper: 'Some of the villagers still pray to the Old Man’s name, believing he watches from beyond the crystal glare.'",
+    "\nEternal Innkeeper: 'The Grandmaster no longer speaks his old friend’s name. Perhaps silence is the only penance left.'",
+    "\nEternal Innkeeper: 'The further you walk from the Eternal Sanctuary, the louder the crystal hums. It does not like the living to stray.'",
+    "\nEternal Innkeeper: 'Mind your dreams, traveler. The Old Man visits those who listen too long to the hum in the stone.'"
+]
+def eternal_inkeeper_gossip():
+    print(random.choice(eternal_village_gossips))
 # Game title & music--------------------------------------------------------------------------------------------------------------------------------------#
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
@@ -2293,10 +2347,7 @@ def battle(enemy_key):
                         exit()
                     else:
                         print("Please type a valid option.")
-            # enemy defense logic
-            if random.random() < enemy_defence:
-                defended_by_spider = True
-                print(f"The {enemy_name} dodges with surprising agility!")
+
             # Battle starts this is or text showing
             print("--------------------------------------------------------------------------")
             print(f"             Your HP: {player_health}/{max_health} | {enemy_name} HP: {enemy_health}")
@@ -2334,9 +2385,7 @@ def battle(enemy_key):
             if skill_cooldown_timer == 0:
                 print(f"{Fore.LIGHTGREEN_EX}[S]. Special Skill{Style.RESET_ALL}")
             print()
-
             action = input("> ").strip()  # the space for typing the choice
-
             #  Player actions
             # Player checks inventory or uses
             if action.lower() == "p":
@@ -2346,9 +2395,13 @@ def battle(enemy_key):
                 open_inventory()
                 continue
              # Player attacks
-            elif action == "1":  # Attack
+            elif action == "1": # Attack codes
+                # enemy defense logic
+                if random.random() < enemy_defence:
+                    defended_by_spider = True
+                    print(f"The {enemy_name} dodges with surprising agility! You hit for 0 damage")
                 damage = random.randint(1, attack_max)
-                grunt_sounds = current_enemy.get("grunt_sounds", []) # new learnings lol if i do [] it will make sure idont get none incase no sounds
+                grunt_sounds = current_enemy.get("grunt_sounds", []) # new learnings lol if i do [] it will make sure i dont get none incase no sounds
                 if grunt_sounds:
                     grunt_file = random.choice(grunt_sounds)
                     grunt = pygame.mixer.Sound(grunt_file)
@@ -2366,7 +2419,6 @@ def battle(enemy_key):
                 enemy_health -= damage
                 print(f"You hit the {enemy_name} for {damage} damage!")
                 time.sleep(1.5)
-
                 # Necromancer summon bonus
                 if summoned:
                     summon_damage = random.randint(2, 4)
@@ -2501,7 +2553,7 @@ def battle(enemy_key):
                 elif player_class == "Rogue":
                     dodge = pygame.mixer.Sound(r"sounds/dodging.ogg")
                     dodge.play()
-                    damage = random.randint(attack_max, attack_max + 2)
+                    damage = random.randint(5, 10)
                     enemy_health -= damage
                     dodging = True
                     print(f"You VANISH and strike for {damage} damage, preparing to dodge the next blow...")
@@ -2974,10 +3026,10 @@ def south_eternal_village():
             time.sleep(1)
             print("Where do you want to go?"
                   "\n[1]. Walk to the Spindle of Tales."
-                  "\n[2]. Venture through the Hall of the Everlight."
+                  "\n[2]. Venture through the Hall of the Everlight. (Coming soon)"
                   "\n[3]. Go to the Echoing Vials (Potions Shop)."
-                  "\n[4]. Explore deeper in the Eternal Caverns."
-                  "\n[5]. Check out the Glowmire Market."
+                  "\n[4]. Explore deeper in the Eternal Caverns. (Coming soon)"
+                  "\n[5]. Check out the Glowmire Market. (Coming soon)"
                   "\n[6]. Visit the Eternal Sanctuary."
                   "\n[7]. Compete in the Rift of Echoing Souls." # MUST DO LATERRRRRRR OCT 10, 2025 or OCT 11, 2025
                   "\n[S]. Go back.")
@@ -3054,7 +3106,6 @@ def south_eternal_village():
                 print("Coming soon... Chapter 6: Truth unveiled")
                 time.sleep(1.3)
                 print("Thanks for giving my game a chance, You can still try the other features.")
-                break
             elif walk_choice_north == "3":
                 print("You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
                 time.sleep(2)
@@ -3064,7 +3115,7 @@ def south_eternal_village():
                 pygame.mixer.music.load(r"sounds/echoing vials.ogg")
                 pygame.mixer.music.play(-1)
                 while True:
-                    print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                    print(f"\n                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                     print("What do you want to do?")
                     time.sleep(1)
                     time.sleep(1.5)
@@ -3099,9 +3150,10 @@ def south_eternal_village():
                         pygame.mixer.music.fadeout(2000)
                         break
             elif walk_choice_north == "4":
-                pass
+                print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
+                time.sleep(1.3)
             elif walk_choice_north == "5":
-                pass
+                print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
             elif walk_choice_north == "6":
                 print("You approach the Eternal Sanctuary, its glow calm yet heavy, as if the walls remember every soul...")
                 time.sleep(1.5)
@@ -3252,11 +3304,53 @@ def south_eternal_village():
                                         break
                                 else:
                                     print("Invalid choice, try again")
-
+                                    continue
+                    #
                     elif player_choice_3 == "3":
-                        pass
+                        int("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
+                    # Player talks to Eternal Inkeeper in eternal Sanctuary
                     elif player_choice_3 == "4":
                         print("You walked towards the Eternal Inkeeper...")
+                        time.sleep(1.3)
+                        print("Eternal Inkeeper: Ahh yes, traveller, what is it thy want to say to me?")
+                        time.sleep(1.3)
+                        while True:
+                            print(f"What do you want to say?")
+                            print("[1]. Know about the history of the Eternal Sanctuary."
+                                  "\n[2]. Ask how the Eternal Beings became how they are today."
+                                  "\n[3]. Ask about how they get their stocks of food and items in the Eternal Caverns."
+                                  "\n[4]. Listen to some gossips going around in the Eternal Village..."
+                                  "\n[X]. Exit Menu")
+                            player_talk = input("--> ").lower().strip()
+                            if player_talk == "1":
+                                print(f"{player_name}: 'Greetings, may I ask what is the history if thy Sanctuary if it please thee?'")
+                                time.sleep(1.3)
+                                eternal_sanctuary_history()
+                                time.sleep(1.7)
+                                print(f"{player_name} whispers to themselves: 'Hmm interesting...'")
+                                time.sleep(1.3)
+                            elif player_talk == "2":
+                                print(f"{player_name}: 'Ah, if I may, how did you all look like you are right now?'")
+                                time.sleep(1.3)
+                                eternal_beings_history()
+                                time.sleep(1.7)
+                            elif player_talk == "3":
+                                print(f"{player_name}: 'Thy place is good looking, how to thee get thy stocks and items here?'")
+                                time.sleep(1.3)
+                                eternal_villagers_survival()
+                                time.sleep(1.7)
+                            elif player_talk == "4":
+                                print(f"{player_name}: 'So Inkeeper, do thee have some... news for me?'")
+                                time.sleep(1.3)
+                                eternal_inkeeper_gossip()
+                                time.sleep(2)
+                            elif player_talk == "x":
+                                print("You walked away from the Eternal Inkeeper's table.")
+                                time.sleep(1.3)
+                                break
+                            else:
+                                print("Invalid Choice, please select an appropriate choice.")
+                                continue
                     elif player_choice_3 == "x":
                         soulwarden_farwell()
                         time.sleep(1.3)
@@ -3336,8 +3430,8 @@ def south_eternal_village():
                         print("Echokeeper: Well done, traveller. You are now the Conqueror of the Rifts!")
                         pygame.mixer.music.fadeout(2000)
                         time.sleep(1.7)
+                    # Player checks enemy info
                     elif arena_choice == "i":
-
                         print("Which level would you want to check the info of?: ")
                         print(f"<- {Fore.LIGHTGREEN_EX}Tip{Style.RESET_ALL}: {Fore.LIGHTGREEN_EX}Each level, you have a random chance of facing one of the enemies{Style.RESET_ALL}.")
                         print("[1]. Level 1   [2]. Level 2")
