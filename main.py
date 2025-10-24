@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.13.1 Alpha (UI overhaul Update 2) updated Oct 15, 2025.
+# Version: 10.13.1 Alpha (UI overhaul Update 2) updated Oct 20, 2025.
 import random
 import sys
 import time
@@ -376,6 +376,38 @@ except FileNotFoundError:
     eternal_bartender_lines("Greetings Human")
 def speak_eternal_bartender():
     print(random.choice(eternal_bartender_lines))
+# Echoing Vials trading Feature items
+echo_vials_trade_items = {
+    "Ashfang Carapace": 5,
+    "Gleaming Fang": 6,
+    "Thread of Valor": 8,
+    "Spore Cluster": 8,
+    "Myconid Cap": 10,
+    "Luminescent Root": 12,
+    "Shard of the Warden": 15,
+    "Fractured Prism": 16,
+    "Frostvein Dust": 18,
+    "Veilstone Fragment": 16,
+    "Harbringer's Ash": 17,
+    "Crimson Dust": 19,
+    "Echoing Ice Core": 20,
+    "Soulfrost Fragment": 25,
+    "Frozen Essence": 27,
+    "Spectral Shard": 30,
+    "Chillhound Cloth": 30,
+    "Shattered Sigil": 35,
+    "Hollowsteel Fragment": 37,
+    "Eternal Guard Plate": 40,
+    "Ebon Bone": 42,
+    "Marrow Resin": 45,
+    "Blackened Core": 47,
+    "Ember Scale": 50,
+    "Veilfire Heart": 52,
+    "Cindered Fang": 55,
+    "Vermillion Core": 60,
+    "Tyrant's Horn": 65,
+    "Ancient Blood Gem": 75
+}
 # Echo binder farewell lines-
 echo_binder_farewell = [
     "\nEcho Binder: May your echoes guide you safely through the caverns.",
@@ -1756,7 +1788,7 @@ else:
 player_name = input("\nOld Man: What is thy name, traveller?: ").strip()
 while player_name == "":
     print("Old Man: I know you have the ability speak, traveller.")
-    player_name = input("\nOld Man: What is thy name, traveller? ").strip() 
+    player_name = input("\nOld Man: What is thy name, traveller? ").strip()
 ######## Player random lines:
 # IRONFANG PLAYER BUY LINES
 player_buys_ironfang_lines = [
@@ -1950,6 +1982,7 @@ print("Special Skill: [Eagle Eye] - Focus with deadly precision — your next at
 print("\n6. Paladin – A holy knight who balances might with divine protection.")
 print("[Base Health: 65 | Base Attack: 8]")
 print("Special Skill: [Holy Shield] - Raise a divine barrier that blocks the next incoming strike.")
+print("Passive Skill: [Holy Aura] - Call upon the Spirit and heal yourself for 3-5 HP upon defending")
 # Druid Description
 print("\n7. Druid – A nature sage who heals allies and bends the wilds.")
 print("[Base Health: 60 | Base Attack: 11]")
@@ -2427,18 +2460,18 @@ def battle(enemy_key):
                     print(f"Your undead minion claws for {summon_damage} extra damage!")
                     time.sleep(1.3)
 
-            elif action == "2":  # Defend
+            elif action == "2":  # Defend code
                 defending_sound = pygame.mixer.Sound(r"sounds/defended.ogg")
                 defending_sound.set_volume(0.7)
                 defending_sound.play()
                 defended = True
+                print(f"You defend against the {enemy_name}'s attack!")
                 if player_class == "Paladin":
-                    heal_amount = 3
+                    heal_amount = random.randint(3, 5)
                     player_health = min(max_health, player_health + heal_amount)
-                    print(f"Your holy aura heals {heal_amount} HP. ({player_health}/{max_health})")
+                    print(f"You defend the {enemy_name}'s attack and your holy aura heals {heal_amount} HP. ({player_health}/{max_health})")
                     time.sleep(1.3)
-
-            elif action == "3": # Potion
+            elif action == "3": # Using potion code
                 print("Which potion will you use?")
                 print()
                 print("================ <-POTIONS-> ==================")
@@ -2472,6 +2505,7 @@ def battle(enemy_key):
                         player_health = min(max_health, player_health + heal)
                         print(f"You drink a {potion_key.title()} and restore {heal} HP. ({potion_list[potion_key]} left!)")
                         print(f"Empty bottles: {player_inventory['empty bottle']}.")
+                        time.sleep(1.5)
                         # the potion effects
                         if effect == "regen_up":
                             regen_turns = duration
@@ -2498,6 +2532,7 @@ def battle(enemy_key):
                             invulnerable_turns = duration
                             invulnerable_effect = value
                             print("The Lunar power showers over you... you are invulnerable for 1 turn.")
+                            time.sleep(1.3)
                     else:
                         print("Invalid Choice.")
                 else:
@@ -2510,14 +2545,12 @@ def battle(enemy_key):
                 if run_choice == "yes":
                     run = True
                     print("You fled the battle but ignored the enemy... dropping your gold...")
-                    gold -= 20
+                    gold -= min(gold, gold -20)
                     print(f"Gold -20.")
                     break
                 else:
                     print("Thanks for playing! Try again!")
                     exit()
-            # Player drinks greater healing potion
-
             # Necromancer summoning undead minion
             elif action == "5" and player_class == "Necromancer":
                 necro_summon = pygame.mixer.Sound(r"sounds/necromancer summon.ogg")
@@ -2554,7 +2587,7 @@ def battle(enemy_key):
                 elif player_class == "Rogue":
                     dodge = pygame.mixer.Sound(r"sounds/dodging.ogg")
                     dodge.play()
-                    damage = random.randint(5, 10)
+                    damage = random.randint(6, 15)
                     enemy_health -= damage
                     dodging = True
                     print(f"You VANISH and strike for {damage} damage, preparing to dodge the next blow...")
@@ -2564,13 +2597,13 @@ def battle(enemy_key):
                     ice = pygame.mixer.Sound(r"sounds/ice shard.ogg")
                     ice.set_volume(0.7)
                     ice.play()
-                    damage = random.randint(4, 7)
+                    damage = random.randint(6, 13)
                     enemy_health -= damage
                     print(f"You used ICE SHARD therefore reducing the enemy's attack next turn and dealt {damage} damage!")
                     time.sleep(1.5)
                 # Necromancer: Life Drain
                 elif player_class == "Necromancer":
-                    summoning = pygame.mixer.Sound(r"sounds/necromancer summon.ogg")
+                    summoning = pygame.mixer.Sound(r"sounds/life drain.ogg")
                     summoning.set_volume(0.7)
                     summoning.play()
                     damage = random.randint(3, 6)
@@ -2598,7 +2631,7 @@ def battle(enemy_key):
                     druid_regrowth = pygame.mixer.Sound(r"sounds/druid heal.ogg")
                     druid_regrowth.set_volume(0.7)
                     druid_regrowth.play()
-                    heal_amount = random.randint(5, 10)
+                    heal_amount = random.randint(6, 10)
                     player_health = min(max_health, player_health + heal_amount)
                     print(f"Regrowth heals you for {heal_amount} HP!")
                     time.sleep(1.3)
@@ -2782,11 +2815,20 @@ def battle(enemy_key):
             if run:
                 print("You ran away, you didn't get any gold...")
                 break
-            min_gold, max_gold = sorted(current_enemy["gold_loot"])
-            gold_earned = random.randint(min_gold, max_gold)
-            gold += gold_earned
-            print(f"\nYou killed the {enemy_name} and looted {gold_earned} gold! (Gold: {gold})")
-            break
+            else:
+                victory = pygame.mixer.Sound(r"sounds/victory.ogg")
+                victory.play()
+                min_gold, max_gold = sorted(current_enemy["gold_loot"])
+                gold_earned = random.randint(min_gold, max_gold)
+                gold += gold_earned
+                print(f"\nYou killed the {enemy_name} and looted {gold_earned} gold! (Gold: {gold})")
+                time.sleep(1.3)
+                item_loot = current_enemy.get("item_loot", [])
+                if item_loot and random.random() < 0.5:
+                    dropped_items = random.choice(item_loot)
+                    player_inventory[dropped_items] = player_inventory.get(dropped_items, 0) + 1
+                    print(f"The {enemy_name} dropped a {dropped_items}")
+                break
 # Before going to the caverns narrative
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
@@ -3032,7 +3074,7 @@ def south_eternal_village():
                   "\n[4]. Explore deeper in the Eternal Caverns. (Coming soon)"
                   "\n[5]. Check out the Glowmire Market. (Coming soon)"
                   "\n[6]. Visit the Eternal Sanctuary."
-                  "\n[7]. Compete in the Rift of Echoing Souls." # MUST DO LATERRRRRRR OCT 10, 2025 or OCT 11, 2025
+                  "\n[7]. Compete in the Rift of Echoing Souls." 
                   "\n[S]. Go back.")
             walk_choice_north = input("> ")
             # Player chooses where to go
@@ -3145,7 +3187,7 @@ def south_eternal_village():
                         print("=" * 65)
                         print("                                    --{ ITEMS TO TRADE }--        ")
                         print(
-                            f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+                            f"\n                                    --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                         print(
                             "[1] Ashfang Carpace for 5 Gold.  [2] Gleaming Fang for 6 Gold  [3] Thread of Valor for 8 Gold")
                     # Player opens the inventory
@@ -3219,11 +3261,13 @@ def south_eternal_village():
                             print("=" * 60)
                             sanctuary_resto_choice = input("\n--> ").lower().strip()
                             while True:
+                                # Player chooses "1" and buys Celestial broth
                                 if sanctuary_resto_choice == "1" and gold >= 15:
                                     if race_name == "Kithling" and gold >= 12:
                                         print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
+                                        print(
+                                            f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 12
@@ -3232,15 +3276,18 @@ def south_eternal_village():
                                     else:
                                         gold -= 15
                                         max_health += 10
-                                        print(f"You bought Celestial Broth! -15 Gold, gold is now {gold} Gold. Max HP is now {max_health}")
+                                        print(
+                                            f"You bought Celestial Broth! -15 Gold, gold is now {gold} Gold. Max HP is now {max_health}")
                                         player_payment()
                                         time.sleep(1.3)
                                         break
+                                # Player chooses "2" and buys Embergrin Stew
                                 elif sanctuary_resto_choice == "2" and gold >= 20:
                                     if race_name == "Kithling" and gold >= 17:
                                         print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Embergrin Stew with a discounted price of 3 gold! -17 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Embergrin Stew with a discounted price of 3 gold! -17 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 17
@@ -3248,35 +3295,41 @@ def south_eternal_village():
                                         attack_max += 2
                                         break
                                     else:
-                                        print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 20
                                         max_health += 5
                                         attack_max += 2
                                         break
+                                # Player chooses "3" and buys Moonpetal Salad
                                 elif sanctuary_resto_choice == "3" and gold >= 30:
                                     if race_name == "Kithling" and gold > 25:
                                         print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 25
                                         max_health += 15
                                         break
                                     else:
-                                        print(f"You bought Moonpetal Salad! -30 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Moonpetal Salad! -30 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 30
                                         max_health += 15
                                         break
+                                # Playerr chooses "4" and buys Sunforged Bread
                                 elif sanctuary_resto_choice == "4" and gold >= 25:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 21
@@ -3284,18 +3337,21 @@ def south_eternal_village():
                                         attack_max += 3
                                         break
                                     else:
-                                        print(f"You bought Sunforged Bread! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Sunforged Bread! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 25
                                         max_health += 8
                                         attack_max += 3
                                         break
+                                # Player chooses "5" and buys Eternal Roast
                                 elif sanctuary_resto_choice == "5" and gold >= 40:
                                     if race_name == "Kithling":
                                         print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                         time.sleep(1.3)
-                                        print(f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 35
@@ -3303,13 +3359,18 @@ def south_eternal_village():
                                         attack_max += 5
                                         break
                                     else:
-                                        print(f"You bought Eternal Roast! -40 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                        print(
+                                            f"You bought Eternal Roast! -40 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
                                         player_payment()
                                         time.sleep(1.3)
                                         gold -= 40
                                         max_health += 20
                                         attack_max += 5
                                         break
+                                elif sanctuary_resto_choice == "x":
+                                    print("You stepped away from the restaurant...")
+                                    time.sleep(1.3)
+                                    break
                                 else:
                                     print("Invalid choice, try again")
                                     break
@@ -3440,62 +3501,62 @@ def south_eternal_village():
                         time.sleep(1.7)
                     # Player checks enemy info
                     elif arena_choice == "i":
-                        print("Which level would you want to check the info of?: ")
-                        print(f"<- {Fore.LIGHTGREEN_EX}Tip{Style.RESET_ALL}: {Fore.LIGHTGREEN_EX}Each level, you have a random chance of facing one of the enemies{Style.RESET_ALL}.")
-                        print("[1]. Level 1   [2]. Level 2")
-                        print("[3]. Level 3   [4]. Level 4")
-                        print("        [5]. Level 5      ")
-                        print("        [X]. Exit menu")
-                        arena_info_choice = input("--> ").strip().lower()
-                        if arena_info_choice == "1":
-                            print("                                                             ---{ Level 1 Enemies }--")
-                            print("--[ Ashfang Stalker - A predator born of soot and ember, swift and merciless ~ its serrated claws leave wounds that poisons its foes over time. ]--")
-                            print("--( HP: 60, Max Attack: 11, Special Ability: Poison )--")
-                            print("=" * 65)
-                            print("--[ Mirefang Myconid - A lumbering fungus beast from the swamp caverns. Its spores damages foes with great pain. ]--")
-                            print("--( HP: 65, Max Attack: 10, Special Ability: None )--")
-                            input("\nPress Enter to go back to menu -->  ")
-                            break
-                        elif arena_info_choice == "2":
-                            print("                                             ---{ Level 2 Enemies }---")
-                            print("--[ Crystalis Warden - A guardian of molten crystal. When its armor cracks, fury consumes it in burning rage. ]--")
-                            print("--( HP: 80, Max Attack: 14, Special Ability: None )--")
-                            print("=" * 65)
-                            print("--[ Ashveil Harbringer - A shrouded herald born from dying embers - every strike leaves trails of burning ash and blood. ]--")
-                            print("--( HP: 75, Max Attack 16, Special Ability: Bleed )--")
-                            input("\nPress Enter to go back to menu -->  ")
-                            break
-                        elif arena_info_choice == "3":
-                            print("                                                    --{ Level 3 Enemies }--")
-                            print("--[ Frostborn Revenant - Once a knight lost to the tundra's curse, now he wanders - frost and vengeance bound to his soul. ]--")
-                            print("--( HP: 90, Max Attack 14, Special Ability: Freeze )--")
-                            print("=" * 65)
-                            print("--[ Glacier Wraith - A spirit formed of ice and sorrow. It glides without sound, and the air grows still where it passes. ]--")
-                            print("--( HP: 95, Max Attack 16, Special Ability: Freeze )--")
-                            input("\nPress Enter to go back to menu -->  ")
-                            break
-                        elif arena_info_choice == "4":
-                            print("                                                     --{ Level 4 Enemies }--")
-                            print("--[ Hollowshade Sentinel - Once a guardian of forgotten halls, now a cursed shell - defending shadows that no longer remain. ]--")
-                            print("--( HP: 120, Max Attack 18, Special Ability: Bleed )--")
-                            print("=" * 65)
-                            print("--[ Ebonmarrow Fiend - Born from the bones of the forsaken, its breath drips with venom and decay - a plague given form. ]--")
-                            print("--( HP: 130, Max Attack 17, Special ability: Venom )--")
-                            input("\nPress Enter to go back to menu -->  ")
-                            break
-                        elif arena_info_choice == "5":
-                            print("                                                       --{ Level 5 Enemies }--")
-                            print("--[ Emberveil Serpent - Forged in molten caverns, this serpent slithers between flame and shadow — its bite burns and bleeds alike. ]--")
-                            print("--( HP: 150, Max Attack 20, Special Ability: Bleed )--")
-                            print("=" * 65)
-                            print("--[ Vermillion Tyrant - Crowned in fire and fury, this ancient beast rules the Rift — each roar ignites the air itself. ]--")
-                            print("--( HP: 180, Max attack 22, Special Ability: Rage, the lower its HP, the higher its damgge. )--")
-                            input("\nPress Enter to go back to menu -->  ")
-                            break
-                        elif arena_info_choice == "x":
-                            print("You close the book of info.")
-                            time.sleep(0.5)
-                            break
+                        while True:
+                            print("Which level would you want to check the info of?: ")
+                            print(f"<- {Fore.LIGHTGREEN_EX}Tip{Style.RESET_ALL}: {Fore.LIGHTGREEN_EX}Each level, you have a random chance of facing one of the enemies{Style.RESET_ALL}.")
+                            print("[1]. Level 1   [2]. Level 2")
+                            print("[3]. Level 3   [4]. Level 4")
+                            print("        [5]. Level 5      ")
+                            print("        [X]. Exit menu")
+                            arena_info_choice = input("--> ").strip().lower()
+                            if arena_info_choice == "1":
+                                print("                                                             ---{ Level 1 Enemies }--")
+                                print("--[ Ashfang Stalker - A predator born of soot and ember, swift and merciless ~ its serrated claws leave wounds that poisons its foes over time. ]--")
+                                print("--( HP: 60, Max Attack: 11, Special Ability: Poison )--")
+                                print("=" * 65)
+                                print("--[ Mirefang Myconid - A lumbering fungus beast from the swamp caverns. Its spores damages foes with great pain. ]--")
+                                print("--( HP: 65, Max Attack: 10, Special Ability: None )--")
+                                input("\nPress Enter to go back to menu -->  ")
+
+                            elif arena_info_choice == "2":
+                                print("                                             ---{ Level 2 Enemies }---")
+                                print("--[ Crystalis Warden - A guardian of molten crystal. When its armor cracks, fury consumes it in burning rage. ]--")
+                                print("--( HP: 80, Max Attack: 14, Special Ability: None )--")
+                                print("=" * 65)
+                                print("--[ Ashveil Harbringer - A shrouded herald born from dying embers - every strike leaves trails of burning ash and blood. ]--")
+                                print("--( HP: 75, Max Attack 16, Special Ability: Bleed )--")
+                                input("\nPress Enter to go back to menu -->  ")
+
+                            elif arena_info_choice == "3":
+                                print("                                                    --{ Level 3 Enemies }--")
+                                print("--[ Frostborn Revenant - Once a knight lost to the tundra's curse, now he wanders - frost and vengeance bound to his soul. ]--")
+                                print("--( HP: 90, Max Attack 14, Special Ability: Freeze )--")
+                                print("=" * 65)
+                                print("--[ Glacier Wraith - A spirit formed of ice and sorrow. It glides without sound, and the air grows still where it passes. ]--")
+                                print("--( HP: 95, Max Attack 16, Special Ability: Freeze )--")
+                                input("\nPress Enter to go back to menu -->  ")
+
+                            elif arena_info_choice == "4":
+                                print("                                                     --{ Level 4 Enemies }--")
+                                print("--[ Hollowshade Sentinel - Once a guardian of forgotten halls, now a cursed shell - defending shadows that no longer remain. ]--")
+                                print("--( HP: 120, Max Attack 18, Special Ability: Bleed )--")
+                                print("=" * 65)
+                                print("--[ Ebonmarrow Fiend - Born from the bones of the forsaken, its breath drips with venom and decay - a plague given form. ]--")
+                                print("--( HP: 130, Max Attack 17, Special ability: Venom )--")
+                                input("\nPress Enter to go back to menu -->  ")
+
+                            elif arena_info_choice == "5":
+                                print("                                                       --{ Level 5 Enemies }--")
+                                print("--[ Emberveil Serpent - Forged in molten caverns, this serpent slithers between flame and shadow — its bite burns and bleeds alike. ]--")
+                                print("--( HP: 150, Max Attack 20, Special Ability: Bleed )--")
+                                print("=" * 65)
+                                print("--[ Vermillion Tyrant - Crowned in fire and fury, this ancient beast rules the Rift — each roar ignites the air itself. ]--")
+                                print("--( HP: 180, Max attack 22, Special Ability: Rage, the lower its HP, the higher its damgge. )--")
+                                input("\nPress Enter to go back to menu -->  ")
+                            elif arena_info_choice == "x":
+                                print("You close the book of info.")
+                                time.sleep(0.5)
+                                break
                     elif arena_choice == "x":
                         echokeeper_farewell_lines()
                         time.sleep(1.6)
@@ -3517,10 +3578,3 @@ def south_eternal_village():
         elif move == "4":
             player_eternal_warrior_talking()
 chapt5_eternal_village()
-
-
-
-
-
-
-
