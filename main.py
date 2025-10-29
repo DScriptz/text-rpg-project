@@ -4,15 +4,33 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.13.1 Alpha (UI overhaul Update 2) updated Oct 15, 2025.
+# Version: 10.29.3 Alpha (Questing and Arena update) updated Oct 29, 2025.
 import random
 import sys
 import time
 import json
+import os
 import pygame
 from colorama import Fore, Style, init
 init(autoreset=True)
-
+# Game short sounds helper code
+def play_sound(sound_name, volume=0.6 ):
+    try:
+        sound_path = os.path.join("sounds", f"{sound_name}.ogg")
+        sound = pygame.mixer.Sound(sound_path)
+        sound.set_volume(volume)
+        sound.play()
+    except Exception as e:
+        print(f"[Sound Error] Couldn't play '{sound_name}': {e}")
+# Game long sounds/musics helper code (loop version)
+def play_music(music_name, volume=0.5, loop=True ):
+    try:
+        music_path = os.path.join("sounds", f"{music_name}.ogg")
+        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.set_volume(volume)
+        pygame.mixer.music.play(-1 if loop else 0)
+    except Exception as e:
+        print(f"[Music Error] Couldn't play '{music_name}': {e}")
 # Load enemy data
 try:
     with open('enemy_data.json', 'r') as file:
@@ -35,12 +53,47 @@ potion_keywords = [
 # Player stats
 gold = 30 # 30 fair start hmm
 current_chapter = 0
-quest_completed = False
 player_inventory = {
     "empty vial": 0,
     "empty bottle": 0,
 
 }
+player_quests = {
+
+}
+def show_quest_log(quests):
+    play_sound("open quest log", volume=0.7)
+    print("=" * 25)
+    print("       -QUEST LOG-")
+    print("=" * 25)
+    if not quests:
+        print("You have no active quests.")
+        time.sleep(1.5)
+        return
+    for quest_name, quest_data in quests.items():
+        status = quest_data.get("status", "Unknown")
+        description = quest_data.get("description", "")
+        print(f"- {quest_name} [{status}]")
+        if description:
+            print(f"   > {description}")
+        print()
+    input("Press enter to continue:  ")
+    play_sound("close quest log", volume=0.8)
+def add_quest(quests, name, description):
+    if name not in quests:
+        quests[name] = {"status": "Ongoing", "description": description}
+        play_sound("new quest", volume=0.7)
+        print(f"\nNew Quest Added: {name}")
+        print(f"   > {description}")
+    else:
+        print(f"\nYou already have the quest: {name}\n")
+def complete_quest(quests, name):
+    if name in quests:
+        quests[name]["status"] = "Completed"
+        print(f"\nQuest Completed: {Fore.MAGENTA + Style.BRIGHT}{name}{Style.RESET_ALL}!\n")
+        play_sound("quest completed", volume=0.6)
+    else:
+        print(f"\nQuest '{name}' not found.\n")
 # Potion data of player
 potion_data = {
     "healing potion": {
@@ -103,22 +156,20 @@ def echo_vials_trade(player_inventory, gold):
     for i, (item, price) in enumerate(echo_vials_trade_items.items(), start=1):
         print(f"                          [{i}] <{item}> -- {price} Gold")
     print("========================================================================================================")
-    print("[X] Exit Menu")
-
+    print("                                        [X] Exit Menu")
+    print("                                        [I] Open Inventory")
     while True:
-        trading = input("Choose an item to trade >>  ").lower().strip()
-
+        trading = input(">>  ").lower().strip()
         if trading == "x":
             print("You walk away from the trading table...")
             break
         if not trading.isdigit() or int(trading) < 1 or int(trading) > len(echo_vials_trade_items):
-            print("Invalid Choice, Traveller")
+            print()
             continue
-
         index = int(trading)
         item_name = list(echo_vials_trade_items.keys())[index - 1]
         item_price = echo_vials_trade_items[item_name]
-        #Check amount the player wants to trade
+        # Check amount the player wants to trade
         amount = int(input(f"How many {item_name}'s do you want to trade?: "))
         if item_name in player_inventory and player_inventory[item_name] >= amount:
             player_inventory[item_name] -= amount
@@ -136,12 +187,14 @@ def potion_lists():
     print("------------------------------------")
 # Player opens inventory in battle
 def open_inventory():
+    play_sound("inventory open", volume=0.8)
     print("\n--- INVENTORY ---")
     for item, amount in player_inventory.items():
         print(f"-> {item.title()}: {amount}")
     print("-------------------")
     print("Press Enter to close inventory")
     input("> ")
+    play_sound("inventory close", volume=0.8)
 # echoing vials stocks code
 def echoing_vials_stocks():
     potion_stock = {}
@@ -511,7 +564,7 @@ def echo_vials_donation():
         print("You step away from the table.")
 
 # Shop 2 Trader shop functionnnnnnn
-def trader_shop ():
+def trader_shop():
     global gold, attack_max, max_health, player_health
     print()
     print("=================================================================================================================================================")
@@ -521,10 +574,12 @@ def trader_shop ():
     print(f"    {Fore.LIGHTCYAN_EX}[3]. Magic Ring{Style.RESET_ALL} (12 {Fore.LIGHTYELLOW_EX}gold{Style.RESET_ALL}, +10 max HP)")
     print(f"    {Fore.MAGENTA + Style.DIM}[4]. Gambling Potion{Style.RESET_ALL} (20 {Fore.LIGHTYELLOW_EX}gold{Style.RESET_ALL}, may increase player's attack...)")
     print(f"    {Style.BRIGHT}[5]. Leave the Trader{Style.RESET_ALL}")
+    print(f"    [Q]. {Style.BRIGHT}Show Quests.")
+
     print("=================================================================================================================================================")
     # Shop 2, Trader shop code
     while True:
-        print(f"\n                                  --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+        print(f"\n                                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
         trade = input("\nWhat do you want to buy? (1/2/3/4/5): ")
         if trade == "1" and gold >= 6:
             base_price = 6
@@ -561,6 +616,8 @@ def trader_shop ():
             print("\nThe Lost Trader: Well then, be careful down there...")
             print("\nYou leave the trader and go deeper into the cave…")
             break
+        elif trade == "q":
+            show_quest_log(player_quests)
         else:
             print("\nLost Trader Silas: If you don't have enough coins, speak!")
 # Shop 3, Stoneheart armory function
@@ -948,7 +1005,7 @@ def chapt3_lost_trader():
     global player_name, player_health, max_health
     print("Chapter 3: Lost Trader and...bugs?")
     # Dialogue Skipping logic
-    print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+    print(f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
     skip_dialogue = input("Do you want to skip the Dialogue? (Yes/No): ").lower() == "yes"
     if not skip_dialogue:
         print("\nYou press on deeper into the cave...")
@@ -1028,9 +1085,9 @@ def chapt3_lost_trader():
     #  This stops by fading  the song of  the spider defeated by 2 seconds
     pygame.mixer.music.fadeout(2000)
     time.sleep(3)
-    # Poisonous Spider Battle (semi boss?)
     ### Poisonous  spider  battle music
     pygame.mixer.music.load(r"sounds/poison battle.mp3")
+    pygame.mixer.music.set_volume(0.4)
     pygame.mixer.music.play(-1)
     print("\nSuddenly, a poisonous spider drops from above!")
     time.sleep(1)
@@ -1779,8 +1836,11 @@ print("Villagers bustle between cottages and markets, laughter mixing with the c
 time.sleep(1)
 print("Banners of the Eternal King flutter above watchtowers, promising protection yet whispering of mysteries still untold.")
 time.sleep(1)
+
+# Game adds quest to the player's quest list
+add_quest(player_quests, "Welcome to the Land of Bravery!", "Walk through the Land of Bravery and introduce yourself.")
 # Player skips dialogue (get asked)
-skip_dialogue = input("Do you want to skip the Dialogue? (Yes/No): ").lower() == "yes"
+skip_dialogue = input("\nDo you want to skip the Dialogue? (Yes/No): ").lower() == "yes"
 # intro narration
 if not skip_dialogue:
     print("One sunny day, you decided to go on an adventure by yourself... and you stumbled upon the Land of Bravery!")
@@ -1978,6 +2038,11 @@ if not skip_dialogue:
 else:
     print("You skipped the Dialogue!")
 # Choosing of class
+complete_quest(player_quests, "Welcome to the Land of Bravery!")
+play_sound("quest completed", volume=0.6)
+time.sleep(1.4)
+add_quest(player_quests, "Forging a hero...", "Pick a class and a race.")
+time.sleep(1.3)
 print("\nChoose thy class: ")
 time.sleep(1)
 # Class list
@@ -2221,6 +2286,8 @@ else:
 player_health = max_health
 time.sleep(1)
 # Title welcoming the player
+complete_quest(player_quests, "Forging a hero...")
+time.sleep(1.3)
 print(f"\n                                                            Welcome brave soul...        ")
 print("                                                   === The Quest of the Eternal Caverns ===")
 pygame.mixer.music.fadeout(2000)
@@ -2247,6 +2314,7 @@ print(f"                                                      -SHOPKEEPER ITEMS-
 print(f"    [1]. {Style.BRIGHT+ Fore.RED}Healing Potion{Style.RESET_ALL} (5 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +10 HP healed")
 print(f"    [2]. {Style.BRIGHT + Fore.WHITE}Silver Amulet{Style.RESET_ALL} (20 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +5 attack")
 print(f"    [3]. {Style.BRIGHT+ Fore.CYAN}Iron Shield{Style.RESET_ALL} (15 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +10 Max HP")
+print(f"    [Q]. {Style.BRIGHT}Show Quests.")
 print(f"    [4]. {Style.BRIGHT}Leave Oak & Ember Mercantile.")
 print("===================================================================================================================================")
 #-----------------------------------------------------------------------------------------------------------#
@@ -2292,6 +2360,8 @@ def shop_items():
             print("Shopkeeper: Best of luck in your journey, traveller.")
             pygame.mixer.music.fadeout(2000)
             break
+        elif buy == "q":
+            show_quest_log(player_quests)
         else:
             shop1_broke()
 shop_items()
@@ -2436,6 +2506,7 @@ def battle(enemy_key):
             print(f"{Fore.RED}[1] Attack{Style.RESET_ALL}  {Fore.BLUE}[2] Defend{Style.RESET_ALL}")
             print(f"{Fore.GREEN}[3] Use Potion{Style.RESET_ALL}  {Fore.LIGHTYELLOW_EX}[4] Run{Style.RESET_ALL}")
             print(f"{Style.BRIGHT}[I] Inventory{Style.RESET_ALL}  {Fore.LIGHTBLUE_EX}[P] Potion List{Style.RESET_ALL}")
+            print(f"    {Style.BRIGHT}[Q] Quest List{Style.RESET_ALL}")
             print()
             print("============================")
             print("     -SPECIAL ABILITIES-    ")
@@ -2456,6 +2527,9 @@ def battle(enemy_key):
                 continue
             elif action.lower() == "i":
                 open_inventory()
+                continue
+            elif action.lower() == "q":
+                show_quest_log(player_quests)
                 continue
              # Player attacks
             elif action == "1": # Attack codes
@@ -2864,6 +2938,7 @@ pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 # CHapter 2
+add_quest(player_quests, "First big step!", "Head down to the Eternal Caverns and conquer what's coming...")
 chapt2_eternal_caverns()
 # Goblin fight narration
 pygame.mixer.music.fadeout(2000)
@@ -2873,12 +2948,13 @@ time.sleep(1)
 pygame.mixer.music.load(r"sounds/battle music.ogg")
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
-# Battle loop general -
+# Battle loop goblin
 battle("Goblin")
 # Lost trader encounter narration
 pygame.mixer.music.load(r"sounds/hidden passage.ogg")
 pygame.mixer.music.set_volume(0.9)
 pygame.mixer.music.play(-1)
+complete_quest(player_quests, "First big step!")
 chapt3_lost_trader()
 # Chapter 4 Music
 pygame.mixer.music.load(r"sounds/chapter 4.ogg")
@@ -3095,7 +3171,7 @@ def south_eternal_village():
                 "You head North, where the towering Hall of the Everlight glows like a beacon, the Spindle of Tales hums with forgotten stories,"
                 " and the Echoing Vilas Apothecary breathes a scent of strange potions through the cool cavern air.")
             time.sleep(2)
-            print(f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+            print(f"\n                                  --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
             time.sleep(1)
             print("Where do you want to go?"
                   "\n[1]. Walk to the Spindle of Tales."
@@ -3136,9 +3212,17 @@ def south_eternal_village():
                     if player_choice_2 == "1":
                         loreweaver_quest_lines()
                         time.sleep(2)
-                        print(f"{player_name}: 'I humbly accept, I thank you, Loreweaver.'")
-                        time.sleep(1.5)
-                        print("\nNew Quest: Find an Emberleaf blossom.")
+                        print("Do you want to accept this quest? (Yes/No)")
+                        while True:
+                            quest_accept = input(">> ").strip().lower()
+                            if quest_accept == "yes":
+                                add_quest(player_quests, "The answers lies in the scroll.", "Find an Emberleaf Blossom deeper onto the cave...")
+                                time.sleep(1.3)
+                            elif quest_accept == "no":
+                                print("You stepped away from the Loreweaver...")
+                                break
+                            else:
+                                print("Invalid choice, Traveller.")
                     # Player chooses to browse and read the glowing book in the shelves
                     elif player_choice_2 == "2":
                         print("You wandered around the abode, and a certain glowing book caught your eye and whispered to yourself,")
@@ -3597,10 +3681,4 @@ def south_eternal_village():
         elif move == "4":
             player_eternal_warrior_talking()
 chapt5_eternal_village()
-
-
-
-
-
-
 
