@@ -3216,8 +3216,11 @@ def south_eternal_village():
                         while True:
                             quest_accept = input(">> ").strip().lower()
                             if quest_accept == "yes":
+                                print(f"{player_name}: 'I humbly accept, dear Loreweaver.'")
+                                time.sleep(1.3)
                                 add_quest(player_quests, "The answers lies in the scroll.", "Find an Emberleaf Blossom deeper onto the cave...")
                                 time.sleep(1.3)
+                                break
                             elif quest_accept == "no":
                                 print("You stepped away from the Loreweaver...")
                                 break
