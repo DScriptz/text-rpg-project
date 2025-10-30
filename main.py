@@ -88,10 +88,24 @@ def add_quest(quests, name, description):
     else:
         print(f"\nYou already have the quest: {name}\n")
 def complete_quest(quests, name):
+    global gold, attack_max
     if name in quests:
         quests[name]["status"] = "Completed"
         print(f"\nQuest Completed: {Fore.MAGENTA + Style.BRIGHT}{name}{Style.RESET_ALL}!\n")
         play_sound("quest completed", volume=0.6)
+        reward_type = quests[name].get("reward_type")
+        reward_value = quests[name].get("reward_value")
+        if reward_type == "gold":
+            gold += reward_value
+            print(f"You received {reward_value} gold! Total Gold: {gold}")
+        elif reward_type == "item":
+            item_name = reward_value
+            if item_name == "Eternal Dagger":
+                attack_max += 10
+                print(f"You equip the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
+            else:
+                player_inventory[item_name] = player_inventory.get(item_name, 0) + 1
+                print(f"You recevied a {item_name}!")
     else:
         print(f"\nQuest '{name}' not found.\n")
 # Potion data of player
@@ -145,7 +159,6 @@ potion_data = {
 
 }
 # Potion list
-
 potion_list = {
 
 }
@@ -163,6 +176,8 @@ def echo_vials_trade(player_inventory, gold):
         if trading == "x":
             print("You walk away from the trading table...")
             break
+        elif trading == "i":
+            open_inventory()
         if not trading.isdigit() or int(trading) < 1 or int(trading) > len(echo_vials_trade_items):
             print()
             continue
@@ -179,6 +194,61 @@ def echo_vials_trade(player_inventory, gold):
         else:
             print(f"You don't have any {item_name} to trade!")
     return player_inventory, gold
+# Random NPC
+npcs = [
+    {"name": "Eldrin the Eternal Miner", "type": "Miner"},
+    {"name": "Serah of Sustenance", "type": "Cook"},
+    {"name": "Azorious the Scout", "type": "Scout"},
+    {"name": "Mira the Herbalist", "type": "Healer"},
+    {"name": "Baron the Smith", "type": "Blacksmith"},
+    {"name": "Ilyra the Acolyte", "type": "Priestess"}
+]
+# Random npc dialogues  for giving quests
+npc_quest_dialogues = [
+    "Traveler! A moment of your time—there’s something that needs your blade.",
+    "Pardon me, stranger... you look capable. Might you lend your strength?",
+    "Ah, a fresh soul in the Eternal Village... perhaps you can aid me.",
+    "Please, the Rift has grown restless again. We need help.",
+    "You there—yes, you. The glow of courage shines in your eyes.",
+]
+def random_npc_interaction():
+    npc = random.choice(npcs)
+    dialogue = random.choice(npc_quest_dialogues)
+    print(f"\n{npc['name']}: '{dialogue}'")
+    return npc
+# Random NPC quests
+def offer_random_quest():
+    global gold, attack_max
+    choose = input("Do you want to accept this quest? (Yes/No): ").strip().lower()
+    if choose == "yes":
+        npc = random_npc_interaction()
+        time.sleep(1.3)
+        enemy = random.choice(['Ashfang Stalker', 'Crystalis Warden', 'Glacier Wraith', 'Frostborn Revenant'])
+        reward_type = random.choice(["gold", "item"])
+        if reward_type == "gold":
+            reward = random.randint(25, 50)
+        else:
+            reward = random.choice(['Moonfern Tea', 'Healing Potion', 'Greater Healing Potion', 'Eternal Dagger'])
+        quest_name = f"Hunt: {enemy}"
+        if quest_name in player_quests and player_quests[quest_name]["status"] == "Ongoing":
+            print(f"\nYou already have this quest active: {quest_name}")
+            return
+        quest_description = (f"{npc['name']} seeks your aid in slaying a {enemy} lurking in the Rift of Echoing Souls. "
+                             f"Reward: {reward_type}.")
+        player_quests[quest_name] = {
+            "status": "Ongoing",
+            "description": quest_description,
+            "reward_type": reward_type,
+            "reward_value": reward
+        }
+        play_sound("new quest", volume=0.7)
+        print(f"\nNew Quest Added: {quest_name}")
+        print(f"   > {quest_description}")
+        time.sleep(1.7)
+        print(f"\n{npc['name']}: 'Bring swift end to that creature, traveller. Return when the deed is done.'")
+        time.sleep(2)
+    else:
+        print("You walk away and choose not to help the NPC...")
 # Potion list/ inventory of player
 def potion_lists():
     print("----------- Potion List -------------")
@@ -462,7 +532,7 @@ def speak_eternal_bartender():
     print(random.choice(eternal_bartender_lines))
 # Echoing Vials trading Feature items
 echo_vials_trade_items = {
-    "Ashfang Carapace": 5,
+    "Ashfang Carpace": 5,
     "Gleaming Fang": 6,
     "Thread of Valor": 8,
     "Spore Cluster": 8,
@@ -2048,50 +2118,50 @@ time.sleep(1)
 # Class list
 print()
 print("=======================================================================================================")
-print("                                        -CLASS LIST-                                                   ")
+print("                                          -CLASS LIST-                                                   ")
 print("=======================================================================================================")
 print(f"(<{Fore.LIGHTGREEN_EX + Style.BRIGHT}Tip: Every class is unique, fun and balanced! Pick what you will enjoy and have fun!{Style.RESET_ALL}>)")
 print()
 # Warrior Description
-print("1. Warrior – A hardened fighter with unmatched strength and resilience.")
+print(f"{Fore.YELLOW}\n1. Warrior{Style.RESET_ALL} – A hardened fighter with unmatched strength and resilience.")
 print("[Base Health: 75 | Base Attack: 8]")
 print("Special Skill: [Power Strike] - Unleash raw might to deliver a crushing blow that shatters defenses!")
 # Rogue Description
-print("\n2. Rogue – A swift shadow who strikes fast and critical.")
+print(f"{Fore.BLUE}\n2. Rogue{Style.RESET_ALL} – A swift shadow who strikes fast and critical.")
 print("[Base Health: 50 | Base Attack: 9]")
 print("Special Skill: [Shadow Step] - Vanish into darkness, striking swiftly and evading the next attack.")
 # Mage Description
-print("\n3. Mage – A frail but strong wielder of a devastating arcane power.")
+print(f"{Fore.LIGHTMAGENTA_EX + Style.BRIGHT}\n3. Mage{Style.RESET_ALL} – A frail but strong wielder of a devastating arcane power.")
 print("[Base Health: 60 | Base Attack: 12]")
 print("Special Skill: [Ice Shard] - Vanish into darkness, striking swiftly and evading the next attack.")
 # Necromancer Description
-print("\n4. Necromancer – A dark conjurer who commands the dead.")
+print(f"{Fore.BLACK + Style.DIM}\n4. Necromancer{Style.RESET_ALL} – A dark conjurer who commands the dead.")
 print("[Base Health: 55 | Base Attack: 9]")
 print("Special Skill: [Life Drain] - Sap the life (+3 Heal) from your enemy, wounding them as your own strength returns.")
 print("Passive Skill: [Summon Undead] - Call upon forbidden rites to raise a fallen soul, binding it to your will to fight once more.")
 # Marksman Description
-print("\n5. Marksman – A precise hunter who slays from afar with deadly accuracy.")
+print(f"{Fore.LIGHTWHITE_EX + Style.DIM}\n5. Marksman{Style.RESET_ALL} – A precise hunter who slays from afar with deadly accuracy.")
 print("[Base Health: 56 | Base Attack: 10]")
 print("Special Skill: [Eagle Eye] - Focus with deadly precision — your next attack will have a guaranteed critical chance!")
 # Paladin Description
-print("\n6. Paladin – A holy knight who balances might with divine protection.")
+print(f"{Fore.LIGHTYELLOW_EX + Style.BRIGHT}\n6. Paladin{Style.RESET_ALL} – A holy knight who balances might with divine protection.")
 print("[Base Health: 65 | Base Attack: 8]")
 print("Special Skill: [Holy Shield] - Raise a divine barrier that blocks the next incoming strike.")
 print("Passive Skill: [Holy Aura] - Call upon the Spirit and heal yourself for 3-5 HP upon defending")
 # Druid Description
-print("\n7. Druid – A nature sage who heals allies and bends the wilds.")
+print(f"{Fore.GREEN + Style.BRIGHT}\n7. Druid{Style.RESET_ALL} – A nature sage who heals allies and bends the wilds.")
 print("[Base Health: 60 | Base Attack: 11]")
 print("Special Skill: [Regrowth] - Call upon nature’s essence (Heals 3-5 HP) to restore your vitality mid-battle.")
 # Illusionist Description
-print("\n8. Illusionist – A trickster who deceives foes and slips past danger.")
+print(f"{Fore.LIGHTBLACK_EX + Style.DIM}\n8. Illusionist{Style.RESET_ALL} – A trickster who deceives foes and slips past danger.")
 print("[Base Health: 57 | Base Attack: 10]")
 print("Special Skill: [Mirror Image] - Create phantom doubles to confuse your foe to hit themselves and evade their blows.")
 # Alchemist Description
-print("\n9. Alchemist – A daring experimenter wielding volatile potions.")
+print(f"{Fore.RED + Style.BRIGHT}\n9. Alchemist{Style.RESET_ALL} – A daring experimenter wielding volatile potions.")
 print("[Base Health: 58 | Base Attack: 13]")
 print("Special Skill: [Risky Play] - Gamble your safety for volatile power — throw your concoction & deal great damage or suffer the backlash.")
 # Sentinel Description
-print("\n10. Sentinel – A living bulwark, nearly unbreakable in defense.")
+print(f"{Fore.CYAN + Style.BRIGHT}\n10. Sentinel{Style.RESET_ALL} – A living bulwark, nearly unbreakable in defense.")
 print("[Base Health: 80 | Base Attack: 7]")
 print("Special Skill: [Bulwark Stance] - Fortify your body into living stone, reducing enemy damage but dulling your strikes.")
 print("Passive Skill: [War Cry] - Cry for battle, increasing your attack!")
@@ -2310,7 +2380,7 @@ time.sleep(2)
 # Shows the player the items
 print(f"\n                           --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
 print("===================================================================================================================================")
-print(f"                                                      -SHOPKEEPER ITEMS-                                                               ")
+print(f"                                                       -SHOPKEEPER ITEMS-                                                               ")
 print(f"    [1]. {Style.BRIGHT+ Fore.RED}Healing Potion{Style.RESET_ALL} (5 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +10 HP healed")
 print(f"    [2]. {Style.BRIGHT + Fore.WHITE}Silver Amulet{Style.RESET_ALL} (20 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +5 attack")
 print(f"    [3]. {Style.BRIGHT+ Fore.CYAN}Iron Shield{Style.RESET_ALL} (15 {Style.BRIGHT + Fore.YELLOW}gold{Style.RESET_ALL}) +10 Max HP")
@@ -3008,6 +3078,12 @@ def south_eternal_village():
         pygame.mixer.music.play(-1)
         print()
         print(f"\n                        --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+        if random.random() < 0.3:
+            print("\nAs you wander through the glowing streets, a voice calls out to you...")
+            time.sleep(1.3)
+            offer_random_quest()
+        else:
+            print()
         move = input("Where do you want to go?"
                      "\n[1]. East. - The Hollow Earth Tavern"
                      "\n[2]. West - Stoneheart Armory"
@@ -3171,6 +3247,12 @@ def south_eternal_village():
                 "You head North, where the towering Hall of the Everlight glows like a beacon, the Spindle of Tales hums with forgotten stories,"
                 " and the Echoing Vilas Apothecary breathes a scent of strange potions through the cool cavern air.")
             time.sleep(2)
+            if random.random() < 0.3:
+                print("\nAs you wander through the glowing streets, a voice calls out to you...")
+                time.sleep(1.3)
+                offer_random_quest()
+            else:
+                print()
             print(f"\n                                  --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
             time.sleep(1)
             print("Where do you want to go?"
@@ -3185,6 +3267,12 @@ def south_eternal_village():
             walk_choice_north = input("> ")
             # Player chooses where to go
             if walk_choice_north == "1":
+                if random.random() < 0.3:
+                    print("\nAs you wander through the glowing streets, a voice calls out to you...")
+                    time.sleep(1.3)
+                    offer_random_quest()
+                else:
+                    print()
                 print("You step inside, and the air smells of parchment and candle smoke. "
                       "Threads of light twist through the room, weaving stories you have yet to hear.")
                 time.sleep(2)
@@ -3267,6 +3355,12 @@ def south_eternal_village():
                 time.sleep(1.3)
                 print("Thanks for giving my game a chance, You can still try the other features.")
             elif walk_choice_north == "3":
+                if random.random() < 0.3:
+                    print("\nAs you wander through the glowing streets, a voice calls out to you...")
+                    time.sleep(1.3)
+                    offer_random_quest()
+                else:
+                    print()
                 print("You head towards Echoing Vials, where the faint clink of glass and low hum of bubbling concoctions drift through the stone corridors.")
                 time.sleep(2)
                 echo_binder_greetings_lines()
@@ -3319,6 +3413,12 @@ def south_eternal_village():
             elif walk_choice_north == "5":
                 print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
             elif walk_choice_north == "6":
+                if random.random() < 0.3:
+                    print("\nAs you wander through the glowing streets, a voice calls out to you...")
+                    time.sleep(1.3)
+                    offer_random_quest()
+                else:
+                    print()
                 print("You approach the Eternal Sanctuary, its glow calm yet heavy, as if the walls remember every soul...")
                 time.sleep(1.5)
                 door_opening_sound()
@@ -3480,7 +3580,7 @@ def south_eternal_village():
                                     break
                     #
                     elif player_choice_3 == "3":
-                        int("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
+                        print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
                     # Player talks to Eternal Inkeeper in eternal Sanctuary
                     elif player_choice_3 == "4":
                         print("You walked towards the Eternal Inkeeper...")
@@ -3529,6 +3629,12 @@ def south_eternal_village():
                         time.sleep(1.3)
                         break
             elif walk_choice_north == "7":
+                if random.random() < 0.3:
+                    print("\nAs you wander through the glowing streets, a voice calls out to you...")
+                    time.sleep(1.3)
+                    offer_random_quest()
+                else:
+                    print()
                 print("You walk towards the Rift of Echoing Souls — the ground beneath you trembles with memories of countless duels.")
                 time.sleep(1.7)
                 pygame.mixer.music.fadeout(2000)
@@ -3548,6 +3654,7 @@ def south_eternal_village():
                     print(f"[3]. Shattered Hymns (Difficulty: {Fore.LIGHTBLACK_EX}Hard{Style.RESET_ALL})  [4]. Eternal Reverberation (Difficulty: {Fore.BLACK}Very Hard{Style.RESET_ALL})")
                     print(f"[5]. Echo of the Ancients (Difficulty: {Fore.RED + Style.BRIGHT}Legendary{Style.RESET_ALL})")
                     print("[i]. Enemy Info.")
+                    print("[Q]. Quest List")
                     print("[X]. Leave the Rift of Echoing Souls.")
                     print("==================================================================================================================================================================================")
                     print()
@@ -3672,6 +3779,9 @@ def south_eternal_village():
                         pygame.mixer.fadeout(2000)
                         time.sleep(1.2)
                         break
+                    elif arena_choice == "q":
+                        show_quest_log(player_quests)
+                        continue
                     else:
                         print("Invalid choice.")
                         break
