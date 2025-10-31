@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.29.3 Alpha (Questing and Arena update) updated Oct 29, 2025.
+# Version: 10.29.3 Alpha (Questing and Arena update) updated Oct 230, 2025.
 import random
 import sys
 import time
@@ -53,14 +53,16 @@ potion_keywords = [
 # Player stats
 gold = 30 # 30 fair start hmm
 current_chapter = 0
+# Player's inventory
 player_inventory = {
     "empty vial": 0,
     "empty bottle": 0,
 
 }
-player_quests = {
+# Player quest list
+player_quests = {}
 
-}
+# Show quest
 def show_quest_log(quests):
     play_sound("open quest log", volume=0.7)
     print("=" * 25)
@@ -79,6 +81,7 @@ def show_quest_log(quests):
         print()
     input("Press enter to continue:  ")
     play_sound("close quest log", volume=0.8)
+# Add quest
 def add_quest(quests, name, description):
     if name not in quests:
         quests[name] = {"status": "Ongoing", "description": description}
@@ -87,6 +90,7 @@ def add_quest(quests, name, description):
         print(f"   > {description}")
     else:
         print(f"\nYou already have the quest: {name}\n")
+# Quest gets completed and rewards get to the player
 def complete_quest(quests, name):
     global gold, attack_max
     if name in quests:
@@ -102,7 +106,7 @@ def complete_quest(quests, name):
             item_name = reward_value
             if item_name == "Eternal Dagger":
                 attack_max += 10
-                print(f"You equip the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
+                print(f"You obtained and euqipped the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
             else:
                 player_inventory[item_name] = player_inventory.get(item_name, 0) + 1
                 print(f"You recevied a {item_name}!")
@@ -416,7 +420,6 @@ def shop_choice():
         time.sleep(1.5)
 # Player effect after donating
 donate_effects = [
-
     "\nYour body feels lighter... (+10% dodge next battle)",
     "\nA warmth fills your chest... (+5 attack next battle)",
     "\nYour skin hardens faintly... (-10% damage taken next battle)",
@@ -3002,7 +3005,12 @@ def battle(enemy_key):
                     dropped_items = random.choice(item_loot)
                     player_inventory[dropped_items] = player_inventory.get(dropped_items, 0) + 1
                     print(f"The {enemy_name} dropped a {dropped_items}")
+                for quest_name, quest_data in player_quests.items():
+                    if quest_data["status"] == "Ongoing" and enemy_name in quest_name:
+                        complete_quest(player_quests, quest_name)
+                        time.sleep(1.3)
                 break
+
 # Before going to the caverns narrative
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
