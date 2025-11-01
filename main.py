@@ -1229,7 +1229,96 @@ def chapt4_the_last_bite():
     time.sleep(3)
     # Player responds to eternal warrior
     player_eternal_warrior_talking()
+#-----------------------------------------------------------------------------------------------------#
+# -----------------------------------[MINI GAMES]-----------------------------------------------------#
+# Fortune's toss code
+def play_fortune_toss(gold):
+    print("\nElara Wraithand: Now tell me stranger, what side of the coin will you bet on tonight?")
+    time.sleep(1.3)
+    while True:
+        print("==========================================================================================================================================================================================")
+        print("                                                                                          -{ Fortune's Toss }-")
+        print \
+            (f"                                                                                     -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+        print("\n                                                                                         [H] Heads | [T] Tails.")
+        print("==========================================================================================================================================================================================")
 
+        game_choice = input("\n>> ").lower().strip()
+        coin_choice = None
+        match game_choice:
+            case "h":
+                coin_choice = "heads"
+            case "t":
+                coin_choice = "tails"
+            case _:
+                print("Not a valid choice.")
+                continue
+        # Ask for bet amount
+        try:
+            bet_amount = int(input("Enter bet amount: ").strip())
+        except ValueError:
+            print("That's not a number! The coin refuses your confusion.")
+            continue
+
+        if bet_amount <= 0 or bet_amount < 10:
+            print("You must bet at least 10 gold!!!")
+            continue
+        if bet_amount > gold:
+            print("Elena Wraithand: Hold thy horses there stranger, you don't have enough gold.")
+            continue
+        # toss outcome
+        toss = random.choice(["heads", "tails"])
+
+        print(f"\nElena Wraithand flips the coin...")
+        time.sleep(2)
+        print(f"\nIt lands on {toss.upper()}!")
+        time.sleep(1.60)
+        # Player wins or losses
+        match(coin_choice == toss):
+            case True:
+                gold += bet_amount * 2
+                player_wins_fortune_toss()
+                print(f"\nYou won double the amount of your bet amount! + {bet_amount}!")
+                time.sleep(1.85)
+            case False:
+                gold -= bet_amount
+                player_losses_fortune_toss()
+                time.sleep(1.85)
+                print(f"\nYou lost {bet_amount} gold...")
+        return gold
+# Elara Wraithand (eternal sanctuary: Fortune's Toss) lines
+elara_wraithand_lines = [
+    "Elara Wraithand: Ah… Fortune awaits, traveler. Shall we see if she graces your hand tonight?",
+    "Elara Wraithand: Heads or tails — such a tiny choice to tempt such vast fate.",
+    "Elara Wraithand: Your gold glimmers beautifully. Let’s see if luck finds it worthy.",
+    "Elara Wraithand: I’ve watched empires crumble to a coin’s whim. Care to tempt yours?",
+    "Elara Wraithand: No spells, no deceit — only the whisper of destiny as it spins.",
+    "Elara Wraithand: Watch closely… in this moment, even fortune forgets who she favors."
+]
+def elara_wraithand_dialogue():
+    print(random.choice(elara_wraithand_lines))
+# Player wins in fortune's toss
+elena_wraithand_win_lines = [
+    "Elara Wraithand: Fortune smiles — and it seems she rather likes your company tonight.",
+    "Elara Wraithand: A perfect flip… the coin bows to your will.",
+    "Elara Wraithand: Luck dances with you, traveler. Don’t let her slip away so soon.",
+    "Elara Wraithand: Gold finds its way to those who listen to destiny’s whisper.",
+    "Elara Wraithand: Even fate applauds your boldness. Well played.",
+    "Elara Wraithand: The coin spins true, and your courage is rewarded in kind."
+]
+def player_wins_fortune_toss():
+    print(random.choice(elena_wraithand_win_lines))
+# Player losses in fortune's toss
+elena_wraithand_lost_lines = [
+    "Elara Wraithand: Ah… fortune turns her face away. She can be quite the fickle muse.",
+    "Elara Wraithand: The coin laughs softly — seems it favors me this round.",
+    "Elara Wraithand: Don’t pout, traveler. Even loss has its own strange charm.",
+    "Elara Wraithand: Fate’s a cruel flirt, isn’t she? Always leaving hearts — and purses — wanting.",
+    "Elara Wraithand: Gold departs as easily as breath… but both return, in time.",
+    "Elara Wraithand: The coin falls cold. Perhaps next toss, it will remember your name."
+]
+def player_losses_fortune_toss():
+    print(random.choice(elena_wraithand_lost_lines))
 # SHop 1 name of shopkeepers
 shop1_names = [
     "\nBethwyn, the Shopkeeper",
@@ -3444,6 +3533,7 @@ def south_eternal_village():
                     print(f"[X]. Leave Eternal Sanctuary.")
                     print("]=========================================================================================[")
                     player_choice_3 = input("--> ").strip().lower()
+
                     if player_choice_3 == "1":
                         print(f"{player_name}: 'A room for the night, if it please thee.'")
                         time.sleep(1.3)
@@ -3463,11 +3553,13 @@ def south_eternal_village():
                             print(f"You rested well, your health got restored to its full HP. [{player_health}/{max_health} HP].")
                         else:
                             print("The Soulwarden: Thy hast no more Gold, adventurer. Come back again when thy have enough.")
+                    # Player walks towards the Eternal Sanctuary restaurant
                     elif player_choice_3 == "2":
                         print("You walked towards the tasty and soothing smell of the food...")
                         time.sleep(1.3)
                         serah_line()
                         time.sleep(1.3)
+                        # Show the menu to the player
                         while True:
                             print("What do you want from the menu?")
                             print("=" * 60)
@@ -3481,8 +3573,9 @@ def south_eternal_village():
                                   f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
                                   f"\n[X]. {Style.BRIGHT}Exit Menu{Style.RESET_ALL}")
                             print("=" * 60)
-                            sanctuary_resto_choice = input("\n--> ").lower().strip()
+
                             while True:
+                                sanctuary_resto_choice = input("\n--> ").lower().strip()
                                 # Player chooses "1" and buys Celestial broth
                                 if sanctuary_resto_choice == "1" and gold >= 15:
                                     if race_name == "Kithling" and gold >= 12:
@@ -3586,9 +3679,15 @@ def south_eternal_village():
                                 else:
                                     print("Invalid choice, try again")
                                     break
-                    #
+                    # player plays Fortune's Toss
                     elif player_choice_3 == "3":
-                        print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
+                        print("\nYou walk towards the busy table...")
+                        time.sleep(1.3)
+                        print("\nAs you approach, you see people on this table handing out gold, some are losing it, some are winning...")
+                        time.sleep(1.7)
+                        elara_wraithand_dialogue()
+                        time.sleep(1.75)
+                        gold = play_fortune_toss(gold)
                     # Player talks to Eternal Inkeeper in eternal Sanctuary
                     elif player_choice_3 == "4":
                         print("You walked towards the Eternal Inkeeper...")
