@@ -43,7 +43,10 @@
         "attack": 13,
         "defend_chance": 0.40,
         "gold_loot": [45, 70],
-        "grunt_sounds": []
+        "grunt_sounds": [
+          "sounds/eternal being grunt.ogg",
+          "sounds/eternal being grunt 2.ogg"
+        ]
     },
     "Ashfang_Stalker": {
         "name": "Ashfang Stalker",

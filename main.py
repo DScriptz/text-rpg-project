@@ -12,7 +12,9 @@ import json
 import os
 import pygame
 from colorama import Fore, Style, init
+from dialogues import *
 init(autoreset=True)
+# test
 # Game short sounds helper code
 def play_sound(sound_name, volume=0.6 ):
     try:
@@ -51,7 +53,7 @@ potion_keywords = [
     "vial"
 ]
 # Player stats
-gold = 30 # 30 fair start hmm
+gold = 999 # 30 fair start hmm
 current_chapter = 0
 # Player's inventory
 player_inventory = {
@@ -84,7 +86,7 @@ def show_quest_log(quests):
 # Add quest
 def add_quest(quests, name, description):
     if name not in quests:
-        quests[name] = {"status": "Ongoing", "description": description}
+        quests[name] = {f"status": f"{Fore.RED + Style.BRIGHT}Ongoing{Style.RESET_ALL}", "description": description}
         play_sound("new quest", volume=0.7)
         print(f"\nNew Quest Added: {name}")
         print(f"   > {description}")
@@ -189,14 +191,18 @@ def echo_vials_trade(player_inventory, gold):
         item_name = list(echo_vials_trade_items.keys())[index - 1]
         item_price = echo_vials_trade_items[item_name]
         # Check amount the player wants to trade
-        amount = int(input(f"How many {item_name}'s do you want to trade?: "))
-        if item_name in player_inventory and player_inventory[item_name] >= amount:
-            player_inventory[item_name] -= amount
-            gold_earned = amount * item_price
-            gold += gold_earned
-            print(f"You sold {amount}x {item_name} for {gold_earned} Gold!")
-        else:
-            print(f"You don't have any {item_name} to trade!")
+        try:
+            amount = int(input(f"How many {item_name}'s do you want to trade?: "))
+            if item_name in player_inventory and player_inventory[item_name] >= amount:
+                player_inventory[item_name] -= amount
+                gold_earned = amount * item_price
+                gold += gold_earned
+                print(f"You sold {amount}x {item_name} for {gold_earned} Gold!")
+            else:
+                print(f"You don't have any {item_name} to trade!")
+        except ValueError:
+            print("Invalid number.")
+            continue
     return player_inventory, gold
 # Random NPC
 npcs = [
@@ -228,8 +234,8 @@ def offer_random_quest():
         npc = random_npc_interaction()
         time.sleep(1.3)
         enemy = random.choice(['Ashfang Stalker', 'Crystalis Warden', 'Glacier Wraith', 'Frostborn Revenant'])
-        reward_type = random.choice(["gold", "item"])
-        if reward_type == "gold":
+        reward_type = random.choice(["Gold", "item"])
+        if reward_type == "Gold":
             reward = random.randint(25, 50)
         else:
             reward = random.choice(['Moonfern Tea', 'Healing Potion', 'Greater Healing Potion', 'Eternal Dagger'])
@@ -1230,62 +1236,7 @@ def chapt4_the_last_bite():
     # Player responds to eternal warrior
     player_eternal_warrior_talking()
 #-----------------------------------------------------------------------------------------------------#
-# -----------------------------------[MINI GAMES]-----------------------------------------------------#
-# Fortune's toss code
-def play_fortune_toss(gold):
-    print("\nElara Wraithand: Now tell me stranger, what side of the coin will you bet on tonight?")
-    time.sleep(1.3)
-    while True:
-        print("==========================================================================================================================================================================================")
-        print("                                                                                          -{ Fortune's Toss }-")
-        print \
-            (f"                                                                                     -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
-        print("\n                                                                                         [H] Heads | [T] Tails.")
-        print("==========================================================================================================================================================================================")
-
-        game_choice = input("\n>> ").lower().strip()
-        coin_choice = None
-        match game_choice:
-            case "h":
-                coin_choice = "heads"
-            case "t":
-                coin_choice = "tails"
-            case _:
-                print("Not a valid choice.")
-                continue
-        # Ask for bet amount
-        try:
-            bet_amount = int(input("Enter bet amount: ").strip())
-        except ValueError:
-            print("That's not a number! The coin refuses your confusion.")
-            continue
-
-        if bet_amount <= 0 or bet_amount < 10:
-            print("You must bet at least 10 gold!!!")
-            continue
-        if bet_amount > gold:
-            print("Elena Wraithand: Hold thy horses there stranger, you don't have enough gold.")
-            continue
-        # toss outcome
-        toss = random.choice(["heads", "tails"])
-
-        print(f"\nElena Wraithand flips the coin...")
-        time.sleep(2)
-        print(f"\nIt lands on {toss.upper()}!")
-        time.sleep(1.60)
-        # Player wins or losses
-        match(coin_choice == toss):
-            case True:
-                gold += bet_amount * 2
-                player_wins_fortune_toss()
-                print(f"\nYou won double the amount of your bet amount! + {bet_amount}!")
-                time.sleep(1.85)
-            case False:
-                gold -= bet_amount
-                player_losses_fortune_toss()
-                time.sleep(1.85)
-                print(f"\nYou lost {bet_amount} gold...")
-        return gold
+# -----------------------------------------[MINI GAMES]-----------------------------------------------------#
 # Elara Wraithand (eternal sanctuary: Fortune's Toss) lines
 elara_wraithand_lines = [
     "Elara Wraithand: Ah… Fortune awaits, traveler. Shall we see if she graces your hand tonight?",
@@ -1319,6 +1270,64 @@ elena_wraithand_lost_lines = [
 ]
 def player_losses_fortune_toss():
     print(random.choice(elena_wraithand_lost_lines))
+# Fortune's toss code
+def play_fortune_toss(gold):
+    print("\nElara Wraithand: Now tell me stranger, what side of the coin will you bet on tonight?")
+    time.sleep(1.3)
+    while True:
+        print("==========================================================================================================================================================================================")
+        print("                                                                                          -{ Fortune's Toss }-")
+       # print(f"                                                                                     -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+        print("\n                                                                                         [H] Heads | [T] Tails.")
+        print("==========================================================================================================================================================================================")
+
+        game_choice = input("\n>> ").lower().strip()
+        coin_choice = None
+        match game_choice:
+            case "h":
+                coin_choice = "heads"
+            case "t":
+                coin_choice = "tails"
+            case _:
+                print("Not a valid choice.")
+                continue
+        # Ask for bet amount
+        try:
+            bet_amount = int(input("Enter bet amount: ").strip())
+        except ValueError:
+            print("That's not a number! The coin refuses your confusion.")
+            continue
+
+        if bet_amount <= 0 or bet_amount < 10:
+            print("You must bet at least 10 gold!!!")
+            continue
+        if bet_amount > gold:
+            print("Elena Wraithand: Hold thy horses there stranger, you don't have enough gold.")
+            continue
+        # toss outcome
+        toss = random.choice(["heads", "tails"])
+
+        print(f"\nElena Wraithand flips the coin...")
+        play_sound("coin flip", volume=1)
+        time.sleep(2)
+        print(f"\nIt lands on {toss.upper()}!")
+        play_sound("coin drop", volume=0.8)
+        time.sleep(2)
+        # Player wins or losses
+        match(coin_choice == toss):
+            case True:
+                gold += bet_amount * 2
+                player_wins_fortune_toss()
+                print(f"\nYou won double the amount of your bet amount! + {bet_amount}!")
+                time.sleep(1.85)
+            case False:
+                gold -= bet_amount
+                player_losses_fortune_toss()
+                time.sleep(1.85)
+                print(f"\nYou lost {bet_amount} gold...")
+                time.sleep(1.5)
+        return gold
+#--------------------------------------            [NAMES & DIALOGUES OF NPC]     --------------------------------------------------#
 # SHop 1 name of shopkeepers
 shop1_names = [
     "\nBethwyn, the Shopkeeper",
@@ -1363,52 +1372,8 @@ beth_lines = [
 ]
 def beth_talks():
         print(random.choice(beth_lines))
-# Shopkeeper Beth when player don't have enough gold lol broke
-shop1_no_gold = [
 
-    '\n"Shopkeeper: Ho there, traveler! Thy purse be empty. Come back when it holdeth coin."',
-    '\n"Shopkeeper: Thou canst not buy that with naught but lint and air."',
-    '\n"Shopkeeper: Hah! Do ye fancy taking wares without paying? Not on my watch!"',
-    '\n"Shopkeeper: Thy pockets be as light as a feather. I’ll sell thee nothing this day."',
-    '\n"Shopkeeper: Nay, friend. The coin is wanting, and my goods are not free for the asking."',
-    '\n"Shopkeeper: Fie! Thou wouldst rob me with thine empty purse? Best return with coin."',
-    '\n"Shopkeeper: The shelves are full, yet thy gold is naught. Come again when thy purse is heavier."',
-    '\n"Shopkeeper: By my wares, thy coin falls short. Spend wisely, traveler."',
-    '\n"Shopkeeper: Thou hast not the means. These goods require more than thy pockets yield."',
-    '\n"Shopkeeper: Gold lacking, good traveler. Only those with sufficient coin may partake."'
-]
-def shop1_broke():
-    print(random.choice(shop1_no_gold))
-# Shopkeeper Beth lines when the player buys potion
-shop_1_potion = [
-    "\nShopkeeper: Wise choice — better to heal than to keel, as my gran used to say.",
-    "\nShopkeeper: Keep it corked ‘til the fighting’s done, or you’ll waste the magic.",
-    "\nShopkeeper: A sip of that and you’ll feel life rush back faster than spring thaw.",
-    "\nShopkeeper: Don’t drink it all at once unless you like burping light!",
-    "\nShopkeeper: Always glad to sell health, traveller — far cheaper than a funeral."
-]
-def potion_buy():
-    print(random.choice(shop_1_potion))
-# Shopkeeper Beth lines when the player buys Silver amulet
-shop_1_amulet = [
-    "\nShopkeeper: Oh ho! A bit of shine for your strike — may it bite true.",
-    "\nShopkeeper: That amulet’s older than the king’s crown but twice as reliable.",
-    "\nShopkeeper: Wear it close to the heart; power travels better that way.",
-    "\nShopkeeper: Silver’s not just pretty — it remembers every battle fought.",
-    "\nShopkeeper: Don’t pawn it to a drunk bard; they’ll never grasp its worth."
-]
-def amulet_buy():
-    print(random.choice(shop_1_amulet))
-# Shopkeeper Beth lines when the player buys Iron Shield
-shop_1_shield = [
-    "\nShopkeeper: Solid choice — that shield’s saved more hides than I can count.",
-    "\nShopkeeper: Hold it steady and it’ll hold you steady right back.",
-    "\nShopkeeper: Iron from the northern forges, quenched in river ice — sturdy as they come.",
-    "\nShopkeeper: A little polish now and then and it’ll outlast you.",
-    "\nShopkeeper: Take it, swing it, bash with it — but don’t forget it’s your wall between life and the grave."
-]
-def shield_buy():
-    print(random.choice(shop_1_shield))
+
 # Eternal villager line greeting
 eternal_villager_lines = [
 
