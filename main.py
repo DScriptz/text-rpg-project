@@ -2227,12 +2227,12 @@ print(f"{Fore.LIGHTMAGENTA_EX + Style.BRIGHT}\n3. Mage{Style.RESET_ALL} – A fr
 print("[Base Health: 60 | Base Attack: 12]")
 print("Special Skill: [Ice Shard] - Vanish into darkness, striking swiftly and evading the next attack.")
 # Necromancer Description
-print(f"{Fore.BLACK + Style.DIM}\n4. Necromancer{Style.RESET_ALL} – A dark conjurer who commands the dead.")
+print(f"{Fore.LIGHTRED_EX + Style.DIM}\n4. Necromancer{Style.RESET_ALL} – A dark conjurer who commands the dead.")
 print("[Base Health: 55 | Base Attack: 9]")
 print("Special Skill: [Life Drain] - Sap the life (+3 Heal) from your enemy, wounding them as your own strength returns.")
 print("Passive Skill: [Summon Undead] - Call upon forbidden rites to raise a fallen soul, binding it to your will to fight once more.")
 # Marksman Description
-print(f"{Fore.LIGHTWHITE_EX + Style.DIM}\n5. Marksman{Style.RESET_ALL} – A precise hunter who slays from afar with deadly accuracy.")
+print(f"{Fore.LIGHTCYAN_EX + Style.DIM}\n5. Marksman{Style.RESET_ALL} – A precise hunter who slays from afar with deadly accuracy.")
 print("[Base Health: 56 | Base Attack: 10]")
 print("Special Skill: [Eagle Eye] - Focus with deadly precision — your next attack will have a guaranteed critical chance!")
 # Paladin Description
