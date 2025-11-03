@@ -44,7 +44,7 @@ NOTE: This project is still in active development, expect some bugs or unpolishe
 
 
 Notes:
-- Built using Python 3.13 and Pygame just for sounds
+- Built using Python 3.13.7 and Pygame just for sounds
 - Currently playable on the computer terminal/console
 - Planned future updates include:
   - Volume adjuster

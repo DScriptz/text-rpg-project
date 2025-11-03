@@ -4,15 +4,18 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.29.3 Alpha (Questing and Arena update) updated Oct 230, 2025.
-import random
+# Version: 10.29.3 Alpha (Questing and Arena update) updated Nov 3, 2025.
+#DefNoInspect
 import sys
-import time
-import json
 import os
-import pygame
-from colorama import Fore, Style, init
+# import time
+# import random
+import json
+# import pygame
+# from colorama import Fore, Style, init
 from dialogues import *
+from dialogues.player import *
+from chapters import *
 init(autoreset=True)
 # test
 # Game short sounds helper code
@@ -53,7 +56,7 @@ potion_keywords = [
     "vial"
 ]
 # Player stats
-gold = 999 # 30 fair start hmm
+gold = 30 # 30 fair start hmm
 current_chapter = 0
 # Player's inventory
 player_inventory = {
@@ -233,7 +236,8 @@ def offer_random_quest():
     if choose == "yes":
         npc = random_npc_interaction()
         time.sleep(1.3)
-        enemy = random.choice(['Ashfang Stalker', 'Crystalis Warden', 'Glacier Wraith', 'Frostborn Revenant'])
+        enemy = random.choice(['Ashfang Stalker', 'Crystalis Warden', 'Glacier Wraith',
+                               'Frostborn Revenant', 'Mirefang Myconid', 'Emberveil Serpent'])
         reward_type = random.choice(["Gold", "item"])
         if reward_type == "Gold":
             reward = random.randint(25, 50)
@@ -259,6 +263,8 @@ def offer_random_quest():
         time.sleep(2)
     else:
         print("You walk away and choose not to help the NPC...")
+
+
 # Potion list/ inventory of player
 def potion_lists():
     print("----------- Potion List -------------")
@@ -571,17 +577,7 @@ echo_vials_trade_items = {
     "Tyrant's Horn": 65,
     "Ancient Blood Gem": 75
 }
-# Echo binder farewell lines-
-echo_binder_farewell = [
-    "\nEcho Binder: May your echoes guide you safely through the caverns.",
-    "\nEcho Binder: Farewell, traveler. Let the whispers of the stones watch over you.",
-    "\nEcho Binder: Until next time, may your path resonate with fortune.",
-    "\nEcho Binder: Go well, and remember—the echoes never truly leave.",
-    "\nEcho Binder: Safe travels, wanderer. Let the vials sing in your honor.",
-    "\nEcho Binder: Part now, but carry the echoes of this place with you."
-]
-def echo_binder_farewell_line():
-    print(random.choice(echo_binder_farewell))
+
 # Eternal warrior and player convo
 def player_eternal_warrior_talking():
     print("\nWhat will you say?")
@@ -905,7 +901,7 @@ def stoneheart_armory_shop():
                         ironfang_stock -= 1
                         gold -= 25
                         attack_max += 8
-                        shop2_player_buy_ironfang_lines()
+                        shop2_player_buy_ironfang_lines(player_name)
                         time.sleep(2)
                         shop2_ironfang_shortsword_buy()
                         time.sleep(2)
@@ -919,7 +915,7 @@ def stoneheart_armory_shop():
                         ironfang_stock -= 1
                         gold -= 40
                         attack_max += 12
-                        shop2_player_buy_runesword_lines()
+                        shop2_player_buy_runesword_lines(player_name)
                         time.sleep(2)
                         shop2_runed_longsword_buy()
                         time.sleep(2)
@@ -933,7 +929,7 @@ def stoneheart_armory_shop():
                         hammer_deep_forge_stock -= 1
                         gold -= 65
                         attack_max += 18
-                        shop2_player_buy_hammer_deep_forge_lines()
+                        shop2_player_buy_hammer_deep_forge_lines(player_name)
                         time.sleep(2)
                         shop2_hammer_deep_forge_buy()
                         time.sleep(2)
@@ -947,7 +943,7 @@ def stoneheart_armory_shop():
                         bow_whispering_pines_stock -= 1
                         gold -= 35
                         attack_max += 10
-                        shop2_player_buys_bow_whispering_pines_lines()
+                        shop2_player_buys_bow_whispering_pines_lines(player_name)
                         time.sleep(1)
                         shop2_bow_whispering_pines_buy()
                         time.sleep(2)
@@ -962,7 +958,7 @@ def stoneheart_armory_shop():
                         gold -= 30
                         attack_max += 6
                         max_health += 5
-                        shop2_player_buys_dagger_shadowglass_lines()
+                        shop2_player_buys_dagger_shadowglass_lines(player_name)
                         time.sleep(1)
                         shop2_dagger_shadowglass_buy()
                         time.sleep(2)
@@ -976,7 +972,7 @@ def stoneheart_armory_shop():
                         axe_stonebreaker_stock -= 1
                         gold -= 50
                         attack_max += 15
-                        shop2_player_buys_axe_stonebreaker_lines()
+                        shop2_player_buys_axe_stonebreaker_lines(player_name)
                         time.sleep(1)
                         shop2_axe_stonebreaker_buy()
                         time.sleep(2)
@@ -991,7 +987,7 @@ def stoneheart_armory_shop():
                         gold -= 55
                         attack_max += 12
                         max_health += 10
-                        shop2_player_buys_lance_eternal_lines()
+                        shop2_player_buys_lance_eternal_lines(player_name)
                         time.sleep(1)
                         shop2_lance_eternal_guard_buy()
                         time.sleep(2)
@@ -1005,7 +1001,7 @@ def stoneheart_armory_shop():
                         staff_emberlight_stock -= 1
                         gold -= 45
                         attack_max += 14
-                        shop2_player_buys_staff_emberlight_lines()
+                        shop2_player_buys_staff_emberlight_lines(player_name)
                         time.sleep(1)
                         shop2_staff_emberlight_buy()
                         time.sleep(2)
@@ -1019,7 +1015,7 @@ def stoneheart_armory_shop():
                         crossbow_silent_thunder_stock -= 1
                         gold -= 38
                         attack_max += 11
-                        shop2_player_buys_crossbow_silent_thunder_lines()
+                        shop2_player_buys_crossbow_silent_thunder_lines(player_name)
                         time.sleep(1)
                         shop2_crossbow_silent_thunder_buy()
                         time.sleep(2)
@@ -1033,7 +1029,7 @@ def stoneheart_armory_shop():
                         warblade_brave_stock -= 1
                         gold -= 75
                         attack_max += 20
-                        shop2_player_buys_warblade_brave_lines()
+                        shop2_player_buys_warblade_brave_lines(player_name)
                         time.sleep(1)
                         shop2_warblade_brave_buy()
                         time.sleep(2)
@@ -1051,37 +1047,9 @@ def stoneheart_armory_shop():
             time.sleep(3)
             break
 ### Chapters 1-5 ---------------------------------------------------------------------------------------------------###
-# -Chapter 2-
-def chapt2_eternal_caverns():
-    global player_name
-    print("Chapter 2: The Eternal Caverns.")
-    time.sleep(1)
-    print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
-    skip_dialogue = input("Do you want to skip the Dialogue? (Yes/No): ").lower() == "yes"
-    if not skip_dialogue:
-        door_close1 = pygame.mixer.Sound(r"sounds/close door.ogg")
-        door_close1.play()
-        print("\nYou went out of the shop and you saw the old man signaling for you to come to his direction...")
-        time.sleep(2)
-        print(f"\nOld man: 'Well then {player_name}, now what the Grandmaster would like you to do is,")
-        time.sleep(2)
-        print("\nOld man: 'To investigate what's inside what the people would call... the Eternal Caverns.")
-        time.sleep(3)
-        print("\nSo you went on your way to the big hole one the side of the grassy mountain...")
-        time.sleep(2)
-        print("The old man then had some parting words to say,")
-        time.sleep(1)
-        print(f"\nOld man: 'Be careful down there, {player_name}, and once you see the light shine upon you... We'll meet again..")
-        time.sleep(3)
-        print("Old man: 'Go on, traveller!'")
-        time.sleep(1)
-        print("\nSo you went to the cave, it was dark, spacious, full of small rocks on the floor... but then!")
-        time.sleep(2)
-    else:
-        print("You skipped the Dialogue!")
+
 # -Chapter 3-
-def chapt3_lost_trader():
-    global player_name, player_health, max_health
+def chapt3_lost_trader(player_name, player_health, max_health, gold, race_name, player_class):
     print("Chapter 3: Lost Trader and...bugs?")
     # Dialogue Skipping logic
     print(f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
@@ -1179,6 +1147,8 @@ def chapt3_lost_trader():
     print("But before that you head on deep to the cave...")
     time.sleep(1.3)
     pygame.mixer.music.fadeout(2000)
+    return player_name, gold, player_health, max_health
+
 # -Chapter 4-
 def chapt4_the_last_bite():
     global player_name, player_health, max_health
@@ -1235,50 +1205,16 @@ def chapt4_the_last_bite():
     time.sleep(3)
     # Player responds to eternal warrior
     player_eternal_warrior_talking()
-#-----------------------------------------------------------------------------------------------------#
-# -----------------------------------------[MINI GAMES]-----------------------------------------------------#
-# Elara Wraithand (eternal sanctuary: Fortune's Toss) lines
-elara_wraithand_lines = [
-    "Elara Wraithand: Ah… Fortune awaits, traveler. Shall we see if she graces your hand tonight?",
-    "Elara Wraithand: Heads or tails — such a tiny choice to tempt such vast fate.",
-    "Elara Wraithand: Your gold glimmers beautifully. Let’s see if luck finds it worthy.",
-    "Elara Wraithand: I’ve watched empires crumble to a coin’s whim. Care to tempt yours?",
-    "Elara Wraithand: No spells, no deceit — only the whisper of destiny as it spins.",
-    "Elara Wraithand: Watch closely… in this moment, even fortune forgets who she favors."
-]
-def elara_wraithand_dialogue():
-    print(random.choice(elara_wraithand_lines))
-# Player wins in fortune's toss
-elena_wraithand_win_lines = [
-    "Elara Wraithand: Fortune smiles — and it seems she rather likes your company tonight.",
-    "Elara Wraithand: A perfect flip… the coin bows to your will.",
-    "Elara Wraithand: Luck dances with you, traveler. Don’t let her slip away so soon.",
-    "Elara Wraithand: Gold finds its way to those who listen to destiny’s whisper.",
-    "Elara Wraithand: Even fate applauds your boldness. Well played.",
-    "Elara Wraithand: The coin spins true, and your courage is rewarded in kind."
-]
-def player_wins_fortune_toss():
-    print(random.choice(elena_wraithand_win_lines))
-# Player losses in fortune's toss
-elena_wraithand_lost_lines = [
-    "Elara Wraithand: Ah… fortune turns her face away. She can be quite the fickle muse.",
-    "Elara Wraithand: The coin laughs softly — seems it favors me this round.",
-    "Elara Wraithand: Don’t pout, traveler. Even loss has its own strange charm.",
-    "Elara Wraithand: Fate’s a cruel flirt, isn’t she? Always leaving hearts — and purses — wanting.",
-    "Elara Wraithand: Gold departs as easily as breath… but both return, in time.",
-    "Elara Wraithand: The coin falls cold. Perhaps next toss, it will remember your name."
-]
-def player_losses_fortune_toss():
-    print(random.choice(elena_wraithand_lost_lines))
+
 # Fortune's toss code
 def play_fortune_toss(gold):
     print("\nElara Wraithand: Now tell me stranger, what side of the coin will you bet on tonight?")
     time.sleep(1.3)
     while True:
         print("==========================================================================================================================================================================================")
-        print("                                                                                          -{ Fortune's Toss }-")
-       # print(f"                                                                                     -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
-        print("\n                                                                                         [H] Heads | [T] Tails.")
+        print("                                                                                         -{ Fortune's Toss }-")
+        print(f"                                                                                    -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+        print("\n                                                                                        [H] Heads | [T] Tails.")
         print("==========================================================================================================================================================================================")
 
         game_choice = input("\n>> ").lower().strip()
@@ -1327,633 +1263,14 @@ def play_fortune_toss(gold):
                 print(f"\nYou lost {bet_amount} gold...")
                 time.sleep(1.5)
         return gold
-#--------------------------------------            [NAMES & DIALOGUES OF NPC]     --------------------------------------------------#
-# SHop 1 name of shopkeepers
-shop1_names = [
-    "\nBethwyn, the Shopkeeper",
-    "\nMarigwen, the Shopkeeper",
-    "\nRowena, the Shopkeeper",
-    "\nGwyneira, the Shopkeeper",
-    "\nLiora, the Shopkeeper",
-    "\nSerilda, the Shopkeeper",
-    "\nFaylinn, the Shopkeeper",
-    "\nHestara, the Shopkeeper",
-    "\nEldrine, the Shopkeeper",
-    "\nMorwenna, the Shopkeeper",
-    "\nSelitha, the Shopkeeper",
-    "\nBranwyn, the Shopkeeper",
-    "\nTamsin, the Shopkeeper",
-    "\nIsolde, the Shopkeeper",
-    "\nVelmara, the Shopkeeper",
-    "\nNerissa, the Shopkeeper",
-    "\nAmariel, the Shopkeeper",
-    "\nCelandine, the Shopkeeper",
-    "\nYsolde, the Shopkeeper",
-    "\nOdelia, the Shopkeeper",
-    "\nAida, the Shopkeeper"
 
-]
-def shop1_shopkeepers():
-    print(random.choice(shop1_names))
-# Shopkeeper lines
-beth_lines = [
-
-    "\nShopkeeper: Ah, traveller! Step right in. My shelves groan with goods rarer than dragon's teeth.",
-    "\nShopkeeper: Coin speaks louder than oaths here — but I do fancy a good story if you've one to trade.",
-    "\nShopkeeper: Mind your boots on my rushes, stranger. Mud's harder to sweep than goblin bones.",
-    "\nShopkeeper: These potions? Brewed at dawn, stirred 'til dusk. Won't find fresher 'less you raid a witch's hut.",
-    "\nShopkeeper: Gold upfront, no IOUs. I've learned that lesson harder than a blacksmith's hammer.",
-    "\nShopkeeper: Take your time — I've got till sunset… unless the guards call curfew again.",
-    "\nShopkeeper: A bargain? Hah! You'll get a fair price, but my cat still needs feeding.",
-    "\nShopkeeper: You look half-dead. Buy a Potion before you collapse and ruin my floor.",
-    "\nShopkeeper: We've got travelers from the East, sellswords from the North… but none as curious as you.",
-    "\nShopkeeper: Come back if you live through your quest. I'll still be here, counting coins and gossip."
-
-]
-def beth_talks():
-        print(random.choice(beth_lines))
-
-
-# Eternal villager line greeting
-eternal_villager_lines = [
-
-    "\nEternal Villager: Ah, traveler… the lands be old, thou knowest. Long ago, there was a man whose smile did hide sharp teeth… they say he vanished into the caverns, but who can tell what be truth?",
-    "\nEternal Villager: Some folk come to these parts seeking warmth, yet beware… there be those who charm the weak-hearted, and leave naught but ashes in their wake.",
-    "\nEternal Villager: The village whispers of cruel men, though most deem them gone. Yet anon, their shadow doth creep back, clad in kindness, walking amongst us.",
-    "\nEternal Villager: I remember a time when fear had a name… they say he hides in plain sight now, watching, waiting, patient as stone.",
-    "\nEternal Villager: Legends speak of a man who once ruled through cunning and cruelty. He vanished up the cavern long ago… some say he waits for those brave enough to follow.",
-    "\nEternal Villager: Thou shalt find no weapon sharp enough to strike at truth here, traveler… only those who dare see through the smiles of men may endure.",
-    "\nEternal Villager: Eternal we be, yet some evils last longer than the oldest oaks. A man once cruel walketh again in the land… and the caverns know his secrets.",
-    "\nEternal Villager: Mistake not this village for safety. Even the kindest faces may hide the cruelest pasts… and some tales be whispered only to those who ask.",
-    "\nEternal Villager: They say he who hath hurt many now feigneth harmlessness… yet every shadow holdeth a memory, and some forgive never.",
-    "\nEternal Villager: I have seen men rise, fall, and vanish… yet one returned, clad as an old man. Those who meet him see the world ne’er the same again."
-]
-def eternal_villager_ask():
-    print(random.choice(eternal_villager_lines))
-# Eternal Villagers  tells history of village
-eternal_villager_history = [
-
-    "\nEternal Villager: Ah, the Eternal Village… long before this age, it was naught but a whisper in the caverns, tread by only the stout of heart.",
-    "\nEternal Villager: Legends tell of kings, wanderers, and knaves who passed through these streets… yet still it endureth, silent and eternal.",
-    "\nEternal Villager: They speak of a cruel man who wrought sorrow upon these lands… his shadow lingereth, e’en in peace.",
-    "\nEternal Villager: The folk ye see now be but heirs of ancient tales, bearing memories older than the stones beneath thy feet.",
-    "\nEternal Villager: Some say the caverns themselves remember the village’s past, murmuring secrets to those who hark with care."
-]
-def eternal_village():
-    print(random.choice(eternal_villager_history))
-# Eternal villager says farewell
-eternal_villager_farewell = [
-
-    "\nEternal Villager: Fare thee well, traveler… may thy path be free of shadows.",
-    "\nEternal Villager: Go with care, and may the stones beneath thy feet guide thee true.",
-    "\nEternal Villager: Godspeed, wanderer… the village shall wait for thy return.",
-    "\nEternal Villager: May thy courage not falter, and thy blade stay keen.",
-    "\nEternal Villager: Safe travels… and keep an eye upon the caverns, lest they watch thee back.",
-    "\nEternal Villager: Farewell, friend. The winds shall carry thee where thou needst go.",
-    "\nEternal Villager: Go now, and remember: even the smallest spark may light the darkest path.",
-    "\nEternal Villager: Part in peace, traveler… but forget not the whispers of this village.",
-    "\nEternal Villager: Mayhap we shall meet again before the moon wanes twice.",
-    "\nEternal Villager: God’s grace go with thee… and beware those who smile too kindly."
-]
-def eternal_villager_bye():
-    print(random.choice(eternal_villager_farewell))
-# Eternal Bartender not enough gold lines lol
-tavern_no_gold = [
-
-    "\nEternal Barkeeper: Ho there, traveler! Thy purse be empty, and my casks not for charity.",
-    "\nEternal Barkeeper: Thou canst not buy that with naught but lint and air… nor from an empty barrel.",
-    "\nEternal Barkeeper: 'Hah! Do ye fancy taking wares without paying? Or from shelves already bare?'",
-    "\nEternal Barkeeper: 'Thy pockets be as light as a feather, and my stock as dry as a monk’s cellar.'",
-    "\nEternal Barkeeper: 'Nay, friend. The coin is wanting, and so too the drink thou seekest.'",
-    "\nEternal Barkeeper: 'Fie! Thou wouldst rob me with thine empty purse? Best return with coin — and hope my stock be full.'",
-    "\nEternal Barkeeper: 'The shelves be bare, and thy gold is naught. Come again when fortune and barrels be fuller.'",
-    "\nEternal Barkeeper: 'By my wares, thy coin falls short, and so too doth my supply. Fate be fickle this day.'",
-    "\nEternal Barkeeper: 'Thou hast not the means, and I not the drink. These goods require more than thy pockets yield.'",
-    "\nEternal Barkeeper: 'Gold lacking, barrels empty — good traveler, only patience may serve thee now.'"
-
-]
-def no_gold_tavern():
-    print(random.choice(tavern_no_gold))
-# Stoneheart Armorer greeting lines
-shop2_lines = [
-
-    "\nStoneheart Armorer: 'Step in, traveler—walls of steel I sell, not toys of war.'",
-    "\nStoneheart Armorer: 'Armor aplenty, strong as the cavern stone. Let us see what shall keep thee standing.'",
-    "\nStoneheart Armorer: 'Blades win battles, aye, but armor keeps thee breathing. What shall it be?'",
-    "\nStoneheart Armorer: 'Welcome, wanderer. Choose wisely, for a weak blade in these halls spells thy doom.'",
-    "\nStoneheart Armorer: 'Every weapon here hath felt the stone fires. Shall one now taste thy hand?'",
-    "\nStoneheart Armorer: 'Steel, iron, and a touch of enchantment—pick thy defense, and walk safe 'mong shadows.'",
-    "\nStoneheart Armorer: 'A good sword sings, yet a shield whispers safety. What song pleaseth thee this day?'",
-    "\nStoneheart Armorer: 'Not all who wander these caverns return. Fortify thyself, noble one, fortify thyself.'",
-    "\nStoneheart Armorer: 'Each piece I forge hath a tale of grit and flame. Which tale shalt thou wear?'",
-    "\nStoneheart Armorer: 'Step closer, brave soul. Even the smallest dagger may turn the tide of fate.'"
-
-]
-def shop2_armorer():
-    print(random.choice(shop2_lines))
-# Stoneheart Armorer when player buys Armor:
-shop2_armor_lines = [
-
-    "\nEternal Armorer: 'Hail, good traveler! Welcome to Stoneheart armory, where steel and courage are wrought alike.'",
-    "\nEternal Armorer: 'Seekest thou a cuirass? This Breastplate hath shielded knights in many a dark encounter.'",
-    "\nEternal Armorer: 'Mark me well, this chainmail is light of weight, yet stout against the sharpest of blades.'",
-    "\nEternal Armorer: 'Ah, thou hast an eye for quality. This helm shall guard thy head as if by ancient enchantment.'",
-    "\nEternal Armorer: 'Take heed, these gauntlets are forged for both battle and craft.'",
-    "\nEternal Armorer: 'A cloack of hardened hide? A wise choice, for it shall keep thee both hidden and unarmed.'",
-    "\nEternal Armorer: 'Guard thy feet with these boots, for the caverns' stones bite the unwary traveler sorely.'",
-    "\nEternal Armorer: 'Thou hast chosen well, brave soul. With this armor, none shall lightly best thee in combat.'",
-    "\nEternal Armorer: 'Steel is thine ally, but remember: valor and wits shall serve thee even more in this dark halls.'",
-    "\nEternal Armorer: 'Go forth with courage, knight, or adventurer. May thy armor endure, and thy tale be sung in ages hence'"
-
-]
-def shop2_armorer_visit():
-    print(random.choice(shop2_armor_lines))
-# Stoneheart Armorer when player buys the Steel Cuirass
-steel_cuirass_lines = [
-
-    "\nEternal Armorer: 'Ah, the Steel Cuirass! Worn by the bravest of knights, it shall guard thy heart and soul.'",
-    "\nEternal Armorer: 'Feel the weight of courage upon thy chest, adventurer.'",
-    "\nEternal Armorer: 'This cuirass hath withstood countless blows; may it serve thee well in battle.'",
-    "\nEternal Armorer: 'A fine choice! Let no blade pierce thy resolve.'",
-    "\nEternal Armorer: 'Wear it with pride, for many tales shall be sung of thy valor.'"
-
-]
-def shop2_cuirass_buy():
-    print(random.choice(steel_cuirass_lines))
-# Stoneheart Armorer when player buys the Chainmail Hauberk
-chainmail_hauberk_lines = [
-
-    "\nEternal Armorer: 'The hauberk is light, yet strong; thou shalt move swift whilst shielded.'",
-    "\nEternal Armorer: 'Chain by chain, it binds protection to thee.'",
-    "\nEternal Armorer: 'Many a foe hath met their match against this fine mail.'",
-    "\nEternal Armorer: 'Let no sharp edge find thy flesh whilst clad in this.'",
-    "\nEternal Armorer: 'A splendid choice! May it keep thee safe in darkest halls.'"
-]
-def shop2_hauberk_buy():
-    print(random.choice(chainmail_hauberk_lines))
-# Stoneheart Armorer when player buys the Knight's Helm
-knight_helm_lines = [
-
-    "Eternal Armorer: 'This helm shall guard thy mind and skull alike.'",
-    "Eternal Armorer: 'Many a hero's head hath been saved by such craftsmanship.'",
-    "Eternal Armorer: 'Wear it boldly, for it bears the mark of the eternal forge.'",
-    "Eternal Armorer: 'A wise choice, for a sharp mind must have a safe head.'",
-    "Eternal Armorer: 'May this helm shine as brightly as thy courage in battle.'"
-]
-def shop2_helm_buy():
-    print(random.choice(knight_helm_lines))
-# Stoneheart Armorer when player buys Gauntlets of Grip
-gauntlets_grip_lines = [
-
-    "Eternal Armorer: 'These gauntlets shall make thy strikes true and fierce.'",
-    "Eternal Armorer: 'Grip thy weapon, and let none stand before thee.'",
-    "Eternal Armorer: 'Forged for strength, they shall augment thy power in battle.'",
-    "Eternal Armorer: 'Feel the might of the forge in thy fists, adventurer.'",
-    "Eternal Armorer: 'A wise choice! Let thy enemies tremble at thy touch.'"
-]
-def shop2_gauntlets_grip_buy():
-    print(random.choice(gauntlets_grip_lines))
-# Stoneheart Armorer when player buys Reinforced Hide Cloak
-reinforced_hide_cloak_lines = [
-
-    "Eternal Armorer: 'This helm shall guard thy mind and skull alike.'",
-    "Eternal Armorer: 'Many a hero's head hath been saved by such craftsmanship.'",
-    "Eternal Armorer: 'Wear it boldly, for it bears the mark of the eternal forge.'",
-    "Eternal Armorer: 'A wise choice, for a sharp mind must have a safe head.'",
-    "Eternal Armorer: 'May this helm shine as brightly as thy courage in battle.'"
-]
-def shop2_reinforced_hide_cloak_buy():
-    print(random.choice(reinforced_hide_cloak_lines))
-# Stoneheart Armorer when player buys Boots of Stoneguard
-boots_of_stoneguard_lines = [
-
-    "Eternal Armorer: 'These boots shall steady thy steps upon treacherous paths.'",
-    "Eternal Armorer: 'Feel the earth beneath thee, guarded with every stride.'",
-    "Eternal Armorer: 'Many a cavern traveler hath owed their life to these boots.'",
-    "Eternal Armorer: 'Step boldly, adventurer, the stones shall not betray thee.'",
-    "Eternal Armorer: 'Wear them well; let not the ground undo thy courage.'"
-]
-def shop2_boots_of_stoneguard_buy():
-    print(random.choice(boots_of_stoneguard_lines))
-# Stoneheart Armorer when player buys Pauldrons of Valor
-pauldrons_of_valor_lines = [
-
-    "Eternal Armorer: 'These pauldrons shall lend force to every swing of thy blade.'",
-    "Eternal Armorer: 'Shoulder the might of heroes past with these crafted arms.'",
-    "Eternal Armorer: 'A fine choice! Strike true and strike hard.'",
-    "Eternal Armorer: 'Let thy enemies feel the weight of thy valor.'",
-    "Eternal Armorer: 'May these pauldrons turn aside foes as easily as they turn heads in awe.'"
-]
-def shop2_pauldrons_of_valor_buy():
-    print(random.choice(pauldrons_of_valor_lines))
-# Stoneheart Armorer when player buys Bracers of Fortitude
-bracers_of_fortitude_lines = [
-
-    "Eternal Armorer: 'These bracers shall protect thy arms and bolster thy spirit.'",
-    "Eternal Armorer: 'A wise choice, adventurer; defense begins at thy forearms.'",
-    "Eternal Armorer: 'Feel the steady strength of the forge in every movement.'",
-    "Eternal Armorer: 'Fortify thyself; let no strike shake thy resolve.'",
-    "Eternal Armorer: 'May these bracers guard thee well in all thy battles.'"
-]
-def shop2_bracers_of_fortitude_buy():
-    print(random.choice(bracers_of_fortitude_lines))
-# Stoneheart Armorer when player buys Gorget of the Brave
-gorget_of_the_brave_lines = [
-
-    "Eternal Armorer: 'Protect thy throat, brave soul, for it speaks words that may save lives.'",
-    "Eternal Armorer: 'This gorget shields both flesh and courage.'",
-    "Eternal Armorer: 'Wear it boldly; danger shall glance off its steel.'",
-    "Eternal Armorer: 'May it remind thee always of thy bravery.'",
-    "Eternal Armorer: 'A small piece, but mighty in defense; thou hast chosen wisely.'"
-]
-def shop2_gorget_of_the_brave_buy():
-    print(random.choice(gorget_of_the_brave_lines))
-# Stoneheart Armorer when player buys Shield of the Eternal Caverns
-shield_of_eternal_caverns_lines = [
-
-    "Eternal Armorer: 'A shield of legends! Let no foe breach thy guard.'",
-    "Eternal Armorer: 'Many a cavern warrior hath trusted this shield with their life.'",
-    "Eternal Armorer: 'Raise it high and let it turn aside all harm.'",
-    "Eternal Armorer: 'With this in hand, thou art a fortress unto thyself.'",
-    "Eternal Armorer: 'May thy courage match the unyielding stone of this shield.'"
-
-]
-def shop2_shield_of_eternal_caverns_buy():
-    print(random.choice(shield_of_eternal_caverns_lines))
-# Stoneheart Armorer says farewell
-stoneheart_armorer_bye =[
-
-    "Eternal Armorer: 'Go forth, traveler, and may steel and courage never fail thee.'",
-    "Eternal Armorer: 'The caverns watch over thee — return shouldst thou need mending or more steel.'",
-    "Eternal Armorer: 'Step with care, for shadows grow deep and foes grow bold.'",
-    "Eternal Armorer: 'May thy armor bear thee through many battles, and thy name echo in the halls of heroes.'",
-    "Eternal Armorer: 'Farewell, brave soul — the Stoneheart Armory awaits thy next venture.'"
-]
-def shop2_stoneheart_armorer_bye():
-    print(random.choice(stoneheart_armorer_bye))
-# Stoneheart Weaponsmith
-stoneheart_weaponsmith_greetings = [
-
-    "Eternal Weaponsmith: 'Ah, a wanderer seeking steel. Step forth and see Stoneheart's craft!'",
-    "Eternal Weaponsmith: 'Welcome, traveller. Here iron breathes fire and remembers battle.'",
-    "Eternal Weaponsmith: 'The forge still glows. What weapon shall be thy companion?'",
-    "Eternal Weaponsmith: 'Hail, bold soul. These blades thirst for a legend to wield them.'",
-    "Eternal Weaponsmith: 'Enter the forge, where sparks dance and weapons gain true names.'",
-    "Eternal Weaponsmith: 'I smell battle on thee. Choose thy edge or hammer wisely.'",
-    "Eternal Weaponsmith: 'Stoneheart's weapons have ended tyrants and beasts alike.'",
-    "Eternal Weaponsmith: 'Good steel, fair price. Step closer and see what suits thy grip.'",
-    "Eternal Weaponsmith: 'No trinkets here, only true weapons of war.'",
-    "Eternal Weaponsmith: 'Welcome back, adventurer. The blades wait for steady hands.'"
-
-]
-def shop2_weaponsmith_greetings():
-    print(random.choice(stoneheart_weaponsmith_greetings))
-# Stoneheart Weapons bought
-ironfang_shortsword_buy_lines = [
-
-    "Eternal Weaponsmith: A nimble blade for a swift hand—use it well.",
-    "Eternal Weaponsmith: Ah, speed and precision! This will suit you perfectly.",
-    "Eternal Weaponsmith: May your strikes be as sharp as this ironfang.",
-    "Eternal Weaponsmith: A fine choice for those who value agility over brute force.",
-    "Eternal Weaponsmith: Handle it with care; its balance is delicate but deadly."
-]
-def shop2_ironfang_shortsword_buy():
-    print(random.choice(ironfang_shortsword_buy_lines))
-runed_longsword_buy_lines = [
-
-    "Eternal Weaponsmith: The runes will guide your hand in battle—choose wisely.",
-    "Eternal Weaponsmith: An ancient blade for one with courage in their heart.",
-    "Eternal Weaponsmith: Let its light illuminate your path and your foes' defeat.",
-    "Eternal Weaponsmith: Ah, a weapon with history and magic intertwined!",
-    "Eternal Weaponsmith: Wield it with honor; it has seen battles long past."
-]
-def shop2_runed_longsword_buy():
-    print(random.choice(runed_longsword_buy_lines))
-hammer_deep_forge_buy_lines = [
-
-    "Eternal Weaponsmith: May its strikes shake the very earth beneath your foes!",
-    "Eternal Weaponsmith: Ah, the hammer that roars with the deep caverns' fury.",
-    "Eternal Weaponsmith: Heavy, brutal, and true—just like its wielder must be.",
-    "Eternal Weaponsmith: Let its echo warn your enemies before they even see you.",
-    "Eternal Weaponsmith: A mighty choice! Few can handle such power with skill."
-]
-def shop2_hammer_deep_forge_buy():
-    print(random.choice(hammer_deep_forge_buy_lines))
-bow_whispering_pines_buy_lines = [
-
-    "Eternal Weaponsmith: Listen to the forest as it guides your arrow true.",
-    "Eternal Weaponsmith: Silent but deadly, just like the shadows between the trees.",
-    "Eternal Weaponsmith: Ah, a bow for a keen eye and a steady hand.",
-    "Eternal Weaponsmith: May your aim be as true as the whispers of the pines.",
-    "Eternal Weaponsmith: A weapon that strikes unseen—your foes won’t know what hit them."
-]
-def shop2_bow_whispering_pines_buy():
-    print(random.choice(bow_whispering_pines_buy_lines))
-dagger_shadowglass_buy_lines = [
-
-    "Eternal Weaponsmith: Swift, silent, and sharp—perfect for the cunning adventurer.",
-    "Eternal Weaponsmith: A dagger that blends with the shadows. Use wisely.",
-    "Eternal Weaponsmith: Speed over defense, but a master’s hand can make it lethal.",
-    "Eternal Weaponsmith: May this blade slip through defenses as easily as it slips through darkness.",
-    "Eternal Weaponsmith: A choice for those who strike first and vanish without a trace."
-]
-def shop2_dagger_shadowglass_buy():
-    print(random.choice(dagger_shadowglass_buy_lines))
-axe_stonebreaker_buy_lines = [
-
-    "Eternal Weaponsmith: Heavy and unforgiving, just like true strength should be.",
-    "Eternal Weaponsmith: An axe to split armor and shatter stone—excellent pick!",
-    "Eternal Weaponsmith: May your enemies feel the weight of your resolve.",
-    "Eternal Weaponsmith: Brutal but precise—handle with might and care.",
-    "Eternal Weaponsmith: Ah, a weapon for those who face challenges head-on!"
-]
-def shop2_axe_stonebreaker_buy():
-    print(random.choice(axe_stonebreaker_buy_lines))
-lance_eternal_guard_buy_lines = [
-
-    "Eternal Weaponsmith: A weapon of guardians—carry its honor well.",
-    "Eternal Weaponsmith: Balanced and true, perfect for a steadfast adventurer.",
-    "Eternal Weaponsmith: May this lance protect you as much as it pierces your foes.",
-    "Eternal Weaponsmith: Wield it with courage; legends were made with such weapons.",
-    "Eternal Weaponsmith: An eternal choice for one destined for greatness."
-]
-def shop2_lance_eternal_guard_buy():
-    print(random.choice(lance_eternal_guard_buy_lines))
-staff_emberlight_buy_lines = [
-
-    "Eternal Weaponsmith: A spark of old magic now in your hands—use it wisely.",
-    "Eternal Weaponsmith: Its flicker may light your path or your enemies’ end.",
-    "Eternal Weaponsmith: Channel its power carefully; magic is as temperamental as flame.",
-    "Eternal Weaponsmith: Ah, a staff that burns with knowledge and strength.",
-    "Eternal Weaponsmith: May your enemies feel the warmth of your resolve!"
-]
-def shop2_staff_emberlight_buy():
-    print(random.choice(staff_emberlight_buy_lines))
-crossbow_silent_thunder_buy_lines = [
-    "Eternal Weaponsmith: Silent but deadly, like a storm waiting to strike.",
-    "Eternal Weaponsmith: Your enemies won’t hear it coming, only the aftermath.",
-    "Eternal Weaponsmith: A precise and deadly choice for one with a sharp eye.",
-    "Eternal Weaponsmith: May your bolts fly true and your aim never ogger.",
-    "Eternal Weaponsmith: Ah, a weapon that speaks louder than words."
-]
-def shop2_crossbow_silent_thunder_buy():
-    print(random.choice(crossbow_silent_thunder_buy_lines))
-warblade_brave_buy_lines = [
-    "Eternal Weaponsmith: A legendary blade for a bold heart—use it wisely!",
-    "Eternal Weaponsmith: Wield it with courage, and your name may join the heroes of old.",
-    "Eternal Weaponsmith: Its edge was forged for those who dare greatly.",
-    "Eternal Weaponsmith: May this blade carry you to glory and honor.",
-    "Eternal Weaponsmith: Ah, the first hero’s weapon! Handle with pride and strength."
-]
-def shop2_warblade_brave_buy():
-    print(random.choice(warblade_brave_buy_lines))
-# Eternal inkeeper greets player
-eternal_inkeeper_lines_greet = [
-
-    "Eternal Innkeeper: 'Welcome, traveler. You look weary — rest comes easy within these walls.'",
-    "Eternal Innkeeper: 'Ah, another soul finds their way here. The Sanctuary always opens for the worthy.'",
-    "Eternal Innkeeper: 'Peace upon you, wanderer. The light of this hall remembers all who seek refuge.'",
-    "Eternal Innkeeper: 'Evenin’, traveler. You’ve got that cavern dust all over you — care for a room or a meal?'",
-    "Eternal Innkeeper: 'Welcome, child of the caverns. Few emerge from the depths unchanged… but you seem untouched by shadow — for now.'",
-    "Eternal Innkeeper: 'The Eternal Sanctuary welcomes you. May the night be kind, and your burdens fade with the dawn.'"
-]
-def eternal_inkeeper_greeting():
-    print(random.choice(eternal_inkeeper_lines_greet))
-eternal_inkeeper_lines_bye = [
-    "Eternal Innkeeper: 'May your path stay lit, traveler. The Sanctuary’s doors will always open for you.'",
-    "Eternal Innkeeper: 'Rest easy on your journey — and remember, light fades, but not forever.'",
-    "Eternal Innkeeper: 'Travel safe, wanderer. The world beyond these walls is less kind than it seems.'",
-    "Eternal Innkeeper: 'Until next we meet, may the Eternal flame guide your steps.'",
-    "Eternal Innkeeper: 'The shadows wait outside, but fear not — the Sanctuary remembers you.'",
-    "Eternal Innkeeper: 'Go with peace in your heart, and may the dawn greet you kindly, traveler.'"
-]
-def eternal_inkeeper_farewell():
-    print(random.choice(eternal_inkeeper_lines_bye))
-# Loreweaver greets player
-loreweaver_greets = [
-    "Loreweaver: Ah… a traveler steps through my door. The Caverns whisper your tale already.",
-    "Loreweaver: Welcome, seeker. These shelves hold the stories of both the living… and the forgotten.",
-    "Loreweaver: Sit, child of the surface. The Eternal Village has waited long for a listener.",
-    "Loreweaver: The threads of fate tremble around you, as though your arrival was written in ancient ink.",
-    "Loreweaver: Shh… listen. Can you hear it? The Caverns themselves hum with your destiny."
-]
-def loreweaver_greet_lines():
-    print(random.choice(loreweaver_greets))
-# Loreweaver tasks the player to find an item for Enchanted Scroll decoding
-loreweaver_quest = [
-
-    "\nLoreweaver: This scroll resists my sight. Bring me the Emberleaf Blossom, and its story will unfold.",
-    "\nLoreweaver: Only a rare touch can awaken these runes. Find the Emberleaf Blossom, and we shall see its secrets.",
-    "\nLoreweaver: The magic here is stubborn. Seek the Emberleaf Blossom for me; the scroll cannot speak without it.",
-    "\nLoreweaver: I can sense the tale within, but it slumbers. Retrieve the Emberleaf Blossom, and I will rouse it.",
-    "\nLoreweaver: A simple leaf, yet its essence is the key. Bring me the Emberleaf Blossom, and the scroll shall reveal all.",
-    "\nLoreweaver: You have done well to find this scroll, but it waits for a catalyst. Seek the Emberleaf Blossom, and its voice will awaken."
-]
-def loreweaver_quest_lines():
-    print(random.choice(loreweaver_quest))
-# Loreweaver Farewell to the player
-loreweaver_farewell = [
-
-    "Loreweaver: Go with care, traveler. The threads of fate are never idle.",
-    "Loreweaver: May the stories guide your steps… until we meet again.",
-    "Loreweaver: Walk carefully, for the world is full of tales both light and dark.",
-    "Loreweaver: Return safely, and bring with you the whispers of your journey.",
-    "Loreweaver: The scrolls will wait, but time does not. Farewell for now.",
-    "Loreweaver: Step lightly, seeker. Your story is only beginning."
-]
-def loreweaver_farewell_lines():
-    print(random.choice(loreweaver_farewell))
-# Echo Binder greets the player
-echo_binder_greetings = [
-    "Echo-Binder: Welcome, traveler… every drop here carries a memory, every vial an echo of power.",
-    "Echo-Binder: Step softly — the potions are awake and listening.",
-    "Echo-Binder: Ah, a seeker of tinctures and truths… what essence shall I bind for you today?",
-    "Echo-Binder: The caverns whisper your ailments before you speak. I have a remedy waiting.",
-    "Echo-Binder: Careful with your hands, stranger; even my shadows are steeped in alchemy.",
-    "Echo-Binder: Welcome to Echoing Vials — where whispers become draughts, and draughts become destiny."
-]
-def echo_binder_greetings_lines():
-    print(random.choice(echo_binder_greetings))
-# Echo Binder showing the player the menu
-echo_binder_menu = [
-    "\nEcho-Binder: Ah, greetings, weary traveler! Care for a draught that whispers secrets or one that merely tickles the nose?",
-    "\nEcho-Binder: Step right in! I’ve brewed concoctions that’ll make your boots dance… or at least your tongue.",
-    "\nEcho-Binder: By the moon’s light! Our vials hold more than potion—sometimes a bit of mischief as well.",
-    "\nEcho-Binder: Hail, adventurer! Choose wisely, for some of these brews might sing… and others might snore.",
-    "\nEcho-Binder: Welcome, bold one! These elixirs may heal, may charm, or may cause your hat to grow three sizes.",
-    "\nEcho-Binder: Ah, a curious soul! Perchance you fancy a sip that soothes, or one that makes you question reality—either’s on the menu."
-]
-def echo_binder_menu_lines():
-    print(random.choice(echo_binder_menu))
-# Soulwarden greeting the player when the player rents in the Eternal SAnctuary
-soulwarden_greets = [
-
-    "\nThe Soulwarden: 'Rest now, weary soul. The Sanctuary shall cradle thy spirit in silence.'",
-    "\nThe Soulwarden: 'The Eternal Sanctuary welcomes thee once more. May thy dreams be light, and thy burdens fade.'",
-    "\nThe Soulwarden: 'Peace finds all who walk beneath these sacred arches. Sleep, and awaken renewed.'",
-    "\nThe Soulwarden: 'The caverns beyond are cruel and cold, but within these walls, thou art safe.'",
-    "\nThe Soulwarden: 'Lay down thy arms, traveler. Here, no blade nor shadow may reach thee.'",
-    "\nThe Soulwarden: 'Close thine eyes. The Sanctuary shall guard thy soul till dawn’s first breath.'"
-]
-def soulwarden_greetings_lines():
-    print(random.choice(soulwarden_greets))
-# Player rests Etenal Sanctuary
-player_sleeps = [
-    "You rest within the Eternal Sanctuary, where even time itself seems to sleep. Your wounds fade, and your spirit feels renewed.",
-    "The warmth of candlelight and soft hymns cradle your weary soul. You drift into a dreamless rest…",
-    "You hand over the coins and settle into your chamber. The Eternal Sanctuary’s tranquil air mends both flesh and spirit.",
-    "You rent a room within the Eternal Sanctuary. The silence is deep — the kind that heals.",
-    "The chamber hums faintly with the pulse of ancient wards. As you close your eyes, the Sanctuary itself seems to breathe life back into you.",
-    "You lie upon sanctified linens woven with threads of moonlight. When you wake, you feel as though touched by the divine."
-]
-def player_sleeping():
-    print(random.choice(player_sleeps))
-# Soulwarden says bye to player
-def soulwarden_farwell():
-    global player_name
-    soulwarden_farewell_lines = [
-        "Soulwarden: 'Go with peace, wanderer. The caverns remember those who tread them with courage.'",
-        "Soulwarden: 'The light of the Sanctuary shall follow you, even in the deepest dark.'",
-        f"Soulwarden: 'Return when your soul grows weary once more, {player_name}… this place awaits thee always.'",
-        "Soulwarden: 'The paths beyond are perilous — but so too is stagnation. Move forward, as all must.'",
-        "Soulwarden: 'May your spirit not falter, nor your blade grow dull.'",
-        "Soulwarden: 'Do not forget… even stone remembers the warmth of light.'",
-        "Soulwarden: 'Rest has mended your body. Now, go mend the world that still bleeds beyond these halls.'",
-        f"Soulwarden: 'I have seen many come, few return. Prove thy tale shall not end in the shadows, {player_name}.'",
-        "Soulwarden: 'The Eternal Sanctuary closes its embrace… until fate draws you back once more.'",
-        "Soulwarden: 'May your courage outshine the darkness beneath the caverns, traveler.'"
-    ]
-    print(random.choice(soulwarden_farewell_lines))
-# Echokeeper farewell to the player when they leave Rift of Echoing Souls
-echokeeper_farewell = [
-    "Echokeeper: 'The echoes fade... yet your soul still hums with their memory. Rest well, wanderer.'",
-    "Echokeeper: 'You return from the Rift untouched — or perhaps... changed in ways unseen.'",
-    "Echokeeper: 'Every battle leaves a mark, not upon the flesh, but the spirit. Do not ignore its whisper.'",
-    "Echokeeper: 'The Rift remembers you now. Its gaze will follow until you return again.'",
-    "Echokeeper: 'You’ve faced what stirs in the dark between worlds. Few ever return so composed.'",
-    "Echokeeper: 'Do not linger too long in peace — the echoes grow restless when forgotten.'",
-    "Echokeeper: 'Well fought. The Rift bends to no one, yet it seems to respect your courage.'",
-    "Echokeeper: 'Leave now, before the Rift grows curious once more. It has a hunger for familiar souls.'"
-]
-def echokeeper_farewell_lines():
-    print(random.choice(echokeeper_farewell))
-# Eternal sacntuary restaurant
-serah_lines = [
-    "Serah of Sustenance: Ah, traveler… hunger still finds you. Come, see what I’ve prepared.",
-    "Serah of Sustenance: Welcome. The hearth’s warmth waits for you.",
-    "Serah of Sustenance: Sit, dear one. A good meal heals more than wounds.",
-    "Serah of Sustenance: You look starved! Let’s see what comforts I can offer.",
-    "Serah of Sustenance: Even heroes need supper. Come, take a look.",
-    "Serah of Sustenance: The Sanctuary hums tonight… perhaps it knows you’re hungry."
-]
-def serah_line():
-    print(random.choice(serah_lines))
-# Rift of Echoing Souls level 1 dialogue
-eternal_arena_lvl_1 = [
-    "You step into the first layer of the Rift — the air hums with forgotten echoes."
-    "A dim mist coils around your feet as faint whispers call your name from beyond."
-    "The stone floor trembles softly — something stirs within the gloom ahead..."
-    "The Rift welcomes you, softly — as though it knows you will not last long."
-]
-def eternal_arena_lvl1():
-    print(random.choice(eternal_arena_lvl_1))
-# Rift of  echoing Souls level 2 dialogue
-eternal_arena_lvl_2 = [
-    "The ground cracks beneath each step; shadows shift where light dares not linger."
-    "A deep rumble rolls through the cavern — something vast awakens below."
-    "You breathe in the dust of long-forgotten warriors — the Rift remembers them all."
-    "Flames flicker from unseen braziers, as if the Rift itself is watching your every move."
-
-]
-def eternal_arena_lvl2():
-    print(random.choice(eternal_arena_lvl_2))
-# Rift of Echoing Souls level 3 Dialogue
-eternal_arena_lvl_3 = [
-    "The air grows colder, heavier — the walls pulse faintly like a living heart."
-    "Every echo of your footstep comes back wrong — twisted, delayed, almost mocking."
-    "A faint melody hums through the stones... no, not a melody — a lament."
-    "The Rift deepens around you — it feels as though time itself bends in this place."
-]
-def eternal_arena_lvl3():
-    print(random.choice(eternal_arena_lvl_3))
-# Rift of Echoing Souls level 4 dialogue
-eternal_arena_lvl_4 = [
-    "You descend into the Reverberant Abyss — where even echoes refuse to speak."
-    "The ground bleeds faint light as ancient runes awaken beneath your feet."
-    "You sense it — something watching, something vast and hateful, smiling unseen."
-    "The Rift hums violently, as though angry that you’ve come this far."
-]
-def eternal_arena_lvl4():
-    print(random.choice(eternal_arena_lvl_4))
-# Rift of Echoing Souls level 5 dialgoue
-eternal_arena_lvl_5 = [
-    "You stand at the heart of the Rift — where souls go not to die, but to remember."
-    "The walls shimmer with trapped spirits, their forms flickering like candlelight."
-    "Every breath feels borrowed. Every heartbeat, a trespass."
-    "The Rift opens before you — vast, endless, and hungry. You walk forward anyway."
-]
-def eternal_arena_lvl5():
-    print(random.choice(eternal_arena_lvl_5))
-# Eternal Inkeeper says the history of Eternal Sanctuary
-eternal_inkeeper_history_line = [
-    "\nEternal Innkeeper: 'Aye… once, this place was naught but a humble village beneath the stone — warm fires, simple folk, laughter by candlelight… before the crystal was unbound.'",
-    "\nEternal Innkeeper: 'We were as you are once — of flesh and blood. But when the Old One shattered the Riftstone, light poured forth… and it changed us.'",
-    "\nEternal Innkeeper: 'They say he sought only to heal the land… yet the crystal’s breath swept through our souls, and we awoke… different. Eternal, some would call it.'",
-    "\nEternal Innkeeper: 'The glow you see in our eyes is not life’s warmth, traveler — it is the echo of that day when the caverns wept light.'",
-    "\nEternal Innkeeper: 'Many forgot their faces… their names. The Old Man vanished into the depths, and the Eternal Caverns were born from his folly.'",
-    "\nEternal Innkeeper: 'Some still whisper he lingers below — the one who broke the crystal. A savior to some… a curse to the rest of us.'"
-]
-
-def eternal_sanctuary_history():
-    print(random.choice(eternal_inkeeper_history_line))
-# Eternal Inkeeper says how the Eternal Being came to be
-eternal_inkeeper_beings_history_line = [
-    "\nEternal Innkeeper: 'How we came to look thus? Hah… the crystal’s light seeped into our veins, slow as dawn but certain as death.'",
-    "\nEternal Innkeeper: 'When the Riftstone shattered, it sang — and its song rewrote our flesh. Skin turned to shimmer, eyes to glow. We became the echoes of what we were.'",
-    "\nEternal Innkeeper: 'We did not die that day, nor did we live on. The light bound our souls to this cavern… eternal, aye, but hollowed inside.'",
-    "\nEternal Innkeeper: 'The glow you see, traveler, is not a blessing. It is the remnant of that crystal’s curse — forever reminding us of what we lost.'",
-    "\nEternal Innkeeper: 'Our children ceased to age, our hearts ceased to beat. Yet still, we walk… and the caverns hum softly with our borrowed life.'",
-    "\nEternal Innkeeper: 'The Old One called it salvation — but I’ve lived long enough to know mercy and madness oft wear the same face.'"
-]
-def eternal_beings_history():
-    print(random.choice(eternal_inkeeper_beings_history_line))
-# Eternal Inkeeper says how they get their stocks of food and items
-eternal_village_survival_info = [
-    "\nEternal Innkeeper: 'Ah, a fair question, traveler. The surface folk think us starved, yet the caverns provide more than ye’d reckon.'",
-    "\nEternal Innkeeper: 'Glowcap mushrooms feed us, their roots drinking from the crystal’s light. Some say they taste of moonlight itself.'",
-    "\nEternal Innkeeper: 'Our hunters tread the deeper tunnels, where beasts of the old world still roam. Their hides warm us, their meat sustains us.'",
-    "\nEternal Innkeeper: 'The crystal veins hum with strange energies — we trade their shards with wanderers bold enough to brave the descent.'",
-    "\nEternal Innkeeper: 'As for ale and spice, well, the spirits brew their own magic here. Even a cup of mead hums faintly with the Rift’s whisper.'",
-    "\nEternal Innkeeper: 'We’ve long since learned to live beneath the stone. The Eternal Village endures — half by craft, half by miracle.'"
-]
-def eternal_villagers_survival():
-    print(random.choice(eternal_village_survival_info))
-# Eternal Inkeeper says some gossips
-eternal_village_gossips = [
-    "\nEternal Innkeeper: 'They say the Old Man once walked these halls as a scholar… before he sought to master the crystal’s heart.'",
-    "\nEternal Innkeeper: 'Aye, Lance the Grandmaster? A noble soul, that one. But even his blade could not cut through what the Old Man became.'",
-    "\nEternal Innkeeper: 'Some nights, I hear whispers from the lower caverns — voices begging for light that never comes.'",
-    "\nEternal Innkeeper: 'A traveler once claimed he saw the Old Man’s reflection in the crystal veins… though the veins run deep below.'",
-    "\nEternal Innkeeper: 'Before the crystal cracked, the Eternal Village had sky and wind… now we have only glow and shadow.'",
-    "\nEternal Innkeeper: 'The Grandmaster was once his closest ally, or so the tales say. Two minds chasing truth — one found madness.'",
-    "\nEternal Innkeeper: 'Our children are born with eyes of light now. Some call it a blessing… others a curse of the crystal’s breath.'",
-    "\nEternal Innkeeper: 'The beasts outside the sanctum used to be men, they say. Twisted by the same light that grants us life.'",
-    "\nEternal Innkeeper: 'A strange calm lingers before each quake in the caverns — as if the crystal itself draws breath.'",
-    "\nEternal Innkeeper: 'They say Lance forged his blade not in fire, but in regret — tempered by what he failed to protect.'",
-    "\nEternal Innkeeper: 'When the Old Man shattered the rift, he promised salvation. He gave us eternity… but stripped away our dawns.'",
-    "\nEternal Innkeeper: 'Some of the villagers still pray to the Old Man’s name, believing he watches from beyond the crystal glare.'",
-    "\nEternal Innkeeper: 'The Grandmaster no longer speaks his old friend’s name. Perhaps silence is the only penance left.'",
-    "\nEternal Innkeeper: 'The further you walk from the Eternal Sanctuary, the louder the crystal hums. It does not like the living to stray.'",
-    "\nEternal Innkeeper: 'Mind your dreams, traveler. The Old Man visits those who listen too long to the hum in the stone.'"
-]
-def eternal_inkeeper_gossip():
-    print(random.choice(eternal_village_gossips))
 # Game title & music--------------------------------------------------------------------------------------------------------------------------------------#
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 print("                                                                             ------------------------------------")
 print(Style.BRIGHT + Fore.LIGHTMAGENTA_EX + "                                                                             === Quest of the Eternal Caverns ===")
+print(f"{Style.BRIGHT + Fore.LIGHTRED_EX}                                                                                    -[ Developer Build ]-{Style.RESET_ALL}")
 print("                                                                             ------------------------------------")
 time.sleep(1)
 print(Style.BRIGHT + Fore.GREEN + "\nChapter 1: The Land of Bravery.")
@@ -2006,142 +1323,8 @@ player_name = input("\nOld Man: What is thy name, traveller?: ").strip()
 while player_name == "":
     print("Old Man: I know you have the ability speak, traveller.")
     player_name = input("\nOld Man: What is thy name, traveller? ").strip()
-######## Player random lines:
-# IRONFANG PLAYER BUY LINES
-player_buys_ironfang_lines = [
 
-    f"{player_name}: I shall take this swift blade, master Eternal.\"",
-    f"{player_name}: This sword is nimble, I shall wield it well.\"",
-    f"{player_name}: By my hand, it shall strike true and fast.\"",
-    f"{player_name}: I claim this blade for my travels ahead.\"",
-    f"{player_name}: A fine sword! I shall put it to good use.\""
-]
-def shop2_player_buy_ironfang_lines():
-    print(random.choice(player_buys_ironfang_lines))
-# RUNESWORD PLAYER BUY LINES
-player_buys_runesword_lines = [
 
-    f"{player_name}: These runes call to me, I shall take it.",
-    f"{player_name}: I shall wield this ancient sword with honor.",
-    f"{player_name}: By its magic, I hope to strike wisely.",
-    f"{player_name}: I claim this blade for my quests.",
-    f"{player_name}: May this sword guide my hand in battle."
-]
-def shop2_player_buy_runesword_lines():
-    print(random.choice(player_buys_runesword_lines))
-# HAMMER OF THE DEEP FORGE PLAYER BUY LINES
-player_buys_hammer_deep_forge_lines = [
-    f"{player_name}: This mighty hammer shall be mine.",
-    f"{player_name}: I shall crush my foes with this, Eternal.",
-    f"{player_name}: By my strength, this hammer shall serve me well.",
-    f"{player_name}: I claim this weapon of thunder and stone.",
-    f"{player_name}: With this, no armor shall withstand me."
-]
-def shop2_player_buy_hammer_deep_forge_lines():
-    print(random.choice(player_buys_hammer_deep_forge_lines))
-# BOW WHISPERING PINES PLAYER BUY LINES
-player_buys_bow_whispering_pines_lines = [
-
-    f"{player_name}: I shall take this bow and let the forest guide me.",
-    f"{player_name}: Silent and true, I shall strike unseen.",
-    f"{player_name}: By the pines, my aim shall not falter.",
-    f"{player_name}: I claim this bow for swift justice.",
-    f"{player_name}: My arrows shall fly as whispers through the trees."
-]
-def shop2_player_buys_bow_whispering_pines_lines():
-    print(random.choice(player_buys_bow_whispering_pines_lines))
-# DAGGER OF THE SHADOWGLASS PLAYER BUY LINES
-player_buys_dagger_shadowglass_lines = [
-
-    f"{player_name}: I shall wield this dagger from shadow and mist.",
-    f"{player_name}: Quick and silent, it shall serve me well.",
-    f"{player_name}: By cunning and speed, I shall strike true.",
-    f"{player_name}: I claim this blade for secret deeds.",
-    f"{player_name}: Shadows shall hide my hand, yet my strike will be deadly."
-]
-def shop2_player_buys_dagger_shadowglass_lines():
-    print(random.choice(player_buys_dagger_shadowglass_lines))
-# AXE STONEBREAKER PLAYER BUY LINES
-player_buys_axe_stonebreaker_lines = [
-
-    f"{player_name}: This axe shall rend both stone and foe.",
-    f"{player_name}: I claim this mighty weapon for my battles.",
-    f"{player_name}: By my strength, none shall stand before me.",
-    f"{player_name}: A weapon of power! I shall wield it well.",
-    f"{player_name}: Let the stones break beneath its swing."
-]
-def shop2_player_buys_axe_stonebreaker_lines():
-    print(random.choice(player_buys_axe_stonebreaker_lines))
-# LANCE OF THE ETERNAL GUARD PLAYER BUY LINES
-player_buys_lance_eternal_lines = [
-    f"{player_name}: I shall wield this lance with honor and courage.",
-    f"{player_name}: By the Eternal Guard, I claim this weapon.",
-    f"{player_name}: Steady and true, it shall guide my hand.",
-    f"{player_name}: I shall ride forth with this lance in valor.",
-    f"{player_name}: Let this lance serve me in noble deeds."
-]
-def shop2_player_buys_lance_eternal_lines():
-    print(random.choice(player_buys_lance_eternal_lines))
-# STAFF OF EMBERLIGHT PLAYER BUY LINES
-player_buys_staff_emberlight_lines = [
-
-    f"{player_name}: I claim this staff, bearer of ember and flame.",
-    f"{player_name}: By its magic, I shall light the darkness.",
-    f"{player_name}: I shall wield its fire with wisdom and care.",
-    f"{player_name}: Let the ember guide my hand in battle.",
-    f"{player_name}: This staff shall serve me well on my quest."
-
-]
-def shop2_player_buys_staff_emberlight_lines():
-    print(random.choice(player_buys_staff_emberlight_lines))
-# CROSSBOW OF SILENT THUNDER PLAYER BUY LINES
-player_buys_crossbow_silent_thunder_lines = [
-
-    f"{player_name}: I shall take this crossbow, silent as the storm.",
-    f"{player_name}: My enemies shall hear naught, yet fall swiftly.",
-    f"{player_name}: I claim this weapon to strike from afar.",
-    f"{player_name}: Each bolt shall fly true and sure.",
-    f"{player_name}: By thunder and silence, I shall prevail."
-]
-def shop2_player_buys_crossbow_silent_thunder_lines():
-    print(random.choice(player_buys_crossbow_silent_thunder_lines))
-# WARBLADE OF THE BRAVE PLAYER BUY LINES
-player_buys_warblade_brave_lines = [
-    f"{player_name}: I shall wield this legendary blade with courage.",
-    f"{player_name}: May my deeds honor this sword.",
-    f"{player_name}: I claim this weapon for battles yet to come.",
-    f"{player_name}: With this warblade, I shall carve my name in legend.",
-    f"{player_name}: By bravery, I shall master this mighty sword."
-
-]
-def shop2_player_buys_warblade_brave_lines():
-    print(random.choice(player_buys_warblade_brave_lines))
-# Stoneheart weaponsmith says farewell to the player
-shop2_weaponsmith_farewell = [
-
-    "Eternal Weaponsmith: Fare thee well, adventurer. May your blade strike true!",
-    "Eternal Weaponsmith: Go forth with courage, and return safe from your quests.",
-    "Eternal Weaponsmith: May fortune and skill follow you on your journey.",
-    "Eternal Weaponsmith: Keep your wits sharp and your sword sharper.",
-    "Eternal Weaponsmith: Until next time, may your path be free of shadows."
-]
-def shop2_weaponsmith_bye_lines():
-    print(random.choice(shop2_weaponsmith_farewell))
-# THREAD OF FATE RANDOM LINES FOR PLAYER
-thread_of_fate_lines =[
-    f"“A shadow travels beside you {player_name}, but only in darkness will it reveal its true face.”",
-    "“Your hands will heal what your blade cannot strike — yet the cost will weigh heavy.”",
-    "“A blossom of ember burns in the deep; its glow will either save or doom you.”",
-    "“The old one’s path winds like a serpent; beware the bite at the journey’s end.”",
-    "“A forgotten ally waits beneath stone and echo, loyal only to the brave.”",
-    "“Fate twists your name into two endings — only one hand will guide it.”",
-    "“The cavern will echo your scream or your triumph; the choice is not yet made.”",
-    "“You will drink from a silver cup and learn it carries both poison and power.”",
-    "“An ancient door sealed by sorrow will open at your touch — and you will not walk away unchanged.”",
-    "“In the darkest passage, you’ll find a light that is not your own — follow or be swallowed.”"
-]
-def thread_of_fate():
-    print(random.choice(thread_of_fate_lines))
 ## ------------------------------------------------------------------------------------------------------------------##
 # The Grandmaster dialogue
 print(f"\nPleasure meeting ye, {player_name}.")
@@ -2291,7 +1474,7 @@ elif player_class == "Dev test":
             elif test == "2":
                 pass
             elif test == "3":
-                chapt3_lost_trader()
+                player_name, gold, player_class, race_name = chapt3_lost_trader(player_name, player_health, max_health, gold, player_class, race_name,)
                 chapt4_the_last_bite()
             elif test == "4":
                 chapt4_the_last_bite()
@@ -3071,7 +2254,7 @@ pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 # CHapter 2
 add_quest(player_quests, "First big step!", "Head down to the Eternal Caverns and conquer what's coming...")
-chapt2_eternal_caverns()
+player_name = chapt2_eternal_caverns(player_name, race_name, player_class,player_health, max_health, gold)
 # Goblin fight narration
 pygame.mixer.music.fadeout(2000)
 print("\nA goblin jumps out from the shadows!\nThe battle begins!\n")
@@ -3087,7 +2270,7 @@ pygame.mixer.music.load(r"sounds/hidden passage.ogg")
 pygame.mixer.music.set_volume(0.9)
 pygame.mixer.music.play(-1)
 complete_quest(player_quests, "First big step!")
-chapt3_lost_trader()
+player_name, gold, player_class, race_name = chapt3_lost_trader(player_name, player_health, max_health, gold, player_class, race_name,)
 # Chapter 4 Music
 pygame.mixer.music.load(r"sounds/chapter 4.ogg")
 pygame.mixer.music.play(-1)
@@ -3320,7 +2503,7 @@ def south_eternal_village():
             print("Where do you want to go?"
                   "\n[1]. Walk to the Spindle of Tales."
                   "\n[2]. Venture through the Hall of the Everlight. (Coming soon)"
-                  "\n[3]. Go to the Echoing Vials (Potions Shop)."
+                  "\n[3]. Go to the Echoing Vials - Potion Shop."
                   "\n[4]. Explore deeper in the Eternal Caverns. (Coming soon)"
                   "\n[5]. Check out the Glowmire Market. (Coming soon)"
                   "\n[6]. Visit the Eternal Sanctuary."
@@ -3401,7 +2584,7 @@ def south_eternal_village():
                         time.sleep(2)
                         print("You spun the Thread of Fate...")
                         time.sleep(1.4)
-                        thread_of_fate()
+                        thread_of_fate(player_name)
                         time.sleep(2)
                     # Player leaves Spindle of Tales
                     elif player_choice_2 == "4":
@@ -3525,125 +2708,125 @@ def south_eternal_village():
                         serah_line()
                         time.sleep(1.3)
                         # Show the menu to the player
-                        while True:
-                            print("What do you want from the menu?")
-                            print("=" * 60)
-                            print("                                                                        --|- SANCTUARY FOOD MENU -|--")
-                            print("=" * 60)
-                            print(f"                                    -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
-                            print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
-                                  f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
-                                  f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
-                                  f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+8 HP, +3 ATK) - Warm bread baked with eternal embers."
-                                  f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
-                                  f"\n[X]. {Style.BRIGHT}Exit Menu{Style.RESET_ALL}")
-                            print("=" * 60)
+                        print("What do you want from the menu?")
+                        print("=" * 60)
+                        print("                                                                        --|- SANCTUARY FOOD MENU -|--")
+                        print("=" * 60)
+                        print(f"                                    -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+                        print(f"[1]. {Fore.YELLOW + Style.BRIGHT}Celestial Broth{Style.RESET_ALL} 15 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+10 HP) - A soothing golden soup for weary souls"
+                              f"\n[2]. {Fore.GREEN + Style.BRIGHT}Embergrain Stew{Style.RESET_ALL} 20 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+5 HP & +2 ATK) - Hearty grains and roots simmered slow."
+                              f"\n[3]. {Fore.LIGHTMAGENTA_EX + Style.BRIGHT}Moonpetal Salad{Style.RESET_ALL} 30 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+15 HP) - Crisp greens with shimmering petals."
+                              f"\n[4]. {Fore.CYAN + Style.BRIGHT}Sunforged Bread{Style.RESET_ALL} 25 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL} (+8 HP, +3 ATK) - Warm bread baked with eternal embers."
+                              f"\n[5]. {Fore.LIGHTRED_EX + Style.BRIGHT}Eternal Roast{Style.RESET_ALL} 40 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, {eternal_roast_stock} Stock left (+20 HP +5 ATK) - Tender meat infused with sacred herbs."
+                              f"\n[X]. {Style.BRIGHT}Exit Menu{Style.RESET_ALL}")
+                        print("=" * 60)
+                        """Choice given for the player when they go to the Restaurant"""
 
-                            while True:
-                                sanctuary_resto_choice = input("\n--> ").lower().strip()
-                                # Player chooses "1" and buys Celestial broth
-                                if sanctuary_resto_choice == "1" and gold >= 15:
-                                    if race_name == "Kithling" and gold >= 12:
-                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
-                                        time.sleep(1.3)
-                                        print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, gold is now {gold} Gold. Max HP is now {max_health}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 12
-                                        max_health += 10
-                                        break
-                                    else:
-                                        gold -= 15
-                                        max_health += 10
-                                        print(f"You bought Celestial Broth! -15 Gold, gold is now {gold} Gold. Max HP is now {max_health}")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        break
-                                # Player chooses "2" and buys Embergrin Stew
-                                elif sanctuary_resto_choice == "2" and gold >= 20:
-                                    if race_name == "Kithling" and gold >= 17:
-                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
-                                        time.sleep(1.3)
-                                        print(f"You bought Embergrin Stew with a discounted price of 3 gold! -17 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 17
-                                        max_health += 5
-                                        attack_max += 2
-                                        break
-                                    else:
-                                        print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 20
-                                        max_health += 5
-                                        attack_max += 2
-                                        break
-                                # Player chooses "3" and buys Moonpetal Salad
-                                elif sanctuary_resto_choice == "3" and gold >= 30:
-                                    if race_name == "Kithling" and gold > 25:
-                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
-                                        time.sleep(1.3)
-                                        print(f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 25
-                                        max_health += 15
-                                        break
-                                    else:
-                                        print(f"You bought Moonpetal Salad! -30 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 30
-                                        max_health += 15
-                                        break
-                                # Playerr chooses "4" and buys Sunforged Bread
-                                elif sanctuary_resto_choice == "4" and gold >= 25:
-                                    if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
-                                        time.sleep(1.3)
-                                        print(f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 21
-                                        max_health += 8
-                                        attack_max += 3
-                                        break
-                                    else:
-                                        print(f"You bought Sunforged Bread! -25 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 25
-                                        max_health += 8
-                                        attack_max += 3
-                                        break
-                                # Player chooses "5" and buys Eternal Roast
-                                elif sanctuary_resto_choice == "5" and gold >= 40:
-                                    if race_name == "Kithling":
-                                        print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
-                                        time.sleep(1.3)
-                                        print(f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 35
-                                        max_health += 20
-                                        attack_max += 5
-                                        break
-                                    else:
-                                        print(f"You bought Eternal Roast! -40 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
-                                        player_payment()
-                                        time.sleep(1.3)
-                                        gold -= 40
-                                        max_health += 20
-                                        attack_max += 5
-                                        break
-                                elif sanctuary_resto_choice == "x":
-                                    print("You stepped away from the restaurant...")
+                        while True:
+                            sanctuary_resto_choice = input("\n--> ").lower().strip()
+                            if sanctuary_resto_choice == "x":
+                                print("You stepped away from the restaurant...")
+                                time.sleep(1.3)
+                                break
+
+                            elif sanctuary_resto_choice == "1" and gold >= 15:
+                                if race_name == "Kithling" and gold >= 12:
+                                    print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
                                     time.sleep(1.3)
+                                    print(f"You bought Celestial Broth with a discounted price of 3 Gold! -12 Gold, Max HP is now {max_health}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 12
+                                    max_health += 10
                                     break
                                 else:
-                                    print("Invalid choice, try again")
+                                    gold -= 15
+                                    max_health += 10
+                                    print(f"You bought Celestial Broth! -15 Gold, Max HP is now {max_health}")
+                                    player_payment()
+                                    time.sleep(1.3)
                                     break
+
+                            elif sanctuary_resto_choice == "2" and gold >= 20:
+                                if race_name == "Kithling" and gold >= 17:
+                                    print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
+                                    time.sleep(1.3)
+                                    print(f"You bought Embergrin Stew with a discounted price of 3 gold! -17 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 17
+                                    max_health += 5
+                                    attack_max += 2
+                                    break
+                                else:
+                                    print(f"You bought Embergrin Stew! -20 Gold, gold is now {gold} Gold. Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 20
+                                    max_health += 5
+                                    attack_max += 2
+                                    break
+
+                            elif sanctuary_resto_choice == "3" and gold >= 30:
+                                if race_name == "Kithling" and gold > 25:
+                                    print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
+                                    time.sleep(1.3)
+                                    print(f"You bought Moonpetal Salad with a discounted price of 5 gold! -25 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 25
+                                    max_health += 15
+                                    break
+                                else:
+                                    print(f"You bought Moonpetal Salad! -30 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 30
+                                    max_health += 15
+                                    break
+
+                            elif sanctuary_resto_choice == "4" and gold >= 25:
+                                if race_name == "Kithling":
+                                    print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
+                                    time.sleep(1.3)
+                                    print(f"You bought Sunforged Bread with a discounted price of 4 gold! -21 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 21
+                                    max_health += 8
+                                    attack_max += 3
+                                    break
+                                else:
+                                    print(f"You bought Sunforged Bread! -25 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 25
+                                    max_health += 8
+                                    attack_max += 3
+                                    break
+
+                            elif sanctuary_resto_choice == "5" and gold >= 40:
+                                if race_name == "Kithling":
+                                    print("Serah the Sustenance: Ahh yes a Kithling! I favor thee!")
+                                    time.sleep(1.3)
+                                    print(f"You bought Eternal Roast with a discounted price of 5 gold! -21 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 35
+                                    max_health += 20
+                                    attack_max += 5
+                                    break
+                                else:
+                                    print(f"You bought Eternal Roast! -40 Gold, Max HP is now {max_health} and Max ATK is now {attack_max}.")
+                                    player_payment()
+                                    time.sleep(1.3)
+                                    gold -= 40
+                                    max_health += 20
+                                    attack_max += 5
+                                    break
+                            else:
+                                print("Invalid choice, try again")
+                                break
                     # player plays Fortune's Toss
                     elif player_choice_3 == "3":
                         print("\nYou walk towards the busy table...")
@@ -3697,7 +2880,7 @@ def south_eternal_village():
                                 print("Invalid Choice, please select an appropriate choice.")
                                 continue
                     elif player_choice_3 == "x":
-                        soulwarden_farwell()
+                        soulwarden_farwell(player_name)
                         time.sleep(1.3)
                         break
             elif walk_choice_north == "7":
