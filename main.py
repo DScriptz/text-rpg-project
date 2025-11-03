@@ -1049,7 +1049,8 @@ def stoneheart_armory_shop():
 ### Chapters 1-5 ---------------------------------------------------------------------------------------------------###
 
 # -Chapter 3-
-def chapt3_lost_trader(player_name, player_health, max_health, gold, race_name, player_class):
+def chapt3_lost_trader():
+    global player_name, player_health, max_health
     print("Chapter 3: Lost Trader and...bugs?")
     # Dialogue Skipping logic
     print(f"\n                              --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
@@ -1147,7 +1148,6 @@ def chapt3_lost_trader(player_name, player_health, max_health, gold, race_name, 
     print("But before that you head on deep to the cave...")
     time.sleep(1.3)
     pygame.mixer.music.fadeout(2000)
-    return player_name, gold, player_health, max_health
 
 # -Chapter 4-
 def chapt4_the_last_bite():
@@ -1205,7 +1205,6 @@ def chapt4_the_last_bite():
     time.sleep(3)
     # Player responds to eternal warrior
     player_eternal_warrior_talking()
-
 # Fortune's toss code
 def play_fortune_toss(gold):
     print("\nElara Wraithand: Now tell me stranger, what side of the coin will you bet on tonight?")
@@ -1474,10 +1473,12 @@ elif player_class == "Dev test":
             elif test == "2":
                 pass
             elif test == "3":
-                player_name, gold, player_class, race_name = chapt3_lost_trader(player_name, player_health, max_health, gold, player_class, race_name,)
+                chapt3_lost_trader()
                 chapt4_the_last_bite()
+
             elif test == "4":
                 chapt4_the_last_bite()
+
             elif test == "6":
                 pass
     else:
@@ -2270,11 +2271,13 @@ pygame.mixer.music.load(r"sounds/hidden passage.ogg")
 pygame.mixer.music.set_volume(0.9)
 pygame.mixer.music.play(-1)
 complete_quest(player_quests, "First big step!")
-player_name, gold, player_class, race_name = chapt3_lost_trader(player_name, player_health, max_health, gold, player_class, race_name,)
+chapt3_lost_trader()
 # Chapter 4 Music
 pygame.mixer.music.load(r"sounds/chapter 4.ogg")
 pygame.mixer.music.play(-1)
 chapt4_the_last_bite()
+
+
 # Chapter 5: The Eternal village
 pygame.mixer.music.load(r"sounds/Eternal Village bg.ogg")
 pygame.mixer.music.play(-1)
