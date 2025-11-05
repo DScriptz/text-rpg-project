@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# Version: 10.29.3 Alpha (Questing and Arena update) updated Nov 3, 2025.
+# v.11.5.25 Alpha (Questing and Arena update) updated Nov 5, 2025.
 #DefNoInspect
 import sys
 import os
@@ -17,7 +17,6 @@ from dialogues import *
 from dialogues.player import *
 from chapters import *
 init(autoreset=True)
-# test
 # Game short sounds helper code
 def play_sound(sound_name, volume=0.6 ):
     try:
@@ -43,9 +42,32 @@ try:
 except FileNotFoundError:
     print("Error: enemy_data.json is not found! Make sure the file is in the same folder as this script.")
     sys.exit()
+# Load the Class_stats
+try:
+    with open('class_data.json', 'r') as file:
+        class_data = json.load(file)
+except FileNotFoundError:
+    print("Error: class_data.json is not found! Make sure the file is in the same folder as this script.")
+""" LOAD PLAYER DATA """
 # ============================================
 #     GAME FLAGS/STATS AND STARTING DATAA
 # ============================================
+""" PLAYER DATA """
+player_data = {
+    "name": "",
+    "class": "",
+    "race": "",
+    "gold": 30,
+    "player_health": 0,
+    "max_health": 0,
+    "attack_max": 0,
+    "inventory": {
+        "empty bottle": 0,
+        "empty vial": 0
+    },
+
+}
+inventory = player_data["inventory"]
 # Keywords for dicts
 potion_keywords = [
     "potion",
@@ -55,14 +77,19 @@ potion_keywords = [
     "tea",
     "vial"
 ]
-# Player stats
-gold = 30 # 30 fair start hmm
-current_chapter = 0
-# Player's inventory
-player_inventory = {
-    "empty vial": 0,
-    "empty bottle": 0,
-
+# player special skill
+special_skills = {
+    "Warrior": "Power Strike",
+    "Rogue": "Shadow Step",
+    "Mage": "Ice Shard",
+    "Necromancer": "Life Drain",
+    "Marksman": "Eagle Eye",
+    "Paladin": "Holy Shield",
+    "Druid": "Regrowth",
+    "Illusionist": "Mirror Image",
+    "Alchemist": "Risky Play",
+    "Sentinel": "Bulwark Stance",
+    "Dev Test": "FAHHHHHHHHHHHHHHH"
 }
 # Player quest list
 player_quests = {}
@@ -113,7 +140,7 @@ def complete_quest(quests, name):
                 attack_max += 10
                 print(f"You obtained and euqipped the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
             else:
-                player_inventory[item_name] = player_inventory.get(item_name, 0) + 1
+                inventory[item_name] = inventory.get(item_name, 0) + 1
                 print(f"You recevied a {item_name}!")
     else:
         print(f"\nQuest '{name}' not found.\n")
@@ -275,7 +302,7 @@ def potion_lists():
 def open_inventory():
     play_sound("inventory open", volume=0.8)
     print("\n--- INVENTORY ---")
-    for item, amount in player_inventory.items():
+    for item, amount in inventory.items():
         print(f"-> {item.title()}: {amount}")
     print("-------------------")
     print("Press Enter to close inventory")
@@ -622,9 +649,9 @@ def echo_vials_donation():
             donated_effects()
     elif donate == "2":
         item_name = "Empty Bottle"
-        remaining = player_inventory.get("empty bottle, 0")
-        if player_inventory.get("empty bottle", 0) > 0:
-            player_inventory["empty bottle"] -= 1
+        remaining = inventory.get("empty bottle, 0")
+        if inventory.get("empty bottle", 0) > 0:
+            inventory["empty bottle"] -= 1
             print("You have placed an empty bottle. It hums quietly...")
             print(f"- 1{item_name} (Empty Bottle remaining: {remaining})")
             time.sleep(1.3)
@@ -679,7 +706,7 @@ def trader_shop():
         elif trade == "3" and gold >= 12:
             player_payment()
             max_health += 10
-            player_health += 5
+            player_health += 10
             gold -= 12
             print(f"You have bought a Magic Ring! (Player Health: {player_health}/{max_health}, Gold: {gold})")
         elif trade == "4" and gold >= 20:
@@ -1214,6 +1241,7 @@ def play_fortune_toss(gold):
         print("                                                                                         -{ Fortune's Toss }-")
         print(f"                                                                                    -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
         print("\n                                                                                        [H] Heads | [T] Tails.")
+        print("                                                                                            [X] Exit Menu.")
         print("==========================================================================================================================================================================================")
 
         game_choice = input("\n>> ").lower().strip()
@@ -1223,6 +1251,9 @@ def play_fortune_toss(gold):
                 coin_choice = "heads"
             case "t":
                 coin_choice = "tails"
+            case "x":
+                print("You walked away from the table..")
+                break
             case _:
                 print("Not a valid choice.")
                 continue
@@ -1262,7 +1293,6 @@ def play_fortune_toss(gold):
                 print(f"\nYou lost {bet_amount} gold...")
                 time.sleep(1.5)
         return gold
-
 # Game title & music--------------------------------------------------------------------------------------------------------------------------------------#
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
@@ -1318,11 +1348,12 @@ else:
     print("\nOld Man: Be gone! You are not worthy to fight for our land you coward!")
     exit()
 # Ask for player name
-player_name = input("\nOld Man: What is thy name, traveller?: ").strip()
-while player_name == "":
+player_data["name"] = input("\nOld Man: What is thy name, traveller?: ").strip()
+while player_data["name"] == "":
     print("Old Man: I know you have the ability speak, traveller.")
-    player_name = input("\nOld Man: What is thy name, traveller? ").strip()
+    player_data["name"] = input("\nOld Man: What is thy name, traveller? ").strip()
 
+player_name = player_data["name"]
 
 ## ------------------------------------------------------------------------------------------------------------------##
 # The Grandmaster dialogue
@@ -1352,79 +1383,110 @@ play_sound("quest completed", volume=0.6)
 time.sleep(1.4)
 add_quest(player_quests, "Forging a hero...", "Pick a class and a race.")
 time.sleep(1.3)
-print("\nChoose thy class: ")
-time.sleep(1)
-# Class list
-print()
-print("=======================================================================================================")
-print("                                          -CLASS LIST-                                                   ")
-print("=======================================================================================================")
-print(f"(<{Fore.LIGHTGREEN_EX + Style.BRIGHT}Tip: Every class is unique, fun and balanced! Pick what you will enjoy and have fun!{Style.RESET_ALL}>)")
-print()
-# Warrior Description
-print(f"{Fore.YELLOW}\n1. Warrior{Style.RESET_ALL} – A hardened fighter with unmatched strength and resilience.")
-print("[Base Health: 75 | Base Attack: 8]")
-print("Special Skill: [Power Strike] - Unleash raw might to deliver a crushing blow that shatters defenses!")
-# Rogue Description
-print(f"{Fore.BLUE}\n2. Rogue{Style.RESET_ALL} – A swift shadow who strikes fast and critical.")
-print("[Base Health: 50 | Base Attack: 9]")
-print("Special Skill: [Shadow Step] - Vanish into darkness, striking swiftly and evading the next attack.")
-# Mage Description
-print(f"{Fore.LIGHTMAGENTA_EX + Style.BRIGHT}\n3. Mage{Style.RESET_ALL} – A frail but strong wielder of a devastating arcane power.")
-print("[Base Health: 60 | Base Attack: 12]")
-print("Special Skill: [Ice Shard] - Vanish into darkness, striking swiftly and evading the next attack.")
-# Necromancer Description
-print(f"{Fore.LIGHTRED_EX + Style.DIM}\n4. Necromancer{Style.RESET_ALL} – A dark conjurer who commands the dead.")
-print("[Base Health: 55 | Base Attack: 9]")
-print("Special Skill: [Life Drain] - Sap the life (+3 Heal) from your enemy, wounding them as your own strength returns.")
-print("Passive Skill: [Summon Undead] - Call upon forbidden rites to raise a fallen soul, binding it to your will to fight once more.")
-# Marksman Description
-print(f"{Fore.LIGHTCYAN_EX + Style.DIM}\n5. Marksman{Style.RESET_ALL} – A precise hunter who slays from afar with deadly accuracy.")
-print("[Base Health: 56 | Base Attack: 10]")
-print("Special Skill: [Eagle Eye] - Focus with deadly precision — your next attack will have a guaranteed critical chance!")
-# Paladin Description
-print(f"{Fore.LIGHTYELLOW_EX + Style.BRIGHT}\n6. Paladin{Style.RESET_ALL} – A holy knight who balances might with divine protection.")
-print("[Base Health: 65 | Base Attack: 8]")
-print("Special Skill: [Holy Shield] - Raise a divine barrier that blocks the next incoming strike.")
-print("Passive Skill: [Holy Aura] - Call upon the Spirit and heal yourself for 3-5 HP upon defending")
-# Druid Description
-print(f"{Fore.GREEN + Style.BRIGHT}\n7. Druid{Style.RESET_ALL} – A nature sage who heals allies and bends the wilds.")
-print("[Base Health: 60 | Base Attack: 11]")
-print("Special Skill: [Regrowth] - Call upon nature’s essence (Heals 3-5 HP) to restore your vitality mid-battle.")
-# Illusionist Description
-print(f"{Fore.LIGHTBLACK_EX + Style.DIM}\n8. Illusionist{Style.RESET_ALL} – A trickster who deceives foes and slips past danger.")
-print("[Base Health: 57 | Base Attack: 10]")
-print("Special Skill: [Mirror Image] - Create phantom doubles to confuse your foe to hit themselves and evade their blows.")
-# Alchemist Description
-print(f"{Fore.RED + Style.BRIGHT}\n9. Alchemist{Style.RESET_ALL} – A daring experimenter wielding volatile potions.")
-print("[Base Health: 58 | Base Attack: 13]")
-print("Special Skill: [Risky Play] - Gamble your safety for volatile power — throw your concoction & deal great damage or suffer the backlash.")
-# Sentinel Description
-print(f"{Fore.CYAN + Style.BRIGHT}\n10. Sentinel{Style.RESET_ALL} – A living bulwark, nearly unbreakable in defense.")
-print("[Base Health: 80 | Base Attack: 7]")
-print("Special Skill: [Bulwark Stance] - Fortify your body into living stone, reducing enemy damage but dulling your strikes.")
-print("Passive Skill: [War Cry] - Cry for battle, increasing your attack!")
-# Quit choiceeee
-print("\nQ. Quit")
-# Choice logic
-choice = input("\nEnter 1-10 or 'q' to quit: ")
-if choice.lower() == "q":
-    print("Only such coward back off at the height of pressure, BE GONE!")
-    sys.exit()
-# Load the Class_stats
-try:
-    with open('class_data.json', 'r') as file:
-        class_data = json.load(file)
-except FileNotFoundError:
-    print("Error: class_data.json is not found! Make sure the file is in the same folder as this script.")
-# if player doesn't choose class welp villager you get!
-villager_stats = {"name": "Villager", "health": 30, "attack": 5} # This is saying "if the player types a blank or anything else besides 1-10, they'll get a villager"
-player_data = class_data.get(choice, villager_stats)
+def class_choosing(player_data):
+    print("\nLance the Grandmaster: Very well, now what class do you choose?")
+    time.sleep(1.5)
+    print("\nChoose thy Class: ")
+    time.sleep(1.5)
+    # Class list
+    print()
+    print("=======================================================================================================")
+    print("                                          -CLASS LIST-                                                   ")
+    print("=======================================================================================================")
+    print(
+        f"(<{Fore.LIGHTGREEN_EX + Style.BRIGHT}Tip: Every class is unique, fun and balanced! Pick what you will enjoy and have fun!{Style.RESET_ALL}>)")
+    print()
+    # Warrior Description
+    print(f"{Fore.YELLOW}\n1. Warrior{Style.RESET_ALL} – A hardened fighter with unmatched strength and resilience.")
+    print("[Base Health: 75 | Base Attack: 8]")
+    print("Special Skill: [Power Strike] - Unleash raw might to deliver a crushing blow that shatters defenses!")
+    # Rogue Description
+    print(f"{Fore.BLUE}\n2. Rogue{Style.RESET_ALL} – A swift shadow who strikes fast and critical.")
+    print("[Base Health: 50 | Base Attack: 9]")
+    print("Special Skill: [Shadow Step] - Vanish into darkness, striking swiftly and evading the next attack.")
+    # Mage Description
+    print(
+        f"{Fore.LIGHTMAGENTA_EX + Style.BRIGHT}\n3. Mage{Style.RESET_ALL} – A frail but strong wielder of a devastating arcane power.")
+    print("[Base Health: 60 | Base Attack: 12]")
+    print("Special Skill: [Ice Shard] - Vanish into darkness, striking swiftly and evading the next attack.")
+    # Necromancer Description
+    print(f"{Fore.LIGHTRED_EX + Style.DIM}\n4. Necromancer{Style.RESET_ALL} – A dark conjurer who commands the dead.")
+    print("[Base Health: 55 | Base Attack: 9]")
+    print("Special Skill: [Life Drain] - Sap the life (+3 Heal) from your enemy, wounding them as your own strength returns.")
+    print("Passive Skill: [Summon Undead] - Call upon forbidden rites to raise a fallen soul, binding it to your will to fight once more.")
+    # Marksman Description
+    print(
+        f"{Fore.LIGHTCYAN_EX + Style.DIM}\n5. Marksman{Style.RESET_ALL} – A precise hunter who slays from afar with deadly accuracy.")
+    print("[Base Health: 56 | Base Attack: 10]")
+    print(
+        "Special Skill: [Eagle Eye] - Focus with deadly precision — your next attack will have a guaranteed critical chance!")
+    # Paladin Description
+    print(
+        f"{Fore.LIGHTYELLOW_EX + Style.BRIGHT}\n6. Paladin{Style.RESET_ALL} – A holy knight who balances might with divine protection.")
+    print("[Base Health: 65 | Base Attack: 8]")
+    print("Special Skill: [Holy Shield] - Raise a divine barrier that blocks the next incoming strike.")
+    print("Passive Skill: [Holy Aura] - Call upon the Spirit and heal yourself for 3-5 HP upon defending")
+    # Druid Description
+    print(
+        f"{Fore.GREEN + Style.BRIGHT}\n7. Druid{Style.RESET_ALL} – A nature sage who heals allies and bends the wilds.")
+    print("[Base Health: 60 | Base Attack: 11]")
+    print("Special Skill: [Regrowth] - Call upon nature’s essence (Heals 3-5 HP) to restore your vitality mid-battle.")
+    # Illusionist Description
+    print(
+        f"{Fore.LIGHTBLACK_EX + Style.DIM}\n8. Illusionist{Style.RESET_ALL} – A trickster who deceives foes and slips past danger.")
+    print("[Base Health: 57 | Base Attack: 10]")
+    print(
+        "Special Skill: [Mirror Image] - Create phantom doubles to confuse your foe to hit themselves and evade their blows.")
+    # Alchemist Description
+    print(
+        f"{Fore.RED + Style.BRIGHT}\n9. Alchemist{Style.RESET_ALL} – A daring experimenter wielding volatile potions.")
+    print("[Base Health: 58 | Base Attack: 13]")
+    print(
+        "Special Skill: [Risky Play] - Gamble your safety for volatile power — throw your concoction & deal great damage or suffer the backlash.")
+    # Sentinel Description
+    print(
+        f"{Fore.CYAN + Style.BRIGHT}\n10. Sentinel{Style.RESET_ALL} – A living bulwark, nearly unbreakable in defense.")
+    print("[Base Health: 80 | Base Attack: 7]")
+    print(
+        "Special Skill: [Bulwark Stance] - Fortify your body into living stone, reducing enemy damage but dulling your strikes.")
+    print("Passive Skill: [War Cry] - Cry for battle, increasing your attack!")
+    # Quit choiceeee
+    print("\nQ. Quit")
+    # Choice logic
+    choice = input("\nEnter 1-10 or 'q' to quit: ")
+    match choice:
+        case "q":
+            print("Only such coward back off at the height of pressure, BE GONE!")
+            sys.exit()
+    if choice in class_data:
+        chosen_class = class_data[choice]
+
+        player_data["class"] = chosen_class["name"]
+        player_data["attack_max"] = chosen_class["attack"]
+        player_data["player_health"] = chosen_class["health"]
+        player_data["max_health"] = chosen_class["health"]
+
+        print(f"\nLance the Grandmaster: Ahh yes a {player_data['class']} lets see how far you'll go.")
+
+        print(f"\n{player_data['name']}:")
+        print(f"Health: {player_data['player_health']} | {player_data['max_health']},")
+        print(f"Attack: {player_data['attack_max']}")
+        print(f"Gold: {player_data['gold']}")
+    else:
+        print("Oh a nameless villagerr")
+        player_data["class"] = "Villager"
+        player_data["player_health"] = 30
+        player_data["max_health"] = 30
+        player_data["attack_max"] = 5
+    return player_data
+
 # Player data
-player_class = player_data["name"]
-max_health = player_data["health"]
-player_health = player_data["health"]
-attack_max = player_data["attack"]
+player_data = class_choosing(player_data)
+player_class = player_data["class"]
+player_health = player_data["player_health"]
+max_health = player_data["max_health"]
+attack_max = player_data["attack_max"]
+gold = player_data["gold"]
 # Dialogues for diff classes
 if player_class == "Warrior":
     print("\nLance, the Grandmaster: 'Ah yes, the good ol' fashioned warrior. A strong, bruteforce of a might frontliner!'")
@@ -1457,7 +1519,6 @@ elif player_class == "Sentinel":
     print("\nLance, the Grandmaster: 'Hard to take down, hard to kill. You'll be the shield to many, but also the saving force of your life.'")
     time.sleep(2)
 elif player_class == "Dev test":
-    race_name = "Dev"
     print("\nLance, the Grandmaster: 'Mmm, alright we got the dev in the house! Hi Dwayne! Good job so far keep it up!'")
     print("You want to test a specific chapter? (Y/N)")
     dev_choice = input("> ").strip().lower()
@@ -1486,115 +1547,102 @@ elif player_class == "Dev test":
 else:
     print("\nLance, the Grandmaster: 'Oh, going with nothing huh? Such lowly and brave behaviour thy got, traveller.")
     time.sleep(2)
-# PLayer Chooses race:
-print(f"Lance, the Grandmaster: 'Wise choice {player_name}, Now If I may ask, what is thy race?'")
-time.sleep(1)
-print("Choose your Race:")
-print()
-print("=======================================================================================================")
-print("                                           --RACE LIST--                                                   ")
-print(f"\n(<{Fore.LIGHTGREEN_EX + Style.BRIGHT}Tip: Some races have discounts on certain shops, choose what you'll enjoy and have fun!{Style.RESET_ALL}>)")
-print()
-print("[1]. Human (+1 HP, +1 Atk.) - Balanced, Adaptable.")
-print("[2]. Sylvari (-4 HP, +2 Atk.) - Agile Hunters, Favored by the forests.")
-print("[3]. Gorvak (+12 HP, -1 Atk.) - Brutal strength, Ironblood endurance.")
-print("[4]. Wraithkin (-8 HP, +4 Atk.) - Pale Wanderers.")
-print("[5]. Solarian (+6 HP, +1  Atk.) - Sun-touched, Blessed with light.")
-print("[6]. Stoneborn (+10 HP, +0 Atk.) - Stalwart children of the mountain.")
-print("[7]. Kithling (-3 HP, +1 Atk.) - Smallfolk nimble in danger.")
-print("[8]. Infernal (-6 HP, +2 Atk.) - Fire-blooded, feared by many.")
-print("[9]. Drakonid (+11 HP, +2 Atk.) - Scions of Dragons, mighty and enduring.")
-print("[10]. Lunari (-7 HP, +3 Atk.) - Moon-blessed people whose silver-tinged blood hums with ancient magic.")
-print("=======================================================================================================")
-print()
-chosen_race = input("> ").strip()
-# Player gets the race benefits
+def race_choosing(player_data):
+    # PLayer Chooses race:
+    print(f"Lance, the Grandmaster: 'Wise choice {player_data["name"]}, Now If I may ask, what is thy race?'")
+    time.sleep(1)
+    print("Choose your Race:")
+    print()
+    print("=======================================================================================================")
+    print("                                           --RACE LIST--                                                   ")
+    print(
+        f"\n(<{Fore.LIGHTGREEN_EX + Style.BRIGHT}Tip: Some races have discounts on certain shops, choose what you'll enjoy and have fun!{Style.RESET_ALL}>)")
+    print()
+    print("[1]. Human (+1 HP, +1 Atk.) - Balanced, Adaptable.")
+    print("[2]. Sylvari (-4 HP, +2 Atk.) - Agile Hunters, Favored by the forests.")
+    print("[3]. Gorvak (+12 HP, -1 Atk.) - Brutal strength, Ironblood endurance.")
+    print("[4]. Wraithkin (-8 HP, +4 Atk.) - Pale Wanderers.")
+    print("[5]. Solarian (+6 HP, +1  Atk.) - Sun-touched, Blessed with light.")
+    print("[6]. Stoneborn (+10 HP, +0 Atk.) - Stalwart children of the mountain.")
+    print("[7]. Kithling (-3 HP, +1 Atk.) - Smallfolk nimble in danger.")
+    print("[8]. Infernal (-6 HP, +2 Atk.) - Fire-blooded, feared by many.")
+    print("[9]. Drakonid (+11 HP, +2 Atk.) - Scions of Dragons, mighty and enduring.")
+    print("[10]. Lunari (-7 HP, +3 Atk.) - Moon-blessed people whose silver-tinged blood hums with ancient magic.")
+    print("=======================================================================================================")
+    print()
+    chosen_race = input("> ").strip()
+    match chosen_race:
+        case "1":
+            player_data["race"] = "Human"
+            player_data["player_health"] += 1
+            player_data["max_health"] += 1
+            player_data["attack_max"] += 1
+        case "2":
+            player_data["race"] = "Sylvari"
+            player_data["player_health"] -= 4
+            player_data["max_health"] -= 4
+            player_data["attack_max"] += 2
+        case "3":
+            player_data["race"] = "Gorvak"
+            player_data["player_health"] +=  12
+            player_data["max_health"] += 12
+            player_data["attack_max"] -= 1
+        case "4":
+            player_data["race"] = "Wraithkin"
+            player_data["player_health"] -= 8
+            player_data["max_health"] -= 8
+            player_data["attack_max"] += 4
+        case "5":
+            player_data["race"] = "Solarian"
+            player_data["player_health"] += 6
+            player_data["max_health"] += 6
+            player_data["attack_max"] += 1
+        case "6":
+            player_data["race"] = "Stoneborn"
+            player_data["player_health"] += 10
+            player_data["max_health"] += 10
+        case "7":
+            player_data["race"] = "Kithling"
+            player_data["player_health"] -= 3
+            player_data["max_health"] -= 3
+            player_data["attack_max"] += 1
+        case "8":
+            player_data["race"] = "Infernal"
+            player_data["player_health"] -= 6
+            player_data["max_health"] -= 6
+            player_data["attack_max"] += 2
+        case "9":
+            player_data["race"] = "Drakonid"
+            player_data["player_health"] += 11
+            player_data["max_health"] += 11
+            player_data["attack_max"] += 2
+        case "10":
+            player_data["race"] = "Lunari"
+            player_data["player_health"] -= 7
+            player_data["max_health"] -= 7
+            player_data["attack_max"] += 3
+        case _:
+            print("Unknown choice. Defaulting to Human.")
+            player_data["race"] = "Human"
+            player_data["max_health"] += 1
+            player_data["player_health"] += 1
+            player_data["attack_max"] += 1
 
-if chosen_race == "1":
-    race_name = "Human"
-    max_health += 1
-    attack_max += 1
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "2":
-    race_name = "Sylvari"
-    max_health -= 4
-    attack_max += 2
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "3":
-    race_name = "Gorvak"
-    max_health += 12
-    attack_max -= 2
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "4":
-    race_name = "Wraithkin"
-    chosen_race = race_name
-    max_health -= 8
-    attack_max += 4
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "5":
-    race_name = "Solarian"
-    max_health += 6
-    attack_max += 1
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "6":
-    race_name = "Stoneborn"
-    max_health += 10
-    attack_max += 0
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "7":
-    race_name = "Kithling"
-    max_health -= 3
-    attack_max += 1
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "8":
-    race_name = "Infernal"
-    max_health -= 6
-    attack_max += 2
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "9":
-    race_name = "Drakonid"
-    max_health += 11
-    attack_max += 2
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-elif chosen_race == "10":
-    race_name = "Lunari"
-    max_health -= 7
-    attack_max += 3
-    print(f"Lance, the Grandmaster: 'Ah… it is decided. You carry the blood of the {race_name}, and you wield the mantle of the {player_class}.'")
-    time.sleep(2)
-    print(f"Lance, the Grandmaster: 'From this moment forth, {player_name}, you are a {race_name} {player_class} — sworn to the path of the Eternal Caverns.'")
-    time.sleep(2)
-else:
-    print("You chose not to pick a race...")
-    race_name = "Unknown"
-player_health = max_health
+    print(f"\n{player_data['name']}, your stats are now,")
+    print(f"Race: {player_data['race']},")
+    print(f"Class: {player_data['class']},")
+    print(f"Health: {player_data['player_health']} | {player_data['max_health']},")
+    print(f"Attack: {player_data['attack_max']}")
+    print(f"Gold: {player_data['gold']}")
+
+    return player_data
+# Player gets the race benefits
+# After race selection
+player_data = race_choosing(player_data)
+race_name = player_data["race"]
+player_health = player_data["player_health"]
+max_health = player_data["max_health"]
+attack_max = player_data["attack_max"]
 time.sleep(1)
 # Title welcoming the player
 complete_quest(player_quests, "Forging a hero...")
@@ -1676,10 +1724,12 @@ def shop_items():
         else:
             shop1_broke()
 shop_items()
-
+"""
+THIS HANDLES THE GAME'S BATTLES
+"""
 # noinspection PyUnusedLocal
 def battle(enemy_key):
-    global player_health, max_health, player_class, attack_max, player_inventory
+    global player_health, max_health, player_class, attack_max
     global gold
     global skill_cooldown, skill_cooldown_timer, regen_turns, regen_effect, attack_up_turns, attack_up_effect, damage_reduce_turns, defense_boost_turns, defense_boost_effect, invulnerable_turns, dodge_up_turns, dodge_up_effect
     global summoned, war_cry_turns, damage_multiplier, reduced_enemy_defense
@@ -1828,7 +1878,7 @@ def battle(enemy_key):
             if player_class == "Necromancer":
                 print(f"{Fore.MAGENTA}[5]. Summon Undead{Style.RESET_ALL}")
             if skill_cooldown_timer == 0:
-                print(f"{Fore.LIGHTGREEN_EX}[S]. Special Skill{Style.RESET_ALL}")
+                print(f"{Fore.LIGHTGREEN_EX}[S]. Special Skill: {special_skills.get(player_class, 'Special Skill')}{Style.RESET_ALL}")
             print()
             action = input("> ").strip()  # the space for typing the choice
             #  Player actions
@@ -1910,7 +1960,7 @@ def battle(enemy_key):
                     if potion_key in potion_list:
                         potion_list[potion_key] -=1
                         heal_amount = potion_data.get(potion_key, 0)
-                        player_inventory["empty bottle"] += 1
+                        inventory["empty bottle"] += 1
                         # Getting potion data
                         data = potion_data.get(potion_key, {})
                         heal = data.get("heal", 0)
@@ -1919,7 +1969,7 @@ def battle(enemy_key):
                         duration = data.get("duration", 0)
                         player_health = min(max_health, player_health + heal)
                         print(f"You drink a {potion_key.title()} and restore {heal} HP. ({potion_list[potion_key]} left!)")
-                        print(f"Empty bottles: {player_inventory['empty bottle']}.")
+                        print(f"Empty bottles: {inventory['empty bottle']}.")
                         time.sleep(1.5)
                         # the potion effects
                         if effect == "regen_up":
@@ -1960,8 +2010,8 @@ def battle(enemy_key):
                 if run_choice == "yes":
                     run = True
                     print("You fled the battle but ignored the enemy... dropping your gold...")
-                    gold -= min(gold, gold -20)
-                    print(f"Gold -20.")
+                    time.sleep(1.3)
+                    gold = max(0, gold -20)
                     break
                 else:
                     print("Thanks for playing! Try again!")
@@ -1985,10 +2035,10 @@ def battle(enemy_key):
                 reduced_enemy_defense = 3
                 print("You roar with a mighty War Cry! Your attack increases for 3 turns and the enemy’s defense weakens!")
                 time.sleep(1.6)
-                continue  # ends turn
+                continue
             # Player using special skill
             elif action.lower() == "s" and skill_cooldown_timer == 0:
-                print("\nYou unleash your SPECIAL SKILL!")
+                print(f"\nYou unleash {special_skills.get(player_class, 'Special Skill')}!!")
                 skill_cooldown_timer = skill_cooldown
                 # Warrior: Power Strike
                 if player_class == "Warrior":
@@ -2018,9 +2068,6 @@ def battle(enemy_key):
                     time.sleep(1.5)
                 # Necromancer: Life Drain
                 elif player_class == "Necromancer":
-                    summoning = pygame.mixer.Sound(r"sounds/life drain.ogg")
-                    summoning.set_volume(0.7)
-                    summoning.play()
                     damage = random.randint(3, 6)
                     enemy_health -= damage
                     heal_amount = damage // 2
@@ -2210,8 +2257,10 @@ def battle(enemy_key):
             if skill_cooldown_timer > 0:
                 skill_cooldown_timer -= 1
                 if skill_cooldown_timer == 0:
-                    print("Your SPECIAL SKILL is ready!")
+                    print(f"{special_skills.get(player_class, 'Special Skill')} is ready!")
                     time.sleep(1)
+                else:
+                    print(f"{special_skills.get(player_class, 'Special Skill')} on COOLDOWN!")
         # Poisonous spider defeated or player defeated
         if player_health <= 0:
             print(f"\nYou died... The {enemy_name} triumphs over you.")
@@ -2241,7 +2290,7 @@ def battle(enemy_key):
                 item_loot = current_enemy.get("item_loot", [])
                 if item_loot and random.random() < 0.5:
                     dropped_items = random.choice(item_loot)
-                    player_inventory[dropped_items] = player_inventory.get(dropped_items, 0) + 1
+                    inventory[dropped_items] = inventory.get(dropped_items, 0) + 1
                     print(f"The {enemy_name} dropped a {dropped_items}")
                 for quest_name, quest_data in player_quests.items():
                     if quest_data["status"] == "Ongoing" and enemy_name in quest_name:
@@ -2311,21 +2360,21 @@ def chapt5_eternal_village():
             "All about thee, narrow alleys twist like the roots of a great tree, lanterns swaying in the gentle wind, and the air hums with secrets of centuries past. "
             "Every shadow and stone seems to hold a story, waiting for those bold enough to seek it.")
         time.sleep(4)
-        south_eternal_village()
+        south_eternal_village(player_data, inventory)
     else:
         print("You skipped the Dialogue!")
         pygame.mixer.music.fadeout(2000)
-        south_eternal_village()
+        south_eternal_village(player_data, inventory)
 
     # Start of the Chapter 5 Eternal village adventure
-def south_eternal_village():
-    global player_name, player_class, race_name, player_health, max_health, attack_max, gold, player_inventory
+def south_eternal_village(player_data, inventory):
+    global player_name, player_class, race_name, player_health, max_health, attack_max, gold
     global hearthfire_stock, mead_stock, spirits_stock, hp_change
     while True:
         pygame.mixer.music.load(r"sounds/Eternal Village bg.ogg")
         pygame.mixer.music.play(-1)
         print()
-        print(f"\n                        --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+        print(f"\n                        --[{player_data["name"]}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
         if random.random() < 0.3:
             print("\nAs you wander through the glowing streets, a voice calls out to you...")
             time.sleep(1.3)
@@ -2468,10 +2517,9 @@ def south_eternal_village():
                     pygame.mixer.music.fadeout(2000)
                     door_close2 = pygame.mixer.Sound(r"sounds/close door.ogg")
                     door_close2.play()
-                    print(
-                        "You step out of the Hollow Earth Inn, the smell of roasted meat and smoke fading behind you as the village square spreads ahead...")
+                    print("You step out of the Hollow Earth Inn, the smell of roasted meat and smoke fading behind you as the village square spreads ahead...")
                     time.sleep(2)
-                    break
+                    player_data, inventory = south_eternal_village(player_data, inventory)
                 else:
                     print("Please enter a valid option.")
         # Player goes to West
@@ -2488,7 +2536,7 @@ def south_eternal_village():
             time.sleep(2)
             # Shop 2 (Stoneheart Armory) choice
             stoneheart_armory_shop()
-            south_eternal_village()
+            player_data, inventory = south_eternal_village(player_data, inventory)
         # Player chooses to go North (3. North)
         elif move == "3":
             print(
@@ -2501,7 +2549,7 @@ def south_eternal_village():
                 offer_random_quest()
             else:
                 print()
-            print(f"\n                                  --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+            print(f"\n                                  --[{player_data["name"]}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
             time.sleep(1)
             print("Where do you want to go?"
                   "\n[1]. Walk to the Spindle of Tales."
@@ -2597,7 +2645,7 @@ def south_eternal_village():
                             "You step out of the Spindle of Tales, and the familiar streets of the Eternal Cavern Village stretch before you,"
                             " bathed in the soft glow of lanterns that dance like distant stars.")
                         time.sleep(2)
-                        break
+                        player_data, inventory = south_eternal_village(player_data, inventory)
             elif walk_choice_north == "2":
                 print("Coming soon... Chapter 6: Truth unveiled")
                 time.sleep(1.3)
@@ -2645,7 +2693,7 @@ def south_eternal_village():
                         time.sleep(1.3)
                         print("Eternal Trader: 'Greetings traveller, what might have ye for me?'")
                         time.sleep(1.7)
-                        player_inventory, gold = echo_vials_trade(player_inventory, gold)
+                        inventory, gold = echo_vials_trade(inventory, gold)
                     # Player opens the inventory
                     elif player_choice_1 == "4":
                         print("You open your Inventory...")
@@ -2654,7 +2702,7 @@ def south_eternal_village():
                     elif player_choice_1 == "x":
                         print("You walk out of the Echoing Vials, the bubbling of the potions are heard fainting behind you...")
                         pygame.mixer.music.fadeout(2000)
-                        break
+                        player_data, inventory = south_eternal_village(player_data, inventory)
             elif walk_choice_north == "4":
                 print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
                 time.sleep(1.3)
@@ -2678,7 +2726,7 @@ def south_eternal_village():
                 time.sleep(0.3)
                 while True:
                     print("]================================[ ETERNAL SANCTUARY ]====================================[")
-                    print(f"                                 -[{player_name} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
+                    print(f"                                 -[{player_name}: {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]-")
                     print(f"[1]. Rent a room to rest (restore full health) (Price: 50 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL})  [2]. Order Food/Drink")
                     print(f"[3]. Play 'Fortune's Toss'.  [4]. Talk to the Eternal Inkeeper.")
                     print(f"[X]. Leave Eternal Sanctuary.")
@@ -2885,7 +2933,7 @@ def south_eternal_village():
                     elif player_choice_3 == "x":
                         soulwarden_farwell(player_name)
                         time.sleep(1.3)
-                        break
+                        player_data, inventory = south_eternal_village(player_data, inventory)
             elif walk_choice_north == "7":
                 if random.random() < 0.3:
                     print("\nAs you wander through the glowing streets, a voice calls out to you...")
@@ -3036,7 +3084,7 @@ def south_eternal_village():
                         print("The voices of the loud, maddening crowd faints behind you..")
                         pygame.mixer.fadeout(2000)
                         time.sleep(1.2)
-                        break
+                        player_data, inventory = south_eternal_village(player_data, inventory)
                     elif arena_choice == "q":
                         show_quest_log(player_quests)
                         continue
@@ -3046,10 +3094,13 @@ def south_eternal_village():
             elif walk_choice_north == "s":
                 print("You walked back south, the smoke and lights of the Stoneheart Armory and Hollow Earth Inn glooms over you...")
                 time.sleep(1.5)
-                south_eternal_village()
+                player_data, inventory = south_eternal_village(player_data, inventory)
             else:
                 pass
         elif move == "4":
             player_eternal_warrior_talking()
+        return player_data
 chapt5_eternal_village()
+
+
 
