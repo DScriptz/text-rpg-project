@@ -109,7 +109,7 @@ def show_quest_log(quests):
     for quest_name, quest_data in quests.items():
         status = quest_data.get("status", "Unknown")
         description = quest_data.get("description", "")
-        print(f"- {quest_name} [{status}]")
+        print(f"- {quest_name} [{Fore.RED + Style.BRIGHT}{status}{Style.RESET_ALL}]")
         if description:
             print(f"   > {description}")
         print()
@@ -140,10 +140,10 @@ def complete_quest(quests, name):
             item_name = reward_value
             if item_name == "Eternal Dagger":
                 attack_max += 10
-                print(f"You obtained and euqipped the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
+                print(f"You obtained and equipped the {item_name}! (+10 max attack) Max Attack is now {attack_max}")
             else:
                 inventory[item_name] = inventory.get(item_name, 0) + 1
-                print(f"You recevied a {item_name}!")
+                print(f"You received a {item_name}!")
     else:
         print(f"\nQuest '{name}' not found.\n")
 # Potion data of player
@@ -1385,7 +1385,6 @@ else:
     print("You skipped the Dialogue!")
 # Choosing of class
 complete_quest(player_quests, "Welcome to the Land of Bravery!")
-play_sound("quest completed", volume=0.6)
 time.sleep(1.4)
 add_quest(player_quests, "Forging a hero...", "Pick a class and a race.")
 time.sleep(1.3)
@@ -1975,6 +1974,7 @@ def battle(enemy_key):
                         duration = data.get("duration", 0)
                         player_health = min(max_health, player_health + heal)
                         print(f"You drink a {potion_key.title()} and restore {heal} HP. ({potion_list[potion_key]} left!)")
+                        play_sound("drink potion", volume=1)
                         print(f"Empty bottles: {inventory['empty bottle']}.")
                         time.sleep(1.5)
                         # the potion effects
