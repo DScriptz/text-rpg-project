@@ -48,7 +48,7 @@ try:
         class_data = json.load(file)
 except FileNotFoundError:
     print("Error: class_data.json is not found! Make sure the file is in the same folder as this script.")
-""" LOAD PLAYER DATA """
+
 # ============================================
 #     GAME FLAGS/STATS AND STARTING DATAA
 # ============================================
@@ -68,6 +68,8 @@ player_data = {
 
 }
 inventory = player_data["inventory"]
+""" LOAD PLAYER DATA"""
+
 # Keywords for dicts
 potion_keywords = [
     "potion",
@@ -727,6 +729,8 @@ def stoneheart_armory_shop():
     global player_name, max_health, player_health, attack_max, gold
     global steel_cuirass_stock, mead_stock, ironfang_stock, spirits_stock, knight_helm_stock, gauntlets_grip_stock, hide_cloak_stock, boots_stoneguard_stock, bracers_fortitude_stock, gorget_brave_stock, shield_of_eternal_stock
     global hauberk_stock, runed_sword_stock, hammer_deep_forge_stock, bow_whispering_pines_stock, dagger_shadowglass_stock, axe_stonebreaker_stock, lance_eternal_guard_stock, staff_emberlight_stock, crossbow_silent_thunder_stock, warblade_brave_stock, pauldrons_valor_stock
+    """ PLAYS THE BACKGROUND MUSIC FOR THE STONEHEART ARMORY """
+    play_music("stoneheart armory", volume=1, loop=True)
     while True:
         shop2_move = input("What do you want to do?: "
                            "\n--> 1. Buy Armors (HP increasing items)."
@@ -738,6 +742,8 @@ def stoneheart_armory_shop():
             while True:
                 print(f"\n                     --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
                 print("What will you buy?")
+                """ STONEHEART ARMORER NPC VOICE """
+                play_sound("stoneheart_armory_npc", volume=0.9)
                 time.sleep(1)
                 shop2_buy= input("\nArmors for sale:"
                       f"\n[1]. {Fore.LIGHTCYAN_EX}Steel Cuirass{Style.RESET_ALL} (65 {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, +40 Max HP, {steel_cuirass_stock} in stock) – 'Forged from the eternal iron veins, this breastplate hath saved many a soul.'"
@@ -2556,7 +2562,7 @@ def south_eternal_village(player_data, inventory):
                   "\n[2]. Venture through the Hall of the Everlight. (Coming soon)"
                   "\n[3]. Go to the Echoing Vials - Potion Shop."
                   "\n[4]. Explore deeper in the Eternal Caverns. (Coming soon)"
-                  "\n[5]. Check out the Glowmire Market. (Coming soon)"
+                  "\n[5]. Check out the Glowmire Market. (Coming soon)" ### DO TOMORROW OR THIS WEEK ###
                   "\n[6]. Visit the Eternal Sanctuary."
                   "\n[7]. Compete in the Rift of Echoing Souls."  
                   "\n[S]. Go back.")
