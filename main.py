@@ -120,8 +120,8 @@ def add_quest(quests, name, description):
     if name not in quests:
         quests[name] = {f"status": f"{Fore.RED + Style.BRIGHT}Ongoing{Style.RESET_ALL}", "description": description}
         play_sound("new quest", volume=0.7)
-        print(f"\nNew Quest Added: {name}")
-        print(f"   > {description}")
+        print(f"\nNew Quest: {Fore.LIGHTGREEN_EX + Style.BRIGHT}{name}{Style.RESET_ALL}")
+        print(f"   > {Fore.BLUE}{description}{Style.RESET_ALL}")
     else:
         print(f"\nYou already have the quest: {name}\n")
 # Quest gets completed and rewards get to the player
@@ -633,40 +633,41 @@ def player_eternal_warrior_talking():
 # Donating to the Eternal village on echo vials shop-------
 def echo_vials_donation():
     global gold
-    print()
-    print("|---> Donation Table <---|")
-    print("[1]. Donate Gold")
-    print("[2]. Donate Empty Bottle of Potion")
-    print("[3]. Check Inventory")
-    print("[X]. Leave")
-    print()
-    donate = input("\n> ").strip()
-    if donate == "1":
-        print("How much gold will you want to donate?")
-        donation_amount = int(input("\n> "))
-        if 0 < donation_amount <= gold:
-            gold -= donation_amount
-            print(f"You donated {donation_amount} gold. The bowl glows softly")
-            time.sleep(1.3)
-            donated_effects()
-    elif donate == "2":
-        item_name = "Empty Bottle"
-        remaining = inventory.get("empty bottle, 0")
-        if inventory.get("empty bottle", 0) > 0:
-            inventory["empty bottle"] -= 1
-            print("You have placed an empty bottle. It hums quietly...")
-            print(f"- 1{item_name} (Empty Bottle remaining: {remaining})")
-            time.sleep(1.3)
-            donated_effects()
-        else:
-            print("You have no vials or bottles to donate")
-    elif donate == "3":
-        print("You open your inventory...")
-        time.sleep(1.2)
-        open_inventory()
-    else:
-        print("You step away from the table.")
 
+    while True:
+        print()
+        print("|---> Donation Table <---|")
+        print("[1]. Donate Gold")
+        print("[2]. Donate Empty Bottle of Potion")
+        print("[I]. Check Inventory")
+        print("[X]. Leave")
+        print()
+        donate = input("\n> ").strip().lower()
+        if donate == "1":
+            print("How much gold will you want to donate?")
+            donation_amount = int(input("\n> "))
+            if 0 < donation_amount <= gold:
+                gold -= donation_amount
+                print(f"You donated {donation_amount} gold. The bowl glows softly")
+                time.sleep(1.3)
+                donated_effects()
+        elif donate == "2":
+            item_name = "Empty Bottle"
+            remaining = inventory.get("empty bottle, 0")
+            if inventory.get("empty bottle", 0) > 0:
+                inventory["empty bottle"] -= 1
+                print("You have placed an empty bottle. It hums quietly...")
+                print(f"- 1{item_name} (Empty Bottle remaining: {remaining})")
+                time.sleep(1.3)
+                donated_effects()
+            else:
+                print("You have no vials or bottles to donate")
+        elif donate == "i":
+            print("You open your inventory...")
+            time.sleep(1.2)
+            open_inventory()
+        else:
+            print("You step away from the table.")
 # Shop 2 Trader shop functionnnnnnn
 def trader_shop():
     global gold, attack_max, max_health, player_health
@@ -1168,7 +1169,7 @@ def chapt3_lost_trader():
     time.sleep(3)
     ### Poisonous  spider  battle music
     pygame.mixer.music.load(r"sounds/poison battle.mp3")
-    pygame.mixer.music.set_volume(0.4)
+    pygame.mixer.music.set_volume(0.3)
     pygame.mixer.music.play(-1)
     print("\nSuddenly, a poisonous spider drops from above!")
     time.sleep(1)
@@ -1223,7 +1224,7 @@ def chapt4_the_last_bite():
     player_health = max_health
     # Eternal warrior being fight
     pygame.mixer.music.load(r"sounds/eternal warrior.ogg")
-    pygame.mixer.music.set_volume(0.7)
+    pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
     print(f"\nYou angered the Warrior of the Eternal Being! Defeat him to gain the trust of the Eternal Villagers!")
     time.sleep(3)
@@ -1974,7 +1975,7 @@ def battle(enemy_key):
                         duration = data.get("duration", 0)
                         player_health = min(max_health, player_health + heal)
                         print(f"You drink a {potion_key.title()} and restore {heal} HP. ({potion_list[potion_key]} left!)")
-                        play_sound("drink potion", volume=1)
+                        play_sound("drink potion", volume=1.5)
                         print(f"Empty bottles: {inventory['empty bottle']}.")
                         time.sleep(1.5)
                         # the potion effects
@@ -2016,12 +2017,13 @@ def battle(enemy_key):
                 if run_choice == "yes":
                     run = True
                     print("You fled the battle but ignored the enemy... dropping your gold...")
+                    play_sound("run away", volume=1)
                     time.sleep(1.3)
                     gold = max(0, gold -20)
                     break
                 else:
-                    print("Thanks for playing! Try again!")
-                    exit()
+                    print(f"You went back, wanting to fight the {enemy_name} once more!")
+                    continue
             # Necromancer summoning undead minion
             elif action == "5" and player_class == "Necromancer":
                 necro_summon = pygame.mixer.Sound(r"sounds/necromancer summon.ogg")
