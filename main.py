@@ -725,6 +725,65 @@ def trader_shop():
             show_quest_log(player_quests)
         else:
             print("\nLost Trader Silas: If you don't have enough coins, speak!")
+
+""" PLAYER MINES ORES FOR THE LOST TRADER'S QUEST """
+def lost_trader_quest_mining():
+    global inventory
+
+    print("\nYou grab the Iron Pickaxe the lost Trader gave you...")
+    time.sleep(1.3)
+    inventory["Iron Pickaxe"] = inventory.get("Iron Pickaxe", 0) + 1
+    print("\nInventory: Iron Pickaxe + 1")
+    play_sound("item picked up", volume=0.8)
+    time.sleep(1.7)
+    open_inventory()
+    print("You get into position and...")
+    time.sleep(1.3)
+
+    input("\n[Enter] - Mine")
+    play_sound("mining", volume=0.9)
+    print("")
+
+print(lost_trader_quest_mining())
+""" LOST TRADER ASKS THE PLAYER FOR THE QUEST """
+def lost_trader_quest():
+    global gold
+
+    print("\nAs you walk away, the lost trader calls out to you,")
+    print("Lost Trader: 'Adventurer! *He signals for you to come back* I have a favor if you don't mind-'")
+
+    while True:
+        accept_quest_1 = input("\nDo you want to accept this quest? (Yes/No): ").strip().lower()
+        match accept_quest_1:
+
+            case "yes":
+                print("Lost Trader: '*exhales of relief* phew, good alright so,'")
+                time.sleep(1.3)
+                print("Lost Trader: 'You see those glowing ores over there traveller?'")
+                time.sleep(1.3)
+                print("""Lost trader: Well I need some help, my pickaxe has been broken
+                and I need help with mining it...
+                Lost Trader: Here I crafted a new pickaxe, can you help me mine it?""")
+                time.sleep(1.3)
+                print("So you went over the first glowing ore you see...")
+                time.sleep(1.3)
+                print("It was a radiant purple, it must be a...")
+                time.sleep(1.7)
+                print("An Amethyst!")
+                time.sleep(1.3)
+
+            case "no":
+                print(f"\n{player_data['name']}: 'Sorry, I have yet to finish my mission.'")
+                time.sleep(1.3)
+                print("\nLost Trader: 'Ahh I see, I understand traveller.'")
+                time.sleep(1.5)
+
+            case _:
+                print("Invalid choice")
+
+
+
+print(lost_trader_quest())
 # Shop 3, Stoneheart armory function
 def stoneheart_armory_shop():
     global player_name, max_health, player_health, attack_max, gold
@@ -1108,6 +1167,9 @@ def chapt3_lost_trader():
         print("You skipped the Dialogue!")
     # Lost trader items
     trader_shop()
+    """ LOST TRADER ASK THE PLAYER IF HE COULD HELP HIM """
+    time.sleep(1.5)
+
     # Spider fight Narrative
     print("You rest for a while... regaining your energy and max HP restored.")
     time.sleep(2)
