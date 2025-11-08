@@ -146,6 +146,20 @@ def complete_quest(quests, name):
                 print(f"You received a {item_name}!")
     else:
         print(f"\nQuest '{name}' not found.\n")
+""" ORES DATA """
+
+ores_data = {
+    "Amethyst": {
+        "health": 20
+    },
+    "Iron": {
+        "health": 25
+    },
+    "Coal": {
+        "health": 27
+    }
+}
+
 # Potion data of player
 potion_data = {
     "healing potion": {
@@ -507,7 +521,7 @@ spirits_stock = 1
 # Tavern Variables
 tavern_choice = ""
 hp_change = random.randint(5, 15)
-# Shop 2 Armor stocks
+# Shop 3 Armor stocks
 steel_cuirass_stock = 2
 hauberk_stock = 3
 knight_helm_stock = 5
@@ -518,7 +532,7 @@ pauldrons_valor_stock = 3
 bracers_fortitude_stock = 5
 gorget_brave_stock = 5
 shield_of_eternal_stock = 2
-# Shop 2 Weapon stocks
+# Shop 3 Weapon stocks
 ironfang_stock = 3
 runed_sword_stock = 2
 hammer_deep_forge_stock = 1
@@ -668,6 +682,107 @@ def echo_vials_donation():
             open_inventory()
         else:
             print("You step away from the table.")
+""" PLAYER MINES ORES FOR THE LOST TRADER'S QUEST """
+def lost_trader_quest_mining(ores_data):
+    global inventory
+
+    print("\nYou grab the Iron Pickaxe the lost Trader gave you...")
+    time.sleep(1.3)
+    inventory["Iron Pickaxe"] = inventory.get("Iron Pickaxe", 0) + 1
+    print("\nInventory: Iron Pickaxe + 1")
+    play_sound("item picked up", volume=0.8)
+    time.sleep(1.7)
+    open_inventory()
+    print("You get into position and face the ore vein...")
+    time.sleep(1.3)
+
+    amethyst_health = ores_data["Amethyst"]["health"]
+    coal_health = ores_data["Coal"]["health"]
+
+    while amethyst_health > 0:
+            input("\nSwing your Pickaxe [Enter] >> ")
+            amethyst_health -= random.randint(2, 4)
+            amethyst_health = max(amethyst_health, 0)
+            play_sound("mining", volume=0.9)
+            print(f"The Amethyst ore vein weakens... (Amethyst health: {amethyst_health})")
+            time.sleep(0.5)
+            if random.random() < 0.1:
+                print("You found a rare gem inside the Amethyst!")
+                inventory["Gem"] = inventory.get("Gem", 0) + 1
+            if amethyst_health == 0:
+                print("You successfully mined Amethyst!")
+                time.sleep(1.3)
+                inventory["Amethyst"] = inventory.get("Amethyst", 0) + random.randint(1, 6)
+                print(f"Inventory: Amethyst + {inventory['Amethyst']}")
+                play_sound("item picked up", volume=0.8)
+                open_inventory()
+                print(f"Now you faced the {Fore.LIGHTBLACK_EX}Coal{Style.RESET_ALL} vein...")
+                time.sleep(0.7)
+                """ PLAYER NOW MINES COAL"""
+                while coal_health > 0:
+                    input("\nSwing your Pickaxe [Enter] >> ")
+                    coal_health -= random.randint(2, 4)
+                    coal_health = max(coal_health, 0)
+                    play_sound("mining", volume=0.9)
+                    print(f"The Coal ore vein weakens... (Coal health: {coal_health})")
+                    time.sleep(0.5)
+                    if coal_health == 0:
+                        print("You successfully mined Coal!")
+                        time.sleep(1.3)
+                        inventory["Coal"] = inventory.get("Coal", 0) + random.randint(1, 10)
+                        print(f"Inventory: Coal + {inventory['Coal']}")
+                        play_sound("item picked up", volume=0.8)
+                        open_inventory()
+    return ores_data
+
+
+""" LOST TRADER ASKS THE PLAYER FOR THE QUEST """
+def lost_trader_quest():
+    global gold, inventory
+
+    print("\nAs you walk away, the lost trader calls out to you,")
+    print("Lost Trader: 'Adventurer! *He signals for you to come back* I have a favor if you don't mind-'")
+
+    while True:
+        accept_quest_1 = input("\nDo you want to accept this quest? (Yes/No): ").strip().lower()
+
+        match accept_quest_1:
+            case "yes":
+                print("Lost Trader: '*exhales of relief* phew, good alright so,'")
+                time.sleep(1.3)
+                print("Lost Trader: 'You see those glowing ores over there traveller?'")
+                time.sleep(1.3)
+                print("""Lost trader: Well I need some help, my pickaxe has been broken
+            and I need help with mining it...
+Lost Trader: Here I crafted a new pickaxe, can you help me mine it?""")
+                time.sleep(1.3)
+                print("So you went over the first glowing ore you see...")
+                time.sleep(1.3)
+                print("It was a radiant purple, it must be a...")
+                time.sleep(1.7)
+                print(f"\nAn {Fore.MAGENTA + Style.BRIGHT}Amethyst{Style.RESET_ALL}!")
+                time.sleep(1.3)
+                lost_trader_quest_mining(ores_data)
+                if "Amethyst" and "Coal" in inventory:
+                    print("Lost Trader: 'I appreciate thy effort traveller, here I give ye this as my my thank you'")
+                    time.sleep(1.3)
+                    inventory["Amethyst"] = inventory.get("Amethyst", 0) - 7
+                    inventory["Coal"] = inventory.get("Coal", 0) - 10
+                    gold += 50
+                    print(f"The lost trader handed you gold. Gold + 50. Gold is now {gold}")
+                    player_payment()
+                    time.sleep(1.3)
+                    break
+            case "no":
+                print(f"\n{player_data['name']}: 'Sorry, I have yet to finish my mission.'")
+                time.sleep(1.3)
+                print("\nLost Trader: 'Ahh I see, I understand traveller.'")
+                time.sleep(1.5)
+                break
+            case _:
+                print("Invalid choice")
+
+
 # Shop 2 Trader shop functionnnnnnn
 def trader_shop():
     global gold, attack_max, max_health, player_health
@@ -719,71 +834,18 @@ def trader_shop():
             print(f"You have bought a Gambling Potion and drank it! (Max attack is now {attack_max} Gold: {gold})")
         elif trade == "5":
             print("\nThe Lost Trader: Well then, be careful down there...")
+            time.sleep(0.7)
             print("\nYou leave the trader and go deeper into the cave…")
+            time.sleep(1.4)
+            lost_trader_quest()
             break
         elif trade == "q":
             show_quest_log(player_quests)
         else:
             print("\nLost Trader Silas: If you don't have enough coins, speak!")
 
-""" PLAYER MINES ORES FOR THE LOST TRADER'S QUEST """
-def lost_trader_quest_mining():
-    global inventory
-
-    print("\nYou grab the Iron Pickaxe the lost Trader gave you...")
-    time.sleep(1.3)
-    inventory["Iron Pickaxe"] = inventory.get("Iron Pickaxe", 0) + 1
-    print("\nInventory: Iron Pickaxe + 1")
-    play_sound("item picked up", volume=0.8)
-    time.sleep(1.7)
-    open_inventory()
-    print("You get into position and...")
-    time.sleep(1.3)
-
-    input("\n[Enter] - Mine")
-    play_sound("mining", volume=0.9)
-    print("")
-
-print(lost_trader_quest_mining())
-""" LOST TRADER ASKS THE PLAYER FOR THE QUEST """
-def lost_trader_quest():
-    global gold
-
-    print("\nAs you walk away, the lost trader calls out to you,")
-    print("Lost Trader: 'Adventurer! *He signals for you to come back* I have a favor if you don't mind-'")
-
-    while True:
-        accept_quest_1 = input("\nDo you want to accept this quest? (Yes/No): ").strip().lower()
-        match accept_quest_1:
-
-            case "yes":
-                print("Lost Trader: '*exhales of relief* phew, good alright so,'")
-                time.sleep(1.3)
-                print("Lost Trader: 'You see those glowing ores over there traveller?'")
-                time.sleep(1.3)
-                print("""Lost trader: Well I need some help, my pickaxe has been broken
-                and I need help with mining it...
-                Lost Trader: Here I crafted a new pickaxe, can you help me mine it?""")
-                time.sleep(1.3)
-                print("So you went over the first glowing ore you see...")
-                time.sleep(1.3)
-                print("It was a radiant purple, it must be a...")
-                time.sleep(1.7)
-                print("An Amethyst!")
-                time.sleep(1.3)
-
-            case "no":
-                print(f"\n{player_data['name']}: 'Sorry, I have yet to finish my mission.'")
-                time.sleep(1.3)
-                print("\nLost Trader: 'Ahh I see, I understand traveller.'")
-                time.sleep(1.5)
-
-            case _:
-                print("Invalid choice")
 
 
-
-print(lost_trader_quest())
 # Shop 3, Stoneheart armory function
 def stoneheart_armory_shop():
     global player_name, max_health, player_health, attack_max, gold
@@ -2604,7 +2666,7 @@ def south_eternal_village(player_data, inventory):
             time.sleep(3)
             shop2_armorer()
             time.sleep(2)
-            # Shop 2 (Stoneheart Armory) choice
+            # Shop 3 (Stoneheart Armory) choice
             stoneheart_armory_shop()
             player_data, inventory = south_eternal_village(player_data, inventory)
         # Player chooses to go North (3. North)
