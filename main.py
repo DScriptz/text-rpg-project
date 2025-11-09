@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# v.11.5.25 Alpha (Questing and Arena update) updated Nov 5, 2025.
+# v.11.9.25 Alpha (Questing and Arena update) updated Nov 9, 2025.
 #DefNoInspect
 import sys
 import os
@@ -16,7 +16,24 @@ import json
 from dialogues import *
 from dialogues.player import *
 from chapters import *
+from player_data import *
 init(autoreset=True)
+
+pygame.mixer.init()
+
+#  Player pays in shops
+coin_sound = pygame.mixer.Sound(r"sounds/coin.ogg")
+coin_sound2 = pygame.mixer.Sound(r"sounds/coin2.ogg")
+coin_sound3 = pygame.mixer.Sound(r"sounds/coin3.ogg")
+
+payment = [coin_sound, coin_sound2, coin_sound3]
+def player_payment():
+    random.choice(payment).play()
+# Door opens
+door_open_sound = pygame.mixer.Sound(r"sounds/open door.ogg")
+door_open_sound2 = pygame.mixer.Sound(r"sounds/open door 2.ogg")
+
+door_open = [door_open_sound, door_open_sound2]
 # Game short sounds helper code
 def play_sound(sound_name, volume=0.6 ):
     try:
@@ -52,21 +69,7 @@ except FileNotFoundError:
 # ============================================
 #     GAME FLAGS/STATS AND STARTING DATAA
 # ============================================
-""" PLAYER DATA """
-player_data = {
-    "name": "",
-    "class": "",
-    "race": "",
-    "gold": 30,
-    "player_health": 0,
-    "max_health": 0,
-    "attack_max": 0,
-    "inventory": {
-        "empty bottle": 0,
-        "empty vial": 0
-    },
 
-}
 inventory = player_data["inventory"]
 """ LOAD PLAYER DATA"""
 
@@ -79,20 +82,7 @@ potion_keywords = [
     "tea",
     "vial"
 ]
-# player special skill
-special_skills = {
-    "Warrior": "Power Strike",
-    "Rogue": "Shadow Step",
-    "Mage": "Ice Shard",
-    "Necromancer": "Life Drain",
-    "Marksman": "Eagle Eye",
-    "Paladin": "Holy Shield",
-    "Druid": "Regrowth",
-    "Illusionist": "Mirror Image",
-    "Alchemist": "Risky Play",
-    "Sentinel": "Bulwark Stance",
-    "Dev Test": "FAHHHHHHHHHHHHHHH"
-}
+
 # Player quest list
 player_quests = {}
 
@@ -213,6 +203,34 @@ potion_data = {
 # Potion list
 potion_list = {
 
+}
+""" GLIMMERPICK FORGE PICKAXES FOR SALE """
+glimmerpick_pickaxes = {
+    "Glowforged Pickaxe": {
+        "price": 25,
+        "damage": 5,
+        "durability": 25
+    },
+    "Ironvein Pickaxe": {
+        "price": 35,
+        "damage": 8,
+        "durability": 35
+    },
+    "Runic Digger": {
+        "price": 50,
+        "damage": 13,
+        "durability": 45
+    },
+    "Extractinator Drill": {
+        "price": 60,
+        "damage": 17,
+        "durability": 55
+    },
+    "Crystal Carver": {
+        "price": 75,
+        "damage": 20,
+        "durability": 70
+    },
 }
 # Echo vials trading code
 def echo_vials_trade(player_inventory, gold):
@@ -345,7 +363,69 @@ def echoing_vials_display_stock(potion_stock):
             print(f"{Fore.LIGHTBLACK_EX + Style.DIM}->> {potion_names} is out of stock{Style.RESET_ALL}")
         else:
             print(f"{Fore.LIGHTGREEN_EX}-> {potion_names} has {amount} stock{Style.RESET_ALL}")
-# shop choice code function
+""" GLIMMERPICK FORGE CODE """
+
+def pickaxe_stall():
+    global gold
+    gold = 25
+    print("\nKaelith the Emberwright: 'Hello traveller, what type of pickaxe do ye want to buy?'")
+    time.sleep(1.7)
+    while True:
+        print("\n-{ Kaelith the Emberwright's Stall - Forged from flame and memory }-")
+        print("----------------------------------------------------------------")
+        for i, (item, price) in enumerate(glimmerpick_pickaxes.items(), 1):
+            print(f"[{i}] {item} - {price} {Style.BRIGHT + Fore.LIGHTYELLOW_EX}Gold")
+        print("[X] Exit Shop")
+
+        pickaxe_choice = input("\n>> ").strip().lower()
+
+        if pickaxe_choice == "1" and gold >= 25:
+            print(f"You bought Glowforged Pickaxe")
+            gold -= 25
+            player_payment()
+            time.sleep(1.4)
+            inventory["Glowforged Pickaxe"] = inventory.get("Glowforged Pickaxe", 0) + 1
+            print(f"Inventory + 1 Glowforged Pickaxe")
+            play_sound("item picked up", volume= 0.9)
+            time.sleep(0.5)
+            open_inventory()
+        else:
+            print("Kaelith the Emberwright: 'Are you buying traveller?'")
+
+print(pickaxe_stall())
+""" GLOWMIRE MARKET DIRECTION CHOICE """
+def glowmire_market_choices():
+    global gold
+    print("\nYou see various stalls illuminated with glowstone lanterns...")
+    time.sleep(0.7)
+    print("[1] Glimmerpick Forge ⛏️⛏")
+    print("[2]")
+    print("[3]")
+    print("[4]")
+    print("[5]")
+    print(f"\nWhere do you want to go, {player_name}?")
+
+    stall_choice = input(f"\n>> ").strip().lower()
+    match stall_choice:
+        case "1":
+            print("You walked towards the Glimmerpick Forge...")
+            time.sleep(1.3)
+
+""" GLOWMIRE MARKET MAIN """
+
+def glowmire_market_main():
+    print(f"You walked towards the busy {Fore.LIGHTMAGENTA_EX}Glowmire Market{Style.RESET_ALL}...")
+    time.sleep(1.3)
+    print("As you walk, you see Crystalline lanterns dangle from moss covered arches...")
+    time.sleep(1.7)
+    print(f"""You now entered the {Fore.LIGHTMAGENTA_EX}Glowmire Market{Style.RESET_ALL}...
+a haven of trade beneath the caverns.""")
+    time.sleep(1.6)
+    glowmire_market_choices()
+""" GLOWMIRE MARKET STALLS """
+
+
+# Echoing vials choice code function
 def shop_choice():
     global gold
     shop_stock = echoing_vials_stocks()
@@ -546,7 +626,7 @@ warblade_brave_stock = 1
 eternal_roast_stock = 1
 # Trader 1 stocks
 # Goblin grunts
-pygame.mixer.init()
+
 grunt_1 = pygame.mixer.Sound(r"sounds/monster1.ogg")
 grunt_2 = pygame.mixer.Sound(r"sounds/monster2.ogg")
 def goblin_grunts():
@@ -564,19 +644,7 @@ eternal_being_grunt2 = pygame.mixer.Sound(r"sounds/eternal being hurt 2.ogg")
 eternal_being_grunts = [eternal_being_grunt1, eternal_being_grunt2]
 def eternal_being_grunt():
     random.choice([eternal_being_grunts]).play()
-#  Player pays in shop 1
-coin_sound = pygame.mixer.Sound(r"sounds/coin.ogg")
-coin_sound2 = pygame.mixer.Sound(r"sounds/coin2.ogg")
-coin_sound3 = pygame.mixer.Sound(r"sounds/coin3.ogg")
 
-payment = [coin_sound, coin_sound2, coin_sound3]
-def player_payment():
-    random.choice(payment).play()
-# Door opens
-door_open_sound = pygame.mixer.Sound(r"sounds/open door.ogg")
-door_open_sound2 = pygame.mixer.Sound(r"sounds/open door 2.ogg")
-
-door_open = [door_open_sound, door_open_sound2]
 def door_opening_sound():
     random.choice(door_open).play()
 # Eternal Bartender lines
@@ -2835,11 +2903,14 @@ def south_eternal_village(player_data, inventory):
                         print("You walk out of the Echoing Vials, the bubbling of the potions are heard fainting behind you...")
                         pygame.mixer.music.fadeout(2000)
                         player_data, inventory = south_eternal_village(player_data, inventory)
+
             elif walk_choice_north == "4":
                 print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
                 time.sleep(1.3)
+
             elif walk_choice_north == "5":
-                print("Coming soon! You can try Rift of Echoing Souls to test your skills and test out diff classes!")
+                glowmire_market_main()
+
             elif walk_choice_north == "6":
                 if random.random() < 0.3:
                     print("\nAs you wander through the glowing streets, a voice calls out to you...")
