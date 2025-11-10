@@ -4,7 +4,7 @@
 # Gameplay is based but not the same to: Dungeons and Dragons, Pokemon, and World of Warcraft (so far)...
 # Thank you for playtesting! Hope yall enjoy
 # IF YOU'RE PLAYING FOR THE FIRST TIME, I SUGGEST NOT TO SKIP THE DIALOGUE FOR MORE IMMERSION AND STORY CONTEXT
-# v.11.9.25 Alpha (Questing and Arena update) updated Nov 9, 2025.
+""" ALL IMPORTS """
 #DefNoInspect
 import sys
 import os
@@ -17,6 +17,7 @@ from dialogues import *
 from dialogues.player import *
 from chapters import *
 from player_data import *
+from patch_notes import *
 init(autoreset=True)
 
 pygame.mixer.init()
@@ -207,26 +208,31 @@ potion_list = {
 """ GLIMMERPICK FORGE PICKAXES FOR SALE """
 glimmerpick_pickaxes = {
     "Glowforged Pickaxe": {
+        "name": "Glowforged Pickaxe",
         "price": 25,
         "damage": 5,
         "durability": 25
     },
     "Ironvein Pickaxe": {
+        "name": "Ironvein Pickaxe",
         "price": 35,
         "damage": 8,
         "durability": 35
     },
     "Runic Digger": {
+        "name": "Runic Dagger",
         "price": 50,
         "damage": 13,
         "durability": 45
     },
     "Extractinator Drill": {
+        "name": "Extractinator Drill",
         "price": 60,
         "damage": 17,
         "durability": 55
     },
     "Crystal Carver": {
+        "name": "Crystal Carver",
         "price": 75,
         "damage": 20,
         "durability": 70
@@ -363,46 +369,20 @@ def echoing_vials_display_stock(potion_stock):
             print(f"{Fore.LIGHTBLACK_EX + Style.DIM}->> {potion_names} is out of stock{Style.RESET_ALL}")
         else:
             print(f"{Fore.LIGHTGREEN_EX}-> {potion_names} has {amount} stock{Style.RESET_ALL}")
-""" GLIMMERPICK FORGE CODE """
 
-def pickaxe_stall():
-    global gold
-    gold = 25
-    print("\nKaelith the Emberwright: 'Hello traveller, what type of pickaxe do ye want to buy?'")
-    time.sleep(1.7)
-    while True:
-        print("\n-{ Kaelith the Emberwright's Stall - Forged from flame and memory }-")
-        print("----------------------------------------------------------------")
-        for i, (item, price) in enumerate(glimmerpick_pickaxes.items(), 1):
-            print(f"[{i}] {item} - {price} {Style.BRIGHT + Fore.LIGHTYELLOW_EX}Gold")
-        print("[X] Exit Shop")
-
-        pickaxe_choice = input("\n>> ").strip().lower()
-
-        if pickaxe_choice == "1" and gold >= 25:
-            print(f"You bought Glowforged Pickaxe")
-            gold -= 25
-            player_payment()
-            time.sleep(1.4)
-            inventory["Glowforged Pickaxe"] = inventory.get("Glowforged Pickaxe", 0) + 1
-            print(f"Inventory + 1 Glowforged Pickaxe")
-            play_sound("item picked up", volume= 0.9)
-            time.sleep(0.5)
-            open_inventory()
-        else:
-            print("Kaelith the Emberwright: 'Are you buying traveller?'")
-
-print(pickaxe_stall())
 """ GLOWMIRE MARKET DIRECTION CHOICE """
 def glowmire_market_choices():
-    global gold
+    global gold, inventory
     print("\nYou see various stalls illuminated with glowstone lanterns...")
     time.sleep(0.7)
-    print("[1] Glimmerpick Forge ⛏️⛏")
-    print("[2]")
-    print("[3]")
-    print("[4]")
-    print("[5]")
+
+    print(f"\n                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+    print("[1] - Glimmerpick Forge ⛏️")
+    print("[2] - Mycelium Exchange 💰")
+    print("[3] - ")
+    print("[4] - ")
+    print("[5] - ")
+    print("[X] - Exit Menu")
     print(f"\nWhere do you want to go, {player_name}?")
 
     stall_choice = input(f"\n>> ").strip().lower()
@@ -410,9 +390,25 @@ def glowmire_market_choices():
         case "1":
             print("You walked towards the Glimmerpick Forge...")
             time.sleep(1.3)
+            pickaxe_stall()
+        case "2":
+            print("You approached the stall 'Mycelium Exchange'... looks interesting")
+            time.sleep(0.8)
+            print("Soft bioluminescent caps blink to life in glass jars as Lady Gele hums an ancient tune, grinding luminescent roots into fragrant dust...")
+            time.sleep(0.95)
+            mycelium_exchange()
+        case "3":
+            pass
+        case "4":
+            pass
+        case "5":
+            pass
+        case "x":
+            print("You walked back to the Eternal Village...")
+            time.sleep(0.5)
+print(glowmire_market_choices())
 
 """ GLOWMIRE MARKET MAIN """
-
 def glowmire_market_main():
     print(f"You walked towards the busy {Fore.LIGHTMAGENTA_EX}Glowmire Market{Style.RESET_ALL}...")
     time.sleep(1.3)
@@ -422,7 +418,57 @@ def glowmire_market_main():
 a haven of trade beneath the caverns.""")
     time.sleep(1.6)
     glowmire_market_choices()
-""" GLOWMIRE MARKET STALLS """
+
+""" GLIMMERPICK FORGE CODE """
+def pickaxe_stall():
+    global gold, inventory
+    show_kaelith_lines()
+    time.sleep(1.7)
+
+    pickaxe_list = list(glimmerpick_pickaxes.items())
+
+    while True:
+        print("\n     [Glimmerpick Stall - Forged from flame and experience.]")
+        print(f"\n                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
+        print("----------------------------------------------------------------")
+        for i, (item, stats) in enumerate(glimmerpick_pickaxes.items(), 1):
+            print(f"[{i}] {item}: {stats['price']} {Style.BRIGHT + Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}, [{stats['damage']} Damage] | [{stats['durability']} Durability]")
+        print("[X] Exit Shop")
+
+        pickaxe_choice = input("\n>> ").strip().lower()
+
+        if pickaxe_choice == "x":
+            print(f"{player_name}: 'Thank you, Kaelith.")
+            time.sleep(0.7)
+            print("You walked away from the stall...")
+            time.sleep(0.7)
+            glowmire_market_choices()
+        if pickaxe_choice.isdigit():
+            index = int(pickaxe_choice) - 1
+            if 0 <= index < len(pickaxe_list):
+                pickaxe_name, stats = pickaxe_list[index]
+
+                if gold >= stats['price']:
+                    gold -= stats['price']
+                    player_payment()
+
+                    inventory[pickaxe_name] = inventory.get(pickaxe_name, 0) + 1
+                    print(f"Inventory + 1 {pickaxe_name}. Gold is now {gold}")
+                    play_sound("item picked up", volume=0.9)
+                    time.sleep(0.6)
+                    open_inventory()
+                else:
+                    print("Not enough gold traveller!")
+            else:
+                print("Invalid menu number.")
+        else:
+            print("Kaelith the Emberwright: 'Are you buying traveller?'")
+
+""" THE MYCELIUM EXCHANGE STALL CODE """
+def mycelium_exchange():
+    global gold, inventory
+
+
 
 
 # Echoing vials choice code function
@@ -791,7 +837,7 @@ def lost_trader_quest_mining(ores_data):
                     input("\nSwing your Pickaxe [Enter] >> ")
                     coal_health -= random.randint(2, 4)
                     coal_health = max(coal_health, 0)
-                    play_sound("mining", volume=0.9)
+                    play_sound("mining", volume=1.1)
                     print(f"The Coal ore vein weakens... (Coal health: {coal_health})")
                     time.sleep(0.5)
                     if coal_health == 0:
@@ -809,8 +855,9 @@ def lost_trader_quest():
     global gold, inventory
 
     print("\nAs you walk away, the lost trader calls out to you,")
+    time.sleep(0.5)
     print("Lost Trader: 'Adventurer! *He signals for you to come back* I have a favor if you don't mind-'")
-
+    time.sleep(0.75)
     while True:
         accept_quest_1 = input("\nDo you want to accept this quest? (Yes/No): ").strip().lower()
 
@@ -822,7 +869,7 @@ def lost_trader_quest():
                 time.sleep(1.3)
                 print("""Lost trader: Well I need some help, my pickaxe has been broken
             and I need help with mining it...
-Lost Trader: Here I crafted a new pickaxe, can you help me mine it?""")
+Lost Trader: Here I crafted a new pickaxe,""")
                 time.sleep(1.3)
                 print("So you went over the first glowing ore you see...")
                 time.sleep(1.3)
@@ -831,11 +878,16 @@ Lost Trader: Here I crafted a new pickaxe, can you help me mine it?""")
                 print(f"\nAn {Fore.MAGENTA + Style.BRIGHT}Amethyst{Style.RESET_ALL}!")
                 time.sleep(1.3)
                 lost_trader_quest_mining(ores_data)
+
+                """ 
+                THIS CHECKS IF AMETHYST AND COAL IS IN PLAYERS INVENTORY THEN IF SO, THEY'LL GET 50 GOLD.
+                """
+
                 if "Amethyst" and "Coal" in inventory:
                     print("Lost Trader: 'I appreciate thy effort traveller, here I give ye this as my my thank you'")
                     time.sleep(1.3)
-                    inventory["Amethyst"] = inventory.get("Amethyst", 0) - 7
-                    inventory["Coal"] = inventory.get("Coal", 0) - 10
+                    del inventory['Amethyst']
+                    del inventory['Coal']
                     gold += 50
                     print(f"The lost trader handed you gold. Gold + 50. Gold is now {gold}")
                     player_payment()
@@ -1496,11 +1548,19 @@ def play_fortune_toss(gold):
 pygame.mixer.music.load(land_of_bravery_bgm)
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
+
 print("                                                                             ------------------------------------")
 print(Style.BRIGHT + Fore.LIGHTMAGENTA_EX + "                                                                             === Quest of the Eternal Caverns ===")
 print(f"{Style.BRIGHT + Fore.LIGHTRED_EX}                                                                                    -[ Developer Build ]-{Style.RESET_ALL}")
 print("                                                                             ------------------------------------")
-time.sleep(1)
+time.sleep(0.8)
+
+""" THIS SHOWS THE PLAYER THE GAME'S PATCH NOTES """
+
+show_patch_notes()
+
+
+
 print(Style.BRIGHT + Fore.GREEN + "\nChapter 1: The Land of Bravery.")
 print("\nThe Land of Bravery unfolds before you — rolling fields under a soft sun, breeze carrying the scent of wildflowers and distant forge-fire.")
 time.sleep(1)
@@ -2756,11 +2816,13 @@ def south_eternal_village(player_data, inventory):
                   "\n[2]. Venture through the Hall of the Everlight. (Coming soon)"
                   "\n[3]. Go to the Echoing Vials - Potion Shop."
                   "\n[4]. Explore deeper in the Eternal Caverns. (Coming soon)"
-                  "\n[5]. Check out the Glowmire Market. (Coming soon)" ### DO TOMORROW OR THIS WEEK ###
+                  "\n[5]. Check out the Glowmire Market. (UNFINISHED BUT PLAYABLE)" ### DO TOMORROW OR THIS WEEK ###
                   "\n[6]. Visit the Eternal Sanctuary."
                   "\n[7]. Compete in the Rift of Echoing Souls."  
                   "\n[S]. Go back.")
+
             walk_choice_north = input("> ")
+
             # Player chooses where to go
             if walk_choice_north == "1":
                 if random.random() < 0.3:

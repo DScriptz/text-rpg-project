@@ -7,3 +7,4 @@ from .spindle_of_tales import *
 from .player import *
 from .inn import *
 from .arena import *
+from .glowmire_market import *
