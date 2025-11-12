@@ -18,6 +18,7 @@ from dialogues.player import *
 from chapters import *
 from player_data import *
 from patch_notes import *
+from game_data import *
 init(autoreset=True)
 
 pygame.mixer.init()
@@ -205,39 +206,7 @@ potion_data = {
 potion_list = {
 
 }
-""" GLIMMERPICK FORGE PICKAXES FOR SALE """
-glimmerpick_pickaxes = {
-    "Glowforged Pickaxe": {
-        "name": "Glowforged Pickaxe",
-        "price": 25,
-        "damage": 5,
-        "durability": 25
-    },
-    "Ironvein Pickaxe": {
-        "name": "Ironvein Pickaxe",
-        "price": 35,
-        "damage": 8,
-        "durability": 35
-    },
-    "Runic Digger": {
-        "name": "Runic Dagger",
-        "price": 50,
-        "damage": 13,
-        "durability": 45
-    },
-    "Extractinator Drill": {
-        "name": "Extractinator Drill",
-        "price": 60,
-        "damage": 17,
-        "durability": 55
-    },
-    "Crystal Carver": {
-        "name": "Crystal Carver",
-        "price": 75,
-        "damage": 20,
-        "durability": 70
-    },
-}
+
 # Echo vials trading code
 def echo_vials_trade(player_inventory, gold):
     print("========================================================================================================")
@@ -274,28 +243,13 @@ def echo_vials_trade(player_inventory, gold):
             print("Invalid number.")
             continue
     return player_inventory, gold
-# Random NPC
-npcs = [
-    {"name": "Eldrin the Eternal Miner", "type": "Miner"},
-    {"name": "Serah of Sustenance", "type": "Cook"},
-    {"name": "Azorious the Scout", "type": "Scout"},
-    {"name": "Mira the Herbalist", "type": "Healer"},
-    {"name": "Baron the Smith", "type": "Blacksmith"},
-    {"name": "Ilyra the Acolyte", "type": "Priestess"}
-]
-# Random npc dialogues  for giving quests
-npc_quest_dialogues = [
-    "Traveler! A moment of your time—there’s something that needs your blade.",
-    "Pardon me, stranger... you look capable. Might you lend your strength?",
-    "Ah, a fresh soul in the Eternal Village... perhaps you can aid me.",
-    "Please, the Rift has grown restless again. We need help.",
-    "You there—yes, you. The glow of courage shines in your eyes.",
-]
+
 def random_npc_interaction():
     npc = random.choice(npcs)
     dialogue = random.choice(npc_quest_dialogues)
     print(f"\n{npc['name']}: '{dialogue}'")
     return npc
+
 # Random NPC quests
 def offer_random_quest():
     global gold, attack_max
@@ -406,7 +360,7 @@ def glowmire_market_choices():
         case "x":
             print("You walked back to the Eternal Village...")
             time.sleep(0.5)
-print(glowmire_market_choices())
+
 
 """ GLOWMIRE MARKET MAIN """
 def glowmire_market_main():
@@ -467,7 +421,17 @@ def pickaxe_stall():
 """ THE MYCELIUM EXCHANGE STALL CODE """
 def mycelium_exchange():
     global gold, inventory
+    show_lady_gele_lines()
+    time.sleep(0.9)
+    for i, (item, info) in enumerate(mycelium_exchange_stocks.items(), 1):
+        if info['currency'] == "gold":
+            print(f"[{i}] {item} - {info['desc']} | Costs {info['currency']} gold")
+        else:
+            print(f"[{i}] {item} - {info['desc']} | Trade for {info['price']}.")
 
+
+
+print(mycelium_exchange())
 
 
 
