@@ -1,11 +1,11 @@
-# --| Text-Based RPG Game |--
+#                                 --| Text-Based RPG Game |--
 
 Hello, this is my first learning project in python! This is the Quest of the Eternal Caverns.
 I'm a beginner in python and I use this project as a way for me to sharpen my skills in programming and creativity.
 
 NOTE: This project is still in active development, expect some bugs or unpolished codes.
 
-# --]| FEATURES |[-- 
+#                                     --]| FEATURES |[-- 
 
 - Immersive storytelling with choice-driven gameplay
 - High replayability with over 100 combinations of custom race & classes
@@ -16,7 +16,7 @@ NOTE: This project is still in active development, expect some bugs or unpolishe
 - Battles with diverse and unique enemies, some with special abilities and attacks
                  
 
-# --]| Gameplay |[--
+#                                     --]| Gameplay |[--
 
 - 10 unique player classes:
   - Warrior
@@ -55,3 +55,7 @@ NOTE: This project is still in active development, expect some bugs or unpolishe
   - Graphics
 
 # How to Play:
+1. Download the code or do a pull request
+2. Make sure your python version is 3.13.7 +
+3. Run the code
+4. Enjoy! Please give your opinions and/or constructive criticism
