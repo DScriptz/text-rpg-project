@@ -1,9 +1,9 @@
-                                 # --| Text-Based RPG Game |--
+#                                  --| Text-Based RPG Game |--
 
 Hello, this is my first learning project in python! This is the Quest of the Eternal Caverns.
 I'm a beginner in python and I use this project as a way for me to sharpen my skills in programming and creativity.
 
-NOTE: This project is still in active development, expect some bugs or unpolished codes.
+DISCLAIMER: This project is still in active development, expect some bugs or unpolished codes.
 
 #                                     --]| FEATURES |[-- 
 
