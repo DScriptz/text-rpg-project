@@ -285,6 +285,8 @@ def offer_random_quest():
     else:
         print("You walk away and choose not to help the NPC...")
 
+""" THIS HANDLES THE PLYAER TRADING FEATURE"""
+
 
 # Potion list/ inventory of player
 def potion_lists():
@@ -332,7 +334,7 @@ def glowmire_market_choices():
 
     print(f"\n                          --[{player_name}, {race_name} {player_class} | {Fore.RED}{player_health}{Style.RESET_ALL}/{Fore.RED}{max_health}{Style.RESET_ALL} HP | {gold} {Fore.LIGHTYELLOW_EX}Gold{Style.RESET_ALL}]--")
     print("[1] - Glimmerpick Forge ⛏️")
-    print("[2] - Mycelium Exchange 💰")
+    print("[2] - Mycelium Exchange 💰 (unfinished)")
     print("[3] - ")
     print("[4] - ")
     print("[5] - ")
@@ -424,14 +426,26 @@ def mycelium_exchange():
     show_lady_gele_lines()
     time.sleep(0.9)
     for i, (item, info) in enumerate(mycelium_exchange_stocks.items(), 1):
-        if info['currency'] == "gold":
-            print(f"[{i}] {item} - {info['desc']} | Costs {info['currency']} gold")
+        if info['currency']['type'] == "gold":
+            print(f"[{i}] {item} - {info['desc']} | Costs {info['currency']['amount']} Gold")
         else:
-            print(f"[{i}] {item} - {info['desc']} | Trade for {info['price']}.")
+            print(f"[{i}] {item} - {info['desc']} | Trade for {info['currency']['type']}.")
+
+            """ THIS HANDLES THE TRADE/BUY MECHANICS """
+            #choice = input("Which item would you want to trade for? \n>> ").strip()
+
+            # trade_item_name = mycelium_exchange_stocks['currency']['item']
+            # trade_amount = mycelium_exchange_stocks['currency']['amount']
 
 
 
-print(mycelium_exchange())
+
+
+
+
+
+
+
 
 
 
@@ -504,6 +518,7 @@ def shop_choice():
                     potion_list[potion_name] = potion_list.get(potion_name, 0) + 1
                     player_payment()
                     print(f"You bought a {potion_name}! (-{price} gold). Gold left: {gold}")
+
         elif menu_choice == "5" and gold >= 60:
             potion_name = "dreamdew vial"
             price = 60
@@ -516,6 +531,7 @@ def shop_choice():
                     potion_list[potion_name] = potion_list.get(potion_name, 0) + 1
                     player_payment()
                     print(f"You bought a {potion_name}! (-{price} gold). Gold left: {gold}")
+
         elif menu_choice == "6" and gold >= 95:
             potion_name = "lunaris elixir"
             price = 95
@@ -528,6 +544,7 @@ def shop_choice():
                     potion_list[potion_name] = potion_list.get(potion_name, 0) + 1
                     player_payment()
                     print(f"You bought a {potion_name}! (-{price} gold). Gold left: {gold}")
+
         elif menu_choice == "7" and gold >= 20:
             potion_name = "healing potion"
             price = 20
@@ -1522,8 +1539,6 @@ time.sleep(0.8)
 """ THIS SHOWS THE PLAYER THE GAME'S PATCH NOTES """
 
 show_patch_notes()
-
-
 
 print(Style.BRIGHT + Fore.GREEN + "\nChapter 1: The Land of Bravery.")
 print("\nThe Land of Bravery unfolds before you — rolling fields under a soft sun, breeze carrying the scent of wildflowers and distant forge-fire.")

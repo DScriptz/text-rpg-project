@@ -1,4 +1,6 @@
+from colorama import Fore, init, Style
 
+init(autoreset=True)
 
 """ GLIMMERPICK FORGE PICKAXES FOR SALE """
 glimmerpick_pickaxes = {
@@ -38,24 +40,25 @@ glimmerpick_pickaxes = {
 
 mycelium_exchange_stocks = {
     "Gem": {
-        "price": 30,
-        "currency": "gold",
+        "name": "Gem",
+        "currency": {"type": "gold", "amount": 25},
         "desc": "A rare hidden gem that can only be found when mining some ores..."
     },
     "Stone": {
-        "price": 16,
-        "currency": "gold",
-        "desc": ""
+        "name": "Stone",
+        "currency": {"type": "gold", "amount": 16},
+        "desc": "A chunk of dense cavern rock, worn smooth by time. Common but useful — the bones of the underworld itself."
     },
     "Sporestone Fragment": {
-        "price": "Spore Cluster",
-        "currency": "item",
-        "desc": ""
+        "name": "Sporestone Fragment",
+        "currency": {"type": "item", "name": "Spore Cluster", "amount": 3},
+        "desc": "A shard of mineral fused with living fungus. It hums faintly, as if remembering the rhythm of growth."
     },
     "Esscence of Decay": {
-        "price": "Frozen Essence",
-        "currency": "item",
-        "desc": ""
-    }
+        'name': "Esscence of Decay",
+        "currency": {"type": "item", "name": "Frozen Essence", "amount": 5},
+        "desc": "A vial of slow death — distilled from rotting spores. Dangerous, but prized by those who shape life from ruin."
+    },
+
 }
 

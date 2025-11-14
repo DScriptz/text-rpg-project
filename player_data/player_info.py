@@ -12,6 +12,7 @@ player_data = {
     "inventory": {
         "empty bottle": 0,
         "empty vial": 0
+
     },
 
 }
