@@ -775,8 +775,10 @@ def echo_vials_donation():
             print("You open your inventory...")
             time.sleep(1.2)
             open_inventory()
+
         else:
             print("You step away from the table.")
+            break
 """ PLAYER MINES ORES FOR THE LOST TRADER'S QUEST """
 def lost_trader_quest_mining(ores_data):
     global inventory
