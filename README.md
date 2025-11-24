@@ -14,6 +14,7 @@ DISCLAIMER: This project is still in active development, expect some bugs or unp
 - Shops to buy items that can help you in battle
 - Unique perks for different races and classes
 - Battles with diverse and unique enemies, some with special abilities and attacks
+- 5 Immersive chapters to play! **(Ongoing)**
                  
 
 #                                     --]| Gameplay |[--
